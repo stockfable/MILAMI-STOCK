@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload | MINAMI STOCK</title>
+<style>
+:root{--bg:#fff;--ink:#1a1a1a;--mute:#6b6b6b;--line:#dcdcdc;--soft:#f5f5f5;--brand:#1473e6;--ok:#12805c;--bad:#d7373f;--warn:#b25e00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:18px;letter-spacing:.3px;color:var(--ink);text-decoration:none}
+main{max-width:1100px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 12px}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:28px 16px;text-align:center;background:var(--soft);cursor:pointer}
+.drop.over{border-color:var(--brand);background:#eaf2fd}
+.drop b{display:block;font-size:16px}.drop span{color:var(--mute);font-size:13px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 8px}
+.bar .grow{flex:1;color:var(--mute);font-size:13px}
+button,.btn{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:6px;cursor:pointer}
+button.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+button:disabled{opacity:.5;cursor:not-allowed}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.card{position:relative;border:2px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;background:#fff}
+.card.sel{border-color:var(--brand)}
+.card .th{height:100px;background:#eee center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:12px}
+.card .th video{width:100%;height:100%;object-fit:cover}
+.card .meta{padding:6px 8px;font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .st{position:absolute;top:6px;left:6px;font-size:11px;padding:2px 6px;border-radius:10px;background:#fff;border:1px solid var(--line)}
+.st.ready{color:var(--ok)}.st.need{color:var(--warn)}.st.done{background:var(--ok);color:#fff;border-color:var(--ok)}.st.err{color:var(--bad)}
+.card .x{position:absolute;top:4px;right:4px;width:22px;height:22px;padding:0;border-radius:50%;line-height:1;font-size:14px}
+.card .pg{height:4px;background:var(--brand);width:0}
+form{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:16px}
+form[hidden]{display:none}
+.row{margin-bottom:16px}
+label.l{display:block;font-weight:600;margin-bottom:4px}
+.hint{color:var(--mute);font-size:12px;margin-top:3px}
+input[type=text],input[type=date],select,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.chk input{margin-top:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;border:1px solid var(--line);border-radius:6px;padding:6px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#e8f0fb;border-radius:14px;padding:2px 4px 2px 10px;font-size:13px}
+.chip button{border:0;background:none;padding:0 6px;font-size:14px;color:var(--mute)}
+.chips input{border:0;outline:0;flex:1;min-width:140px;font:inherit;padding:4px}
+.cnt{float:right;font-weight:400;color:var(--mute);font-size:12px}.cnt.bad{color:var(--bad)}
+.sub{border-left:3px solid var(--line);padding-left:12px;margin:8px 0}
+.sub[hidden]{display:none}
+.note{font-size:13px;padding:8px 10px;border-radius:6px;background:var(--soft);margin-top:8px}
+.msg{margin-top:10px;font-size:13px}.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
+footer{max-width:1100px;margin:0 auto;padding:8px 16px 32px}
+@media(max-width:600px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">MINAMI STOCK</a>
+  <span id="who" style="color:var(--mute);font-size:13px"></span>
+</header>
+
+<main>
+  <h1>Upload content</h1>
+  <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose files">
+    <b>Drag and drop files here, or tap to choose</b>
+    <span>Photos (JPEG), illustrations, vectors (SVG/EPS/AI), videos (MP4/MOV) and 3D files</span>
+    <input type="file" id="pick" multiple hidden accept="image/*,video/*,.svg,.eps,.ai,.obj,.fbx,.glb,.blend,.zip">
+  </div>
+
+  <div class="bar">
+    <button id="selAll">Select all</button>
+    <button id="selNone">Clear selection</button>
+    <span class="grow" id="count">No files yet</span>
+    <button class="primary" id="submit" disabled>Submit for review</button>
+  </div>
+  <div class="msg" id="msg"></div>
+  <div id="grid"></div>
+
+  <form id="form" hidden onsubmit="return false">
+    <div class="note" id="selInfo"></div>
+
+    <div class="row" style="margin-top:14px">
+      <label class="l" for="ctype">Content type</label>
+      <select id="ctype">
+        <option value="photo">Photo</option>
+        <option value="illustration">Illustration</option>
+        <option value="vector">Vector</option>
+        <option value="video">Video</option>
+        <option value="3d">3D</option>
+        <option value="template">Template</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label class="l" for="title">Title <span class="cnt" id="tcnt">0 / 200</span></label>
+      <input type="text" id="title" maxlength="200" placeholder="Describe what is visible, e.g. Young woman drinking coffee in a cozy cafe">
+      <div class="hint">Plain description, about 70 to 100 characters. No brand names, artist names or words like "best".</div>
+    </div>
+
+    <div class="row">
+      <label class="l">Keywords <span class="cnt" id="kcnt">0 / 49</span></label>
+      <div class="chips" id="chips"><input type="text" id="kin" placeholder="Type a keyword and press Enter or comma"></div>
+      <div class="hint">Minimum 7, maximum 49. Put the most important ones first. Paste a comma-separated list to add many at once.</div>
+      <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" id="sugg">Suggest from title</button>
+        <button type="button" id="kclear">Clear keywords</button>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="row">
+        <label class="l" for="cat">Category</label>
+        <select id="cat">
+          <option value="">Select a category</option>
+          <option>Animals</option><option>Buildings and Architecture</option><option>Business</option>
+          <option>Drinks</option><option>The Environment</option><option>States of Mind</option>
+          <option>Food</option><option>Graphic Resources</option><option>Hobbies and Leisure</option>
+          <option>Industry</option><option>Landscapes</option><option>Lifestyle</option>
+          <option>People</option><option>Plants and Flowers</option><option>Culture and Religion</option>
+          <option>Science</option><option>Social Issues</option><option>Sports</option>
+          <option>Technology</option><option>Transport</option><option>Travel</option>
+        </select>
+      </div>
+      <div class="row">
+        <label class="l" for="desc">Notes for reviewer (optional)</label>
+        <input type="text" id="desc" maxlength="300" placeholder="Anything the reviewer should know">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="chk"><input type="checkbox" id="ai"><label for="ai"><b>Created using generative AI tools</b><div class="hint">Required if AI made any part of this file. Do not use real people, real places, brand names, artist names or copyrighted characters in AI content.</div></label></div>
+      <div class="chk"><input type="checkbox" id="people"><label for="people"><b>People are recognizable</b><div class="hint">A real person's face or body can be identified.</div></label></div>
+      <div class="sub" id="mrBox" hidden>
+        <label class="l" for="mr">Model release</label>
+        <input type="file" id="mr" accept=".pdf,.jpg,.jpeg,.png">
+        <div class="hint" id="mrName"></div>
+      </div>
+      <div class="chk"><input type="checkbox" id="prop"><label for="prop"><b>Property is recognizable</b><div class="hint">Private property, artwork, or a visible brand or trademark.</div></label></div>
+      <div class="sub" id="prBox" hidden>
+        <label class="l" for="pr">Property release</label>
+        <input type="file" id="pr" accept=".pdf,.jpg,.jpeg,.png">
+        <div class="hint" id="prName"></div>
+      </div>
+      <div class="chk"><input type="checkbox" id="edit"><label for="edit"><b>Editorial use only</b><div class="hint">News or documentary content that needs no release. Add the place and date.</div></label></div>
+      <div class="sub" id="edBox" hidden>
+        <div class="two">
+          <div><label class="l" for="edCity">City</label><input type="text" id="edCity"></div>
+          <div><label class="l" for="edCountry">Country</label><input type="text" id="edCountry"></div>
+        </div>
+        <div style="margin-top:10px"><label class="l" for="edDate">Date taken</label><input type="date" id="edDate"></div>
+      </div>
+    </div>
+
+    <div class="chk"><input type="checkbox" id="own"><label for="own"><b>I own all rights to this content</b><div class="hint">I took or made it, and it has no logos, watermarks or copyrighted music.</div></label></div>
+  </form>
+</main>
+
+<footer><button id="back" type="button">Back</button></footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+/* =========================================================
+   ⚠️ Paste your real Firebase config here.
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+/* ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app), storage = getStorage(app);
+const $ = id => document.getElementById(id);
+let files = [], selected = new Set(), nextId = 1;
+
+/* ---------- Firestore collection names ---------- */
+/* Photo গুলো নতুন store (photoUploads) এ যাবে, বাকি সব uploads এ যাবে */
+const COLLECTION_PHOTOS = "photoUploads";   // নতুন store
+const COLLECTION_OTHERS = "uploads";        // পুরনো store
+
+function collectionFor(contentType) {
+  return contentType === "photo" ? COLLECTION_PHOTOS : COLLECTION_OTHERS;
+}
+function storageFolderFor(contentType) {
+  return contentType === "photo" ? "photoUploads" : "uploads";
+}
+/* ------------------------------------------------ */
+
+/* Guest identity — stored in localStorage so uploads are grouped per browser */
+let guestId = localStorage.getItem("guestId");
+if (!guestId) {
+  guestId = "guest_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  localStorage.setItem("guestId", guestId);
+}
+const uploader = { uid: guestId, name: "Guest" };
+$("who").textContent = "Guest (not logged in)";
+
+$("back").onclick = () => history.length > 1 ? history.back() : (location.href = "index.html");
+
+/* ---------- adding files ---------- */
+const drop = $("drop"), pick = $("pick");
+drop.onclick = () => pick.click();
+drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick.click(); } };
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
+pick.onchange = () => { addFiles(pick.files); pick.value = ""; };
+
+function guessType(f) {
+  const n = f.name.toLowerCase();
+  if (f.type.startsWith("video/")) return "video";
+  if (/\.(svg|eps|ai)$/.test(n)) return "vector";
+  if (/\.(obj|fbx|glb|blend)$/.test(n)) return "3d";
+  return "photo";
+}
+
+function addFiles(list) {
+  for (const f of list) {
+    const o = { id: nextId++, file: f, ctype: guessType(f), title: "", keywords: [], cat: "", desc: "",
+      ai: false, people: false, prop: false, edit: false, edCity: "", edCountry: "", edDate: "",
+      mr: null, pr: null, own: false, status: "", warn: "", pct: 0, url: null };
+    if (f.type.startsWith("image/") || f.type.startsWith("video/")) o.url = URL.createObjectURL(f);
+    files.push(o); checkMedia(o);
+  }
+  if (files.length && !selected.size) selected.add(files[0].id);
+  render();
+}
+
+function checkMedia(o) {
+  if (o.ctype === "photo" && o.file.type.startsWith("image/")) {
+    const im = new Image();
+    im.onload = () => {
+      const mp = im.naturalWidth * im.naturalHeight / 1e6;
+      if (!/jpe?g/.test(o.file.type)) o.warn = "Photos should be JPEG.";
+      else if (mp < 4) o.warn = "Under 4 MP (" + mp.toFixed(1) + " MP). Adobe may reject it.";
+      render();
+    };
+    im.src = o.url;
+  } else if (o.ctype === "video" && o.url) {
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.onloadedmetadata = () => {
+      const d = v.duration;
+      if (d < 5 || d > 60) o.warn = "Clip is " + d.toFixed(1) + " s. Keep it between 5 and 60 s.";
+      else if (v.videoWidth < 1920) o.warn = "Under Full HD (1920 wide).";
+      render();
+    };
+    v.src = o.url;
+  }
+}
+
+/* ---------- validation ---------- */
+function problems(o) {
+  const p = [];
+  if (o.title.trim().length < 5) p.push("title");
+  if (o.keywords.length < 7) p.push("at least 7 keywords");
+  if (!o.cat) p.push("category");
+  if (o.people && !o.edit && !o.mr) p.push("model release");
+  if (o.prop && !o.edit && !o.pr) p.push("property release");
+  if (o.edit && (!o.edCity || !o.edDate)) p.push("editorial place and date");
+  if (!o.own) p.push("rights confirmation");
+  return p;
+}
+
+/* ---------- grid ---------- */
+function render() {
+  const g = $("grid"); g.textContent = "";
+  for (const o of files) {
+    const c = document.createElement("div");
+    c.className = "card" + (selected.has(o.id) ? " sel" : "");
+    const th = document.createElement("div"); th.className = "th";
+    if (o.url && o.ctype === "video") { const v = document.createElement("video"); v.src = o.url; v.muted = true; th.appendChild(v); }
+    else if (o.url) th.style.backgroundImage = "url('" + o.url + "')";
+    else th.textContent = o.file.name.split(".").pop().toUpperCase();
+    const st = document.createElement("span");
+    const pr = problems(o);
+    const state = o.status === "done" ? ["done","Sent"] : o.status === "err" ? ["err","Error"] : o.status === "up" ? ["ready","Uploading"] : pr.length ? ["need","Needs info"] : ["ready","Ready"];
+    st.className = "st " + state[0]; st.textContent = state[1];
+    const x = document.createElement("button"); x.className = "x"; x.textContent = "×"; x.title = "Remove";
+    x.onclick = e => { e.stopPropagation(); files = files.filter(f => f !== o); selected.delete(o.id); render(); };
+    const m = document.createElement("div"); m.className = "meta"; m.textContent = o.file.name; m.title = o.warn || o.file.name;
+    const pg = document.createElement("div"); pg.className = "pg"; pg.style.width = o.pct + "%";
+    c.append(th, st, x, m, pg);
+    c.onclick = () => { selected.has(o.id) ? selected.delete(o.id) : selected.add(o.id); render(); };
+    g.appendChild(c);
+  }
+  const ready = files.filter(f => f.status !== "done" && !problems(f).length).length;
+  $("count").textContent = files.length ? files.length + " file(s), " + ready + " ready, " + selected.size + " selected" : "No files yet";
+  $("submit").disabled = !ready;
+  loadForm();
+}
+
+$("selAll").onclick = () => { files.forEach(f => selected.add(f.id)); render(); };
+$("selNone").onclick = () => { selected.clear(); render(); };
+
+/* ---------- form <-> selected files ---------- */
+const sel = () => files.filter(f => selected.has(f.id));
+
+function loadForm() {
+  const s = sel(), f = $("form");
+  f.hidden = !s.length;
+  if (!s.length) return;
+  const o = s[0];
+  $("selInfo").textContent = s.length === 1 ? "Editing: " + o.file.name + (o.warn ? "  |  " + o.warn : "")
+    : "Editing " + s.length + " files at once. Changes apply to every selected file.";
+  $("ctype").value = o.ctype; $("title").value = o.title; $("cat").value = o.cat; $("desc").value = o.desc;
+  $("ai").checked = o.ai; $("people").checked = o.people; $("prop").checked = o.prop; $("edit").checked = o.edit;
+  $("edCity").value = o.edCity; $("edCountry").value = o.edCountry; $("edDate").value = o.edDate; $("own").checked = o.own;
+  $("mrBox").hidden = !o.people; $("prBox").hidden = !o.prop; $("edBox").hidden = !o.edit;
+  $("mrName").textContent = o.mr ? o.mr.name : ""; $("prName").textContent = o.pr ? o.pr.name : "";
+  $("tcnt").textContent = o.title.length + " / 200";
+  drawChips(o);
+}
+
+function set(k, v) { sel().forEach(o => o[k] = v); }
+const bind = (id, k, ev = "input", get = e => e.target.value) =>
+  $(id).addEventListener(ev, e => { set(k, get(e)); if (k === "title") $("tcnt").textContent = get(e).length + " / 200"; refreshState(); });
+const chk = e => e.target.checked;
+bind("ctype","ctype","change"); bind("title","title"); bind("cat","cat","change"); bind("desc","desc");
+bind("edCity","edCity"); bind("edCountry","edCountry"); bind("edDate","edDate","change");
+bind("ai","ai","change",chk); bind("own","own","change",chk);
+bind("people","people","change",chk); bind("prop","prop","change",chk); bind("edit","edit","change",chk);
+$("people").addEventListener("change", () => $("mrBox").hidden = !$("people").checked);
+$("prop").addEventListener("change", () => $("prBox").hidden = !$("prop").checked);
+$("edit").addEventListener("change", () => $("edBox").hidden = !$("edit").checked);
+$("mr").addEventListener("change", e => { set("mr", e.target.files[0] || null); $("mrName").textContent = e.target.files[0]?.name || ""; refreshState(); });
+$("pr").addEventListener("change", e => { set("pr", e.target.files[0] || null); $("prName").textContent = e.target.files[0]?.name || ""; refreshState(); });
+
+function refreshState() {
+  const keep = document.activeElement;
+  render();
+  if (keep && keep.id && $(keep.id)) { $(keep.id).focus?.(); }
+}
+
+/* ---------- keywords ---------- */
+function drawChips(o) {
+  const box = $("chips");
+  [...box.querySelectorAll(".chip")].forEach(n => n.remove());
+  o.keywords.forEach((w, i) => {
+    const c = document.createElement("span"); c.className = "chip"; c.append(w);
+    const b = document.createElement("button"); b.type = "button"; b.textContent = "×"; b.title = "Remove";
+    b.onclick = () => { sel().forEach(s => s.keywords = s.keywords.filter(x => x !== w)); render(); };
+    c.appendChild(b); box.insertBefore(c, $("kin"));
+  });
+  const n = o.keywords.length; $("kcnt").textContent = n + " / 49"; $("kcnt").className = "cnt" + (n > 49 ? " bad" : "");
+}
+
+function addKeywords(text) {
+  const words = text.split(/[,\n]/).map(w => w.trim().toLowerCase()).filter(Boolean);
+  sel().forEach(o => words.forEach(w => { if (!o.keywords.includes(w) && o.keywords.length < 49) o.keywords.push(w); }));
+  render();
+}
+
+$("kin").addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addKeywords(e.target.value); e.target.value = ""; $("kin").focus(); }
+  else if (e.key === "Backspace" && !e.target.value) { sel().forEach(o => o.keywords.pop()); render(); $("kin").focus(); }
+});
+$("kin").addEventListener("paste", e => { e.preventDefault(); addKeywords((e.clipboardData || window.clipboardData).getData("text")); $("kin").focus(); });
+$("kin").addEventListener("blur", e => { if (e.target.value.trim()) { addKeywords(e.target.value); e.target.value = ""; } });
+$("kclear").onclick = () => { sel().forEach(o => o.keywords = []); render(); };
+
+const STOP = new Set("a an the in on at of for with and or to from by near is are was this that his her its into over under".split(" "));
+$("sugg").onclick = () => {
+  const t = $("title").value.toLowerCase().replace(/[^a-z0-9\s-]/g, " ");
+  const w = [...new Set(t.split(/\s+/).filter(x => x.length > 2 && !STOP.has(x)))];
+  if (!w.length) { flash("Write a title first.", "bad"); return; }
+  addKeywords(w.join(","));
+};
+
+/* ---------- submit ---------- */
+function flash(t, cls) { const m = $("msg"); m.textContent = t; m.className = "msg " + (cls || ""); }
+
+function upload(path, blob, onPct) {
+  return new Promise((res, rej) => {
+    const task = uploadBytesResumable(ref(storage, path), blob);
+    task.on("state_changed", s => onPct && onPct(Math.round(s.bytesTransferred / s.totalBytes * 100)), rej,
+      async () => res(await getDownloadURL(task.snapshot.ref)));
+  });
+}
+const safe = n => n.replace(/[^\w.\-]+/g, "_");
+
+$("submit").onclick = async () => {
+  const todo = files.filter(f => f.status !== "done" && !problems(f).length);
+  if (!todo.length) return;
+  $("submit").disabled = true; let ok = 0, bad = 0;
+  for (const o of todo) {
+    o.status = "up"; o.pct = 0; render();
+    try {
+      const stamp = Date.now() + "_" + o.id;
+
+      // ── decide which store this file goes to ──
+      const folder = storageFolderFor(o.ctype);      // "photoUploads" or "uploads"
+      const collName = collectionFor(o.ctype);        // "photoUploads" or "uploads"
+
+      const fileUrl = await upload(folder + "/" + uploader.uid + "/" + stamp + "_" + safe(o.file.name), o.file, p => {
+        o.pct = p;
+        const bars = document.querySelectorAll(".pg");
+        const i = files.indexOf(o);
+        if (bars[i]) bars[i].style.width = p + "%";
+      });
+
+      const mrUrl = o.mr && o.people ? await upload("releases/" + uploader.uid + "/" + stamp + "_model_" + safe(o.mr.name), o.mr) : null;
+      const prUrl = o.pr && o.prop ? await upload("releases/" + uploader.uid + "/" + stamp + "_property_" + safe(o.pr.name), o.pr) : null;
+
+      // ── save to the correct Firestore collection ──
+      await addDoc(collection(db, collName), {
+        uid: uploader.uid, sellerName: uploader.name,
+        fileName: o.file.name, fileType: o.file.type, fileSize: o.file.size, fileUrl,
+        contentType: o.ctype, title: o.title.trim(), keywords: o.keywords, category: o.cat, notes: o.desc.trim(),
+        aiGenerated: o.ai, peopleRecognizable: o.people, propertyRecognizable: o.prop,
+        modelReleaseUrl: mrUrl, propertyReleaseUrl: prUrl,
+        editorial: o.edit, editorialCity: o.edit ? o.edCity : "", editorialCountry: o.edit ? o.edCountry : "", editorialDate: o.edit ? o.edDate : "",
+        ownsRights: o.own, status: "pending", createdAt: serverTimestamp()
+      });
+
+      o.status = "done"; o.pct = 100; ok++;
+    } catch (err) {
+      console.error(err); o.status = "err"; bad++;
+    }
+    render();
+  }
+  flash(ok + " file(s) sent for review." + (bad ? " " + bad + " failed. Check Firebase rules and try again." : ""), bad ? "bad" : "ok");
+};
+
+window.addEventListener("beforeunload", e => { if (files.some(f => f.status !== "done")) { e.preventDefault(); e.returnValue = ""; } });
+</script>
+</body>
+</html>
