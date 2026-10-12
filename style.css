@@ -1,0 +1,797 @@
+/* =========================================
+   stockfable - Complete Stylesheet (FINAL)
+   ========================================= */
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    background-color: #0f172a;
+    margin: 0;
+    padding: 0;
+}
+
+body { 
+    background-color: #0f172a; 
+    color: #fff; 
+    min-height: 100vh; 
+    overflow-x: hidden;
+}
+
+/* =========================================
+   ১. অ্যাপ সুইচার বার
+   ========================================= */
+.app-switcher-bar {
+    display: flex;
+    background: #0f172a;
+    border-bottom: 1px solid #222;
+    padding: 4px 12px;
+    overflow-x: auto; 
+    gap: 14px;
+    justify-content: center; 
+    align-items: center;
+    scrollbar-width: none;
+    position: relative;
+    height: 46px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.app-switcher-bar::-webkit-scrollbar { display: none; }
+
+.app-switcher-bar::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72%;
+    height: calc(100% - 8px);
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(30, 58, 138, 0.95) 20%, 
+        rgba(139, 0, 0, 0.95) 80%, 
+        transparent 100%);
+    border-radius: 8px;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.app-switcher-bar .app-item {
+    position: relative;
+    z-index: 1;
+}
+
+.app-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-decoration: none;
+    color: #ddd;
+    font-size: 9px;
+    transition: 0.3s;
+    min-width: 42px;
+}
+.app-item:hover { color: #fff; }
+
+.app-icon {
+    width: 26px; 
+    height: 26px; 
+    border-radius: 6px;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    font-size: 13px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+.app-item:hover .app-icon { transform: translateY(-2px) scale(1.05); }
+
+/* =========================================
+   ২. টপ নেভিগেশন বার
+   ========================================= */
+.top-nav { 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    align-items: center; 
+    background-color: #0f172a;        
+    padding: 10px 20px; 
+    border-bottom: 1px solid #222; 
+    font-size: 13px; 
+    gap: 15px;
+    position: relative;
+    z-index: 1000;
+    width: 100%;
+    max-width: 100%;
+}
+
+.nav-left { 
+    display: flex; 
+    flex-direction: row; 
+    align-items: center; 
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.logo-container { 
+    display: flex; 
+    flex-direction: row; 
+    align-items: center; 
+    gap: 8px;
+    text-decoration: none; 
+    transition: transform 0.3s ease;
+}
+.logo-container:hover { transform: scale(1.03); }
+
+.site-logo { 
+    width: 32px; 
+    height: 32px; 
+    object-fit: contain; 
+    border-radius: 6px;
+    display: block;
+    filter: drop-shadow(0 2px 6px rgba(59,130,246,0.35));
+    transition: all 0.3s ease;
+}
+.logo-container:hover .site-logo {
+    filter: drop-shadow(0 4px 12px rgba(59,130,246,0.65));
+    transform: rotate(-3deg);
+}
+
+.logo-text { 
+    font-size: 1.05rem; 
+    font-weight: 800; 
+    letter-spacing: 1.2px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+}
+
+.nav-links-top { 
+    display: flex; 
+    align-items: center; 
+    gap: 20px;
+}
+.nav-links-top > a { 
+    color: #aaa; 
+    text-decoration: none; 
+    font-size: 13px; 
+    font-weight: 500;
+    transition: 0.3s; 
+    white-space: nowrap;
+}
+.nav-links-top > a:hover { color: #fff; }
+
+.nav-right { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    flex-wrap: wrap; 
+}
+
+.nav-text-btn {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.nav-text-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    padding: 0;
+    font-family: inherit;
+}
+.nav-icon-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.05);
+}
+
+.account-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    padding: 0;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    font-family: inherit;
+}
+.account-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.7);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* =========================================
+   ৩. ★ 9-Dot Menu (নেভবারের ভেতরে, লোগোর বামপাশে) ★
+   ========================================= */
+.sidebar-bottom-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 2000;
+}
+
+.sidebar-trigger {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.sidebar-trigger i {
+    font-size: 0.95rem;
+    line-height: 1;
+}
+
+.sidebar-trigger:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.6);
+    color: #60a5fa;
+    transform: scale(1.05);
+    box-shadow: 0 0 16px rgba(59, 130, 246, 0.5);
+}
+
+.sidebar-bottom-menu.open .sidebar-trigger {
+    background: #3b82f6;
+    color: #fff;
+    border-color: #3b82f6;
+    box-shadow: 0 0 18px rgba(59, 130, 246, 0.7);
+}
+
+/* Dropdown - গ্রিড লেআউট, বাটনের নিচে */
+.sidebar-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    min-width: 240px;
+    background: rgba(20, 24, 33, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.96);
+    transform-origin: top left;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.3s;
+    pointer-events: none;
+    
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.sidebar-bottom-menu.open .sidebar-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.sidebar-dropdown::before {
+    content: 'stockfable Apps';
+    grid-column: 1 / -1;
+    font-size: 0.7rem;
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 2px 4px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 4px;
+}
+
+.sidebar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 4px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #d1d5db;
+    font-size: 0.65rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid transparent;
+}
+
+.sidebar-bottom-menu.open .sidebar-item {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sidebar-bottom-menu.open .sidebar-item:nth-child(2) { transition-delay: 0.03s; }
+.sidebar-bottom-menu.open .sidebar-item:nth-child(3) { transition-delay: 0.06s; }
+.sidebar-bottom-menu.open .sidebar-item:nth-child(4) { transition-delay: 0.09s; }
+.sidebar-bottom-menu.open .sidebar-item:nth-child(5) { transition-delay: 0.12s; }
+.sidebar-bottom-menu.open .sidebar-item:nth-child(6) { transition-delay: 0.15s; }
+.sidebar-bottom-menu.open .sidebar-item:nth-child(7) { transition-delay: 0.18s; }
+.sidebar-bottom-menu.open .sidebar-item:nth-child(8) { transition-delay: 0.21s; }
+
+.sidebar-item:hover {
+    background: rgba(59, 130, 246, 0.15);
+    color: #fff;
+    border-color: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.sidebar-item i {
+    font-size: 1.1rem;
+    width: auto;
+    text-align: center;
+    display: block;
+    color: #9ca3af;
+    transition: color 0.3s ease;
+}
+
+.sidebar-item:hover i {
+    color: #60a5fa;
+}
+
+.sidebar-item.active {
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.sidebar-item.active i {
+    color: #a855f7;
+}
+
+.sidebar-divider {
+    display: none;
+}
+
+/* =========================================
+   ৪. Center Content
+   ========================================= */
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    background-color: #0f172a;
+    margin: 0;
+    padding: 0;
+}
+
+.center-content { 
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px 15px;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    margin: 0 auto;
+    box-sizing: border-box;
+    background-color: #0f172a;
+}
+
+.hero-section, .sub-cards, .tabs, .card-grid,
+.custom-tools-section, .collections-section, 
+.faq-section, .popular-cats-section, .bottom-cta { 
+    width: 100%; 
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* =========================================
+   ৫. হিরো সেকশন
+   ========================================= */
+.hero-section { 
+    background: linear-gradient(135deg, #1e3a8a, #0f172a); 
+    border-radius: 15px; padding: 40px 20px; text-align: center; 
+    margin-bottom: 20px; border: 1px solid #1e40af;
+}
+.hero-section h1 { font-size: 28px; margin-bottom: 20px; font-weight: 900; color: #fff; }
+
+.prompt-box { 
+    background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); 
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 15px; max-width: 700px; margin: 0 auto; text-align: left; 
+}
+.prompt-left { display: flex; align-items: center; gap: 10px; color: #aaa; font-size: 12px; }
+.prompt-left i { font-size: 20px; color: #fff; }
+.prompt-right { display: flex; align-items: center; gap: 10px; }
+.prompt-right select { background: transparent; color: #fff; border: 1px solid #555; padding: 5px; border-radius: 5px; font-size: 12px; outline: none; }
+.btn-generate { background: #fff; color: #000; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+
+/* =========================================
+   ৬. কার্ড সেকশন
+   ========================================= */
+.sub-cards { display: flex; gap: 15px; margin-bottom: 25px; }
+.sub-card { flex: 1; background: #1a1a1a; padding: 20px; border-radius: 12px; border: 1px solid #333; }
+.sub-card h3 { font-size: 16px; margin-bottom: 10px; }
+.sub-card p { font-size: 12px; color: #aaa; margin-bottom: 15px; }
+.sub-buttons { display: flex; gap: 10px; }
+.btn-outline { background: transparent; color: #fff; border: 1px solid #555; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+.btn-blue { background: #007bff; color: #fff; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+
+.tabs { display: flex; gap: 20px; border-bottom: 1px solid #333; margin-bottom: 20px; font-size: 14px; color: #888; justify-content: center; }
+.tab { padding-bottom: 10px; cursor: pointer; }
+.tab.active { color: #fff; border-bottom: 2px solid #fff; font-weight: bold; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+.card { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 15px; transition: 0.3s; cursor: pointer; }
+.card:hover { border-color: #a855f7; transform: translateY(-3px); }
+.card-img { height: 120px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 40px; margin-bottom: 15px; }
+.card h4 { font-size: 13px; margin-bottom: 10px; line-height: 1.4; }
+.tag { font-size: 10px; background: #333; padding: 3px 8px; border-radius: 5px; color: #aaa; }
+
+/* =========================================
+   ৭. Essential AI Tools
+   ========================================= */
+.custom-tools-section { margin-top: 32px; margin-bottom: 24px; }
+.tools-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.tools-header h3 { font-size: 1.15rem; color: #f3f4f6; font-weight: 700; margin: 0; letter-spacing: 0.5px; }
+.tools-view-all { font-size: 0.85rem; color: #3b82f6; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: all 0.3s ease; font-weight: 500; }
+.tools-view-all:hover { color: #60a5fa; }
+.tools-view-all i { font-size: 0.75rem; transition: transform 0.3s ease; }
+.tools-view-all:hover i { transform: translateX(4px); }
+
+.tools-grid-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.tool-box { background: rgba(30, 34, 43, 0.85); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 20px 8px 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-decoration: none; color: #9ca3af; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; cursor: pointer; }
+.tool-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0; transition: opacity 0.35s ease; z-index: 0; border-radius: 16px; }
+.tool-box .icon-wrap { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; position: relative; }
+.tool-box .icon-wrap i { transition: transform 0.35s ease; }
+.tool-box span { font-size: 0.73rem; font-weight: 600; text-align: center; z-index: 1; transition: color 0.3s ease; white-space: nowrap; letter-spacing: 0.2px; }
+.tool-box:hover { transform: translateY(-6px); background: rgba(30, 34, 43, 1); }
+.tool-box:hover::before { opacity: 1; }
+.tool-box:hover .icon-wrap i { transform: scale(1.15); }
+.tool-box:hover span { color: #f3f4f6; }
+
+.tool-red .icon-wrap { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); }
+.tool-red::before { background: radial-gradient(circle at center, rgba(239, 68, 68, 0.15) 0%, transparent 70%); }
+.tool-red:hover { border-color: rgba(239, 68, 68, 0.5); box-shadow: 0 12px 25px -8px rgba(239, 68, 68, 0.5); }
+.tool-red:hover .icon-wrap { background: #ef4444; color: #fff; box-shadow: 0 0 18px rgba(239, 68, 68, 0.6); }
+
+.tool-blue .icon-wrap { background: rgba(59, 130, 246, 0.12); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.25); }
+.tool-blue::before { background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%); }
+.tool-blue:hover { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 12px 25px -8px rgba(59, 130, 246, 0.5); }
+.tool-blue:hover .icon-wrap { background: #3b82f6; color: #fff; box-shadow: 0 0 18px rgba(59, 130, 246, 0.6); }
+
+.tool-purple .icon-wrap { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.25); }
+.tool-purple::before { background: radial-gradient(circle at center, rgba(139, 92, 246, 0.15) 0%, transparent 70%); }
+.tool-purple:hover { border-color: rgba(139, 92, 246, 0.5); box-shadow: 0 12px 25px -8px rgba(139, 92, 246, 0.5); }
+.tool-purple:hover .icon-wrap { background: #8b5cf6; color: #fff; box-shadow: 0 0 18px rgba(139, 92, 246, 0.6); }
+
+.tool-green .icon-wrap { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); }
+.tool-green::before { background: radial-gradient(circle at center, rgba(16, 185, 129, 0.15) 0%, transparent 70%); }
+.tool-green:hover { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 12px 25px -8px rgba(16, 185, 129, 0.5); }
+.tool-green:hover .icon-wrap { background: #10b981; color: #fff; box-shadow: 0 0 18px rgba(16, 185, 129, 0.6); }
+
+.tool-orange .icon-wrap { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.25); }
+.tool-orange::before { background: radial-gradient(circle at center, rgba(245, 158, 11, 0.15) 0%, transparent 70%); }
+.tool-orange:hover { border-color: rgba(245, 158, 11, 0.5); box-shadow: 0 12px 25px -8px rgba(245, 158, 11, 0.5); }
+.tool-orange:hover .icon-wrap { background: #f59e0b; color: #fff; box-shadow: 0 0 18px rgba(245, 158, 11, 0.6); }
+
+.tool-pink .icon-wrap { background: rgba(236, 72, 153, 0.12); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.25); }
+.tool-pink::before { background: radial-gradient(circle at center, rgba(236, 72, 153, 0.15) 0%, transparent 70%); }
+.tool-pink:hover { border-color: rgba(236, 72, 153, 0.5); box-shadow: 0 12px 25px -8px rgba(236, 72, 153, 0.5); }
+.tool-pink:hover .icon-wrap { background: #ec4899; color: #fff; box-shadow: 0 0 18px rgba(236, 72, 153, 0.6); }
+
+.tool-cyan .icon-wrap { background: rgba(6, 182, 212, 0.12); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.25); }
+.tool-cyan::before { background: radial-gradient(circle at center, rgba(6, 182, 212, 0.15) 0%, transparent 70%); }
+.tool-cyan:hover { border-color: rgba(6, 182, 212, 0.5); box-shadow: 0 12px 25px -8px rgba(6, 182, 212, 0.5); }
+.tool-cyan:hover .icon-wrap { background: #06b6d4; color: #fff; box-shadow: 0 0 18px rgba(6, 182, 212, 0.6); }
+
+.tool-amber .icon-wrap { background: rgba(234, 179, 8, 0.12); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.25); }
+.tool-amber::before { background: radial-gradient(circle at center, rgba(234, 179, 8, 0.15) 0%, transparent 70%); }
+.tool-amber:hover { border-color: rgba(234, 179, 8, 0.5); box-shadow: 0 12px 25px -8px rgba(234, 179, 8, 0.5); }
+.tool-amber:hover .icon-wrap { background: #eab308; color: #fff; box-shadow: 0 0 18px rgba(234, 179, 8, 0.6); }
+
+/* =========================================
+   ৮. Collections
+   ========================================= */
+.collections-section { margin: 40px 0 32px; }
+.collections-header { margin-bottom: 20px; }
+.collections-header h2 { font-size: 1.5rem; font-weight: 700; color: #f3f4f6; margin: 0 0 6px; letter-spacing: 0.3px; }
+.collections-header p { font-size: 0.88rem; color: #9ca3af; margin: 0; }
+.collections-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.collection-card { text-decoration: none; color: inherit; display: block; transition: transform 0.3s ease; }
+.collection-card:hover { transform: translateY(-4px); }
+.collection-img { width: 100%; aspect-ratio: 16/10; border-radius: 10px; overflow: hidden; margin-bottom: 12px; position: relative; background: #1f2937; }
+.collection-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.collection-card:hover .collection-img img { transform: scale(1.08); }
+.collection-card h4 { font-size: 0.95rem; font-weight: 700; color: #f3f4f6; margin: 0 0 5px; }
+.collection-card p { font-size: 0.78rem; color: #9ca3af; margin: 0; line-height: 1.45; }
+
+/* =========================================
+   ৯. FAQ
+   ========================================= */
+.faq-section { margin: 48px 0 32px; }
+.faq-section h2 { font-size: 1.5rem; font-weight: 700; color: #f3f4f6; margin: 0 0 24px; letter-spacing: 0.3px; }
+.faq-item { border-bottom: 1px solid rgba(255,255,255,0.06); padding: 16px 0; }
+.faq-question { display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 0.92rem; font-weight: 600; color: #f3f4f6; gap: 12px; }
+.faq-question i { font-size: 0.75rem; color: #9ca3af; transition: transform 0.3s ease; flex-shrink: 0; }
+.faq-item.active .faq-question i { transform: rotate(90deg); color: #3b82f6; }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s ease; font-size: 0.85rem; color: #9ca3af; line-height: 1.65; }
+.faq-item.active .faq-answer { max-height: 500px; padding-top: 14px; }
+
+/* =========================================
+   ১০. Popular Categories
+   ========================================= */
+.popular-cats-section { margin: 48px 0 32px; }
+.popular-cats-section h2 { font-size: 1.5rem; font-weight: 700; color: #f3f4f6; margin: 0 0 24px; letter-spacing: 0.3px; }
+.cats-columns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.cat-col h4 { font-size: 0.85rem; font-weight: 700; color: #f3f4f6; margin: 0 0 12px; letter-spacing: 0.4px; }
+.cat-col a { display: block; font-size: 0.78rem; color: #9ca3af; text-decoration: none; padding: 4px 0; transition: color 0.2s ease, padding-left 0.2s ease; }
+.cat-col a:hover { color: #3b82f6; padding-left: 4px; }
+
+/* =========================================
+   ১১. Bottom CTA
+   ========================================= */
+.bottom-cta { margin: 56px 0 0; padding: 60px 24px; text-align: center; border-radius: 16px; position: relative; overflow: hidden; background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 25%, #f59e0b 50%, #06b6d4 75%, #1e3a8a 100%); }
+.bottom-cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.15), transparent 50%), radial-gradient(circle at 70% 50%, rgba(0,0,0,0.25), transparent 60%); }
+.bottom-cta h2 { position: relative; font-size: 1.8rem; font-weight: 800; color: #ffffff; margin: 0 0 12px; letter-spacing: 0.3px; text-shadow: 0 2px 12px rgba(0,0,0,0.4); }
+.bottom-cta p { position: relative; font-size: 0.92rem; color: rgba(255,255,255,0.92); max-width: 620px; margin: 0 auto; line-height: 1.6; text-shadow: 0 1px 6px rgba(0,0,0,0.3); }
+
+/* =========================================
+   ১২. ফুটার
+   ========================================= */
+.main-footer { background-color: #0f172a; border-top: 1px solid #222; padding: 50px 5% 20px; font-size: 13px; width: 100%; max-width: 100%; }
+.footer-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
+.footer-col h4 { color: #fff; font-size: 14px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+.footer-desc { color: #777; font-size: 13px; margin-bottom: 15px; line-height: 1.6; }
+.footer-col a { display: block; color: #888; text-decoration: none; margin-bottom: 12px; transition: 0.3s; }
+.footer-col a:hover { color: #a855f7; transform: translateX(5px); }
+.social-icons { display: flex; gap: 15px; }
+.social-icons a { background: #222; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: #aaa; font-size: 16px; transition: 0.3s; }
+.social-icons a:hover { background: #a855f7; color: #fff; transform: translateY(-3px); }
+.footer-bottom { max-width: 1200px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid #222; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; color: #555; font-size: 12px; }
+.footer-bottom-left { display: flex; gap: 20px; flex-wrap: wrap; }
+.footer-bottom-left span { cursor: pointer; transition: 0.3s; }
+.footer-bottom-left span:hover { color: #fff; }
+
+/* =========================================
+   ১৩. Light Mode (Theme Toggle)
+   ========================================= */
+body.light-mode {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+body.light-mode .app-switcher-bar,
+body.light-mode .top-nav,
+body.light-mode .main-wrapper,
+body.light-mode .center-content,
+body.light-mode .main-footer {
+    background-color: #f8fafc;
+}
+
+body.light-mode .nav-text-btn,
+body.light-mode .nav-icon-btn,
+body.light-mode .nav-links-top > a {
+    color: #475569;
+}
+
+body.light-mode .nav-text-btn:hover,
+body.light-mode .nav-icon-btn:hover,
+body.light-mode .nav-links-top > a:hover {
+    color: #1e293b;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .hero-section {
+    background: linear-gradient(135deg, #dbeafe, #f0f9ff);
+    border-color: #bfdbfe;
+}
+
+body.light-mode .sub-card,
+body.light-mode .card,
+body.light-mode .tool-box {
+    background: #fff;
+    border-color: #e2e8f0;
+}
+
+body.light-mode .faq-item {
+    border-color: #e2e8f0;
+}
+
+body.light-mode .faq-question,
+body.light-mode .collections-header h2,
+body.light-mode .faq-section h2,
+body.light-mode .popular-cats-section h2 {
+    color: #1e293b;
+}
+
+body.light-mode .sidebar-dropdown {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .sidebar-item {
+    color: #475569;
+}
+
+body.light-mode .sidebar-item i {
+    color: #64748b;
+}
+
+body.light-mode .sidebar-item:hover {
+    background: rgba(59, 130, 246, 0.08);
+    color: #1e293b;
+}
+
+body.light-mode .sidebar-dropdown::before {
+    color: #94a3b8;
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+/* =========================================
+   ১৪. রেসপনসিভ ডিজাইন
+   ========================================= */
+@media (max-width: 1024px) {
+    .cats-columns { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 900px) {
+    .center-content { 
+        padding: 20px 15px; 
+    }
+    .top-nav { justify-content: center; text-align: center; }
+    .nav-left { justify-content: center; width: 100%; gap: 12px; }
+    .nav-right { justify-content: center; width: 100%; margin-top: 5px; }
+    .hero-section h1 { font-size: 22px; }
+    .prompt-box { flex-direction: column; gap: 15px; align-items: flex-start; }
+    .sub-cards { flex-direction: column; }
+    .card-grid { grid-template-columns: 1fr; }
+    .footer-container { grid-template-columns: 1fr 1fr; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+    .footer-bottom-left { justify-content: center; }
+    .footer-bottom-right { margin-top: 10px; }
+}
+
+@media (max-width: 768px) {
+    .tools-grid-wrapper { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .collections-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .cats-columns { grid-template-columns: repeat(2, 1fr); }
+    .collections-header h2, .faq-section h2, .popular-cats-section h2 { font-size: 1.25rem; }
+    .bottom-cta { padding: 44px 18px; }
+    .bottom-cta h2 { font-size: 1.35rem; }
+    .nav-right { gap: 8px; }
+    .nav-text-btn { font-size: 12px; padding: 5px 8px; }
+}
+
+@media (max-width: 480px) {
+    .tools-grid-wrapper { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .tool-box { padding: 18px 8px 14px; }
+    .tool-box .icon-wrap { width: 42px; height: 42px; font-size: 1.15rem; }
+    .tool-box span { font-size: 0.72rem; }
+    .site-logo { width: 28px; height: 28px; }
+    .logo-text { font-size: 0.9rem; letter-spacing: 1px; }
+    .collections-grid { grid-template-columns: 1fr; }
+    .cats-columns { grid-template-columns: repeat(2, 1fr); }
+    .bottom-cta h2 { font-size: 1.15rem; }
+    .bottom-cta p { font-size: 0.82rem; }
+    .nav-text-btn { font-size: 11px; padding: 4px 6px; }
+    .nav-icon-btn { width: 30px; height: 30px; font-size: 14px; }
+    .account-avatar { width: 28px; height: 28px; font-size: 12px; }
+    .sidebar-dropdown {
+        min-width: 220px;
+        padding: 10px;
+    }
+    .sidebar-item {
+        padding: 8px 4px;
+        font-size: 0.6rem;
+    }
+    .sidebar-item i {
+        font-size: 1rem;
+    }
+}
+/* ===== MINAMI STOCK - Tools bar fix =====
+   style.css er ekdom NICHE paste koro (ba alada file hishebe link koro).
+   Purono tools bar er CSS (tools.css / style.css te) muche felo ba comment koro. */
+
+.tools-bar{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  padding:16px;
+  margin:20px 0;
+  border-radius:20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.tools-title{
+  margin:0 0 14px;
+  font-size:18px;
+  color:#fff;
+}
+
+.tools-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px 8px;
+}
+
+.tool-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  text-decoration:none;
+  color:#e5e7eb;
+  min-width:0;
+  position:static;
+}
+
+.tool-icon{
+  width:52px;
+  height:52px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  color:#fff;
+}
+
+.tool-label{
+  font-size:12px;
+  line-height:1.2;
+  text-align:center;
+  word-break:break-word;
+}
+
+/* choto phone er jonno */
+@media (max-width:360px){
+  .tool-icon{ width:46px; height:46px; font-size:20px; }
+  .tool-label{ font-size:11px; }
+}

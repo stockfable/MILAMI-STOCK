@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CREOVERSE STOCK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        html { width: 100%; overflow-x: hidden; }
+        body {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: #ffffff;
+            color: #1a1f2e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-bar { display: flex; justify-content: center; padding: 22px 4% 6px; }
+        .logo-bar a { display: inline-block; }
+        .site-logo { width: 72px; height: 72px; object-fit: contain; border-radius: 12px; display: block; }
+
+        .main-wrapper {
+            flex: 1;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 10px 5% 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title { text-align: center; font-size: 30px; font-weight: 800; color: #d97706; margin: 8px 0 6px; }
+        .page-sub { text-align: center; font-size: 14.5px; color: #64748b; margin-bottom: 24px; }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 22px 20px;
+            box-shadow: 0 4px 18px -6px rgba(0,0,0,0.1);
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+        .input-wrap { position: relative; }
+        .input-wrap > i.lead {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            color: #94a3b8; font-size: 15px; pointer-events: none;
+        }
+        .input-wrap input {
+            width: 100%;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            color: #1a1f2e;
+            font-size: 16.5px;
+            padding: 16px 46px 16px 42px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-wrap input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(251,191,36,0.25);
+            background: #fff;
+        }
+        ::placeholder { color: #94a3b8; }
+        .eye-btn {
+            position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+            width: 40px; height: 40px;
+            background: none; border: none; color: #94a3b8;
+            cursor: pointer; font-size: 16px;
+        }
+
+        .forgot-row { text-align: right; margin: -6px 0 16px; }
+        .forgot-row a, .forgot-row button {
+            background: none; border: none; cursor: pointer;
+            color: #d97706; font-size: 13.5px; font-weight: 700; text-decoration: none;
+        }
+
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16.5px; font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-primary { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0a1628; }
+        .btn-primary:hover:not(:disabled) { box-shadow: 0 8px 22px rgba(251,191,36,0.45); transform: translateY(-1px); }
+        .btn-google { background: #fff; color: #1a1f2e; border: 1.5px solid #e2e8f0; }
+        .btn-google:hover:not(:disabled) { border-color: #fbbf24; background: #fffbeb; }
+        .btn-google i { color: #ea4335; font-size: 18px; }
+
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 18px 0;
+            color: #94a3b8; font-size: 13px; font-weight: 600;
+        }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: #e2e8f0; }
+
+        .msg {
+            display: none;
+            margin-top: 14px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 14px; font-weight: 600;
+        }
+        .msg.show { display: block; }
+        .msg.ok { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+        .msg.err { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+        .switch-text { text-align: center; margin-top: 20px; font-size: 14.5px; color: #64748b; }
+        .switch-text a { color: #d97706; font-weight: 800; text-decoration: none; }
+
+        /* back button at the bottom */
+        .back-wrap { margin-top: auto; padding-top: 30px; }
+        .btn-back { background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; }
+        .btn-back:hover { border-color: #fbbf24; color: #b45309; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="logo-bar">
+        <a href="index.html" title="Home">
+            <img src="https://i.ibb.co.com/xK8nP7KD/1000031217-removebg-preview.png" alt="CREOVERSE STOCK Logo" class="site-logo"
+                 onerror="this.onerror=null; this.src='logo.png'">
+        </a>
+    </div>
+
+    <div class="main-wrapper">
+        <h1 class="page-title">Welcome Back</h1>
+        <p class="page-sub">Login to your CREOVERSE STOCK account</p>
+
+        <div class="card">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-wrap">
+                    <i class="fas fa-envelope lead"></i>
+                    <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                    <i class="fas fa-lock lead"></i>
+                    <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
+                    <button type="button" class="eye-btn" id="eyeBtn" title="Show / hide password"><i class="fas fa-eye"></i></button>
+                </div>
+            </div>
+
+            <div class="forgot-row">
+                <button type="button" id="forgotBtn">Forgot password?</button>
+            </div>
+
+            <button class="btn btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+
+            <div class="divider">OR</div>
+
+            <button class="btn btn-google" id="googleBtn"><i class="fab fa-google"></i> Continue with Google</button>
+
+            <div class="msg" id="msg"></div>
+
+            <p class="switch-text">Don't have an account? <a href="register.html">Register</a></p>
+        </div>
+
+        <!-- ★ BACK BUTTON (bottom) ★ -->
+        <div class="back-wrap">
+            <a href="index.html" class="btn btn-back"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import {
+            getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+            signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+            authDomain: "creoverse-stock.firebaseapp.com",
+            databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "creoverse-stock",
+            storageBucket: "creoverse-stock.firebasestorage.app",
+            messagingSenderId: "128072247505",
+            appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
+        };
+
+        const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const $ = (id) => document.getElementById(id);
+        let redirecting = false;
+
+        function showMsg(text, type) {
+            const el = $('msg');
+            el.textContent = text;
+            el.className = 'msg show ' + type;
+        }
+
+        function friendlyError(err) {
+            const c = err && err.code ? err.code : '';
+            if (c === 'auth/invalid-email') return 'Email address is not valid.';
+            if (c === 'auth/user-not-found' || c === 'auth/wrong-password' || c === 'auth/invalid-credential')
+                return 'Email or password is incorrect.';
+            if (c === 'auth/user-disabled') return 'This account has been disabled.';
+            if (c === 'auth/too-many-requests') return 'Too many attempts. Please try again later.';
+            if (c === 'auth/network-request-failed') return 'Network error. Check your internet.';
+            if (c === 'auth/popup-closed-by-user' || c === 'auth/cancelled-popup-request') return 'Google login was cancelled.';
+            if (c === 'auth/popup-blocked') return 'Popup was blocked. Allow popups and try again.';
+            if (c === 'auth/unauthorized-domain') return 'This domain is not authorized in Firebase (Authentication > Settings > Authorized domains).';
+            if (c === 'auth/operation-not-allowed') return 'This login method is not enabled in Firebase Authentication.';
+            return (err && err.message) ? err.message : 'Something went wrong.';
+        }
+
+        // save / update user data in Firestore (never blocks login)
+        async function saveUserData(user, isNew) {
+            try {
+                const data = {
+                    uid: user.uid,
+                    name: user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
+                    email: user.email || null,
+                    photoURL: user.photoURL || null,
+                    lastLogin: serverTimestamp()
+                };
+                if (isNew) data.createdAt = serverTimestamp();
+                await setDoc(doc(db, 'users', user.uid), data, { merge: true });
+            } catch (err) {
+                console.warn('Could not save user data (check Firestore rules):', err);
+            }
+        }
+
+        function goHome() {
+            redirecting = true;
+            window.location.href = 'index.html';
+        }
+
+        // ===== EMAIL LOGIN =====
+        async function doLogin() {
+            const email = $('email').value.trim();
+            const pass = $('password').value;
+
+            if (!email) return showMsg('Please enter your email.', 'err');
+            if (!pass) return showMsg('Please enter your password.', 'err');
+
+            const btn = $('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            try {
+                redirecting = true; // hold auto-redirect until data is saved
+                const cred = await signInWithEmailAndPassword(auth, email, pass);
+                await saveUserData(cred.user, false);
+                showMsg('Login successful! Redirecting...', 'ok');
+                goHome();
+            } catch (err) {
+                redirecting = false;
+                console.error(err);
+                showMsg(friendlyError(err), 'err');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+        }
+
+        $('loginBtn').addEventListener('click', doLogin);
+        $('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+        $('email').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+
+        // ===== GOOGLE LOGIN =====
+        $('googleBtn').addEventListener('click', async () => {
+            const btn = $('googleBtn');
+            btn.disabled = true;
+            try {
+                redirecting = true;
+                const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+                const isNew = cred.user.metadata.creationTime === cred.user.metadata.lastSignInTime;
+                await saveUserData(cred.user, isNew);
+                showMsg('Login successful! Redirecting...', 'ok');
+                goHome();
+            } catch (err) {
+                redirecting = false;
+                console.error(err);
+                showMsg(friendlyError(err), 'err');
+                btn.disabled = false;
+            }
+        });
+
+        // ===== FORGOT PASSWORD =====
+        $('forgotBtn').addEventListener('click', async () => {
+            const email = $('email').value.trim();
+            if (!email) return showMsg('Enter your email above first, then tap "Forgot password?".', 'err');
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showMsg('Password reset email sent to ' + email + '. Check your inbox (and spam).', 'ok');
+            } catch (err) {
+                console.error(err);
+                showMsg(friendlyError(err), 'err');
+            }
+        });
+
+        // ===== SHOW / HIDE PASSWORD =====
+        $('eyeBtn').addEventListener('click', () => {
+            const inp = $('password');
+            const show = inp.type === 'password';
+            inp.type = show ? 'text' : 'password';
+            $('eyeBtn').innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+        });
+
+        // ===== ALREADY LOGGED IN -> index.html =====
+        onAuthStateChanged(auth, (user) => {
+            if (user && !redirecting) goHome();
+        });
+    </script>
+
+</body>
+</html>

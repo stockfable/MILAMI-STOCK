@@ -1,0 +1,159 @@
+/* ===============================
+   Tools Section Styles
+   =============================== */
+
+:root {
+    --bg-color: #0f172a;       /* Deep dark background */
+    --card-bg: #1e293b;        /* Slightly lighter for cards */
+    --card-hover: #26334d;     /* Card hover state */
+    --text-primary: #f8fafc;   /* White text */
+    --text-secondary: #94a3b8; /* Gray text */
+    --accent-color: #3b82f6;   /* Blue accent */
+    --accent-glow: rgba(59, 130, 246, 0.3);
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-primary);
+    margin: 0;
+    padding: 20px;
+}
+
+.tools-section {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Header Styling */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 0 4px;
+}
+
+.section-header h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.view-all {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s ease;
+}
+
+.view-all:hover {
+    color: #60a5fa; /* Lighter blue on hover */
+}
+
+.view-all i {
+    font-size: 0.75rem;
+    transition: transform 0.3s ease;
+}
+
+.view-all:hover i {
+    transform: translateX(4px);
+}
+
+/* Grid Layout */
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns like the screenshot */
+    gap: 12px;
+}
+
+/* Card Styling */
+.tool-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle glass border */
+    border-radius: 16px; /* Smooth rounded corners */
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Subtle gradient glow behind the card on hover */
+.tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.tool-card:hover {
+    transform: translateY(-5px); /* Lift effect */
+    background: var(--card-hover);
+    border-color: rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 25px -5px var(--accent-glow);
+}
+
+.tool-card:hover::before {
+    opacity: 1; /* Show glow */
+}
+
+/* Icon Box Styling */
+.icon-box {
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.tool-card:hover .icon-box {
+    background: var(--accent-color);
+    color: #fff;
+    transform: scale(1.1) rotate(5deg); /* Slight pop and tilt */
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* Text Styling */
+.tool-card span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    color: var(--text-secondary);
+    z-index: 1;
+    transition: color 0.3s ease;
+}
+
+.tool-card:hover span {
+    color: var(--text-primary);
+}
+
+/* Responsive Design for very small screens */
+@media (max-width: 360px) {
+    .tools-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on very small screens */
+    }
+    .tool-card span {
+        font-size: 0.7rem;
+    }
+}

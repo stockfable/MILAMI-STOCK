@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard - MINAMI STOCK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #1e293b;
+            padding-bottom: 80px;
+        }
+
+        /* ★★★ TOP NAVBAR ★★★ */
+        .dashboard-navbar {
+            background: #ffffff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .navbar-logo {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .navbar-logo i {
+            color: #d97706;
+        }
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-upload-nav {
+            background: #fbbf24;
+            color: #0a1628;
+        }
+        .btn-upload-nav:hover {
+            background: #f59e0b;
+        }
+        .btn-release {
+            background: transparent;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-release:hover {
+            background: #f1f5f9;
+        }
+        .nav-icon {
+            color: #64748b;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .nav-icon:hover {
+            color: #0f172a;
+        }
+        .nav-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fbbf24;
+            color: #0a1628;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        /* ★★★ STATS BAR ★★★ */
+        .stats-bar {
+            background: #f8fafc;
+            padding: 15px 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 5px;
+            border-right: 1px solid #e2e8f0;
+        }
+        .stat-item:last-child {
+            border-right: none;
+        }
+        .stat-label {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+        .stat-value.green {
+            color: #10b981;
+        }
+        .stat-value.yellow {
+            color: #d97706;
+        }
+
+        /* ★★★ PROMO BANNER ★★★ */
+        .promo-banner {
+            background: #1e40af;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 12.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px;
+            border-radius: 8px;
+        }
+        .promo-banner a {
+            color: #fbbf24;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+        .promo-close {
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* ★★★ CHART SECTION ★★★ */
+        .chart-section {
+            background: #f8fafc;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .chart-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .chart-legend {
+            display: flex;
+            gap: 15px;
+            font-size: 11px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .legend-dot.earnings { background: #3b82f6; }
+        .legend-dot.downloads { background: #ef4444; }
+        .chart-view-all {
+            color: #d97706;
+            font-size: 11px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Simple Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 180px;
+            padding: 10px 0;
+            gap: 4px;
+            border-bottom: 1px solid #e2e8f0;
+            border-left: 1px solid #e2e8f0;
+            position: relative;
+        }
+        .bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            position: relative;
+        }
+        .bar {
+            width: 100%;
+            max-width: 30px;
+            background: linear-gradient(180deg, #3b82f6, #1e40af);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            min-height: 4px;
+            position: relative;
+        }
+        .bar:hover {
+            background: #fbbf24;
+        }
+        .bar-label {
+            font-size: 8px;
+            color: #64748b;
+            margin-top: 5px;
+            white-space: nowrap;
+            transform: rotate(-45deg);
+            transform-origin: left;
+        }
+        .chart-y-axis {
+            position: absolute;
+            left: -35px;
+            top: 0;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #64748b;
+            text-align: right;
+        }
+
+        /* ★★★ PORTFOLIO SECTION ★★★ */
+        .portfolio-section {
+            margin: 15px;
+        }
+        .portfolio-tabs {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 15px;
+        }
+        .portfolio-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .tab-btn.active {
+            color: #d97706;
+            border-bottom: 2px solid #d97706;
+        }
+        .tab-btn:hover {
+            color: #0f172a;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-input {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #1e293b;
+            font-size: 12px;
+            outline: none;
+            flex: 1;
+            min-width: 120px;
+        }
+        .filter-input:focus {
+            border-color: #fbbf24;
+        }
+        .filter-select {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #1e293b;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* ★★★ PRODUCT GRID ★★★ */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .product-card {
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            transition: 0.3s;
+            position: relative;
+        }
+        .product-card:hover {
+            border-color: #fbbf24;
+            transform: translateY(-3px);
+        }
+        .product-img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+        .product-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: 0.5s;
+        }
+        .product-card:hover .product-img-wrap img {
+            transform: scale(1.05);
+        }
+        .product-checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            background: rgba(0,0,0,0.3);
+        }
+        .free-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: #fff;
+            color: #0a1628;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+        .product-info {
+            padding: 10px;
+        }
+        .product-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+        .product-stats .label {
+            color: #64748b;
+            text-transform: uppercase;
+            font-size: 9px;
+            letter-spacing: 0.5px;
+        }
+        .product-stats .value {
+            color: #0f172a;
+            font-weight: 700;
+        }
+        .product-stats .value.earn {
+            color: #10b981;
+        }
+
+        /* Empty State */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+        }
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        /* Loading */
+        .loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+        .loading i {
+            animation: spin 1s linear infinite;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ★★★ MOBILE RESPONSIVE ★★★ */
+        @media (max-width: 600px) {
+            .stats-bar {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                padding: 10px 8px;
+            }
+            .stat-value {
+                font-size: 14px;
+            }
+            .stat-label {
+                font-size: 8px;
+            }
+            .chart-section {
+                margin: 10px;
+                padding: 12px;
+            }
+            .portfolio-section {
+                margin: 10px;
+            }
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .product-info {
+                padding: 6px;
+            }
+            .product-stats .label {
+                font-size: 7px;
+            }
+            .product-stats .value {
+                font-size: 10px;
+            }
+            .nav-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            .navbar-logo {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .product-grid {
+                gap: 5px;
+            }
+            .product-stats .label {
+                font-size: 6px;
+            }
+            .product-stats .value {
+                font-size: 9px;
+            }
+        }
+    
+        /* ★★★ BACK BUTTON (BOTTOM) ★★★ */
+        .back-bar {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+            padding: 10px 16px;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            box-shadow: 0 -4px 14px rgba(15, 23, 42, 0.06);
+        }
+        .back-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; max-width: 520px; margin: 0 auto;
+            padding: 12px; border: none; border-radius: 10px;
+            background: #0a1628; color: #fff;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+        }
+        .back-btn:active { transform: scale(0.98); }
+</style>
+</head>
+<body>
+
+    <!-- ★★★ TOP NAVBAR ★★★ -->
+    <div class="dashboard-navbar">
+        <div class="navbar-left">
+            <div class="navbar-logo">
+                <i class="fas fa-chart-line"></i> Seller Dashboard
+            </div>
+        </div>
+        <div class="navbar-right">
+            <a href="upload.html" class="nav-btn btn-upload-nav" onclick="window.location.href='upload.html'; return false;">
+                <i class="fas fa-upload"></i> Upload
+            </a>
+            <button class="nav-btn btn-release">
+                Create a release
+            </button>
+            <i class="fas fa-bell nav-icon"></i>
+            <div class="nav-avatar" id="navAvatar">U</div>
+            <i class="fas fa-bars nav-icon" onclick="window.location.href='index.html'"></i>
+        </div>
+    </div>
+
+    <!-- ★★★ STATS BAR ★★★ -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-label">Time Frame</div>
+            <select class="filter-select" style="font-size:11px; padding:4px; margin-top:4px;" id="timeFrame">
+                <option>This year</option>
+                <option>This month</option>
+                <option>This week</option>
+                <option>All time</option>
+            </select>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Downloads</div>
+            <div class="stat-value yellow" id="totalDownloads">0</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Earnings</div>
+            <div class="stat-value green" id="totalEarnings">$0.00</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-label">Available Earnings</div>
+            <div class="stat-value" style="color:#64748b;">$0.00 →</div>
+        </div>
+    </div>
+
+    <!-- ★★★ PROMO BANNER ★★★ -->
+    <div class="promo-banner" id="promoBanner">
+        <span>Learn more about how to qualify for our <a href="#">CC Redemption Code Program</a></span>
+        <button class="promo-close" onclick="document.getElementById('promoBanner').style.display='none'">✕</button>
+    </div>
+
+    <!-- ★★★ CHART SECTION ★★★ -->
+    <div class="chart-section">
+        <div class="chart-header">
+            <h3>12-Week Trend</h3>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-dot earnings"></div>
+                    <span>Earnings: <span id="legendEarnings">$0.00</span></span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot downloads"></div>
+                    <span>Downloads: <span id="legendDownloads">0</span></span>
+                </div>
+            </div>
+            <a href="#" class="chart-view-all">View My Statistics</a>
+        </div>
+
+        <div class="bar-chart" id="barChart">
+            <!-- Bars will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- ★★★ PORTFOLIO SECTION ★★★ -->
+    <div class="portfolio-section">
+        <div class="portfolio-tabs">
+            <button class="tab-btn active" data-tab="all">All (<span id="allCount">0</span>)</button>
+            <button class="tab-btn" data-tab="illustrations">Illustrations</button>
+            <button class="tab-btn" data-tab="photos">Photos</button>
+            <button class="tab-btn" data-tab="vectors">Vectors</button>
+            <button class="tab-btn" data-tab="videos">Videos</button>
+            <button class="tab-btn" data-tab="collections">Collections</button>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="filter-input" placeholder="🔍 File #" id="searchFile">
+            <select class="filter-select" id="filterPrice">
+                <option value="all">Filter by Price Tier</option>
+                <option value="free">Free</option>
+                <option value="paid">Paid</option>
+            </select>
+            <select class="filter-select" id="sortBy">
+                <option value="downloads">Sort by Downloads</option>
+                <option value="views">Sort by Views</option>
+                <option value="earnings">Sort by Earnings</option>
+                <option value="name">Sort by Name</option>
+            </select>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Loading your portfolio...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ★★★ BACK BUTTON ★★★ -->
+    <div class="back-bar">
+        <button type="button" class="back-btn" onclick="if (document.referrer && history.length > 1) { history.back(); } else { window.location.href = 'index.html'; }">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+    </div>
+
+    <!-- ★★★ FIREBASE SCRIPTS ★★★ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { 
+            getAuth,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            query, 
+            where, 
+            getDocs 
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        // ★ আপনার Firebase Config এখানে বসান ★
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+            authDomain: "creoverse-stock.firebaseapp.com",
+            databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "creoverse-stock",
+            storageBucket: "creoverse-stock.firebasestorage.app",
+            messagingSenderId: "128072247505",
+            appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allProducts = [];
+        let currentUser = null;
+
+        // ===== CHECK AUTH STATE =====
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const name = user.displayName || user.email?.split('@')[0] || 'U';
+                document.getElementById('navAvatar').textContent = name.charAt(0).toUpperCase();
+                
+                // Load Dashboard Data
+                await loadDashboardData(user.uid);
+            } else {
+                // Not logged in -> Redirect to login
+                window.location.href = 'login.html';
+            }
+        });
+
+        // ===== LOAD DASHBOARD DATA =====
+        async function loadDashboardData(userId) {
+            const grid = document.getElementById('productGrid');
+            
+            try {
+                // Query: Only get products where sellerId == current user's uid
+                const q = query(
+                    collection(db, "products"), 
+                    where("sellerId", "==", userId)
+                );
+                
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <p>No products found. Upload your first product!</p>
+                            <a href="upload.html" style="color:#d97706; text-decoration:none; font-weight:700; margin-top:10px; display:inline-block;">Upload Now →</a>
+                        </div>
+                    `;
+                    updateStats(0, 0, 0);
+                    return;
+                }
+
+                allProducts = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    allProducts.push({
+                        id: doc.id,
+                        ...data,
+                        downloads: data.downloads || 0,
+                        views: data.views || 0,
+                        earnings: data.earnings || 0,
+                        price: data.price || 0
+                    });
+                });
+
+                // Calculate Totals
+                const totalDownloads = allProducts.reduce((sum, p) => sum + p.downloads, 0);
+                const totalEarnings = allProducts.reduce((sum, p) => sum + p.earnings, 0);
+                const totalViews = allProducts.reduce((sum, p) => sum + p.views, 0);
+
+                updateStats(totalDownloads, totalEarnings, totalViews);
+                renderProducts(allProducts);
+                renderChart(allProducts);
+
+                console.log("✅ Dashboard loaded with", allProducts.length, "products");
+
+            } catch (error) {
+                console.error("❌ Error loading dashboard:", error);
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Failed to load data. Please check your Firestore rules.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ===== UPDATE STATS BAR =====
+        function updateStats(downloads, earnings, views) {
+            document.getElementById('totalDownloads').textContent = downloads;
+            document.getElementById('totalEarnings').textContent = '$' + earnings.toFixed(2);
+            document.getElementById('legendEarnings').textContent = '$' + earnings.toFixed(2);
+            document.getElementById('legendDownloads').textContent = downloads;
+            document.getElementById('allCount').textContent = allProducts.length;
+        }
+
+        // ===== RENDER PRODUCTS =====
+        function renderProducts(products) {
+            const grid = document.getElementById('productGrid');
+            
+            if (products.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <p>No products match your filter.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            products.forEach((p) => {
+                const isFree = p.price === 0 || p.price === '0' || p.free === true;
+                const freeBadge = isFree ? '<span class="free-badge">FREE</span>' : '';
+                
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <div class="product-img-wrap">
+                            <input type="checkbox" class="product-checkbox">
+                            <img src="${p.imageUrl || 'https://via.placeholder.com/300x300/f1f5f9/94a3b8?text=No+Image'}" 
+                                 alt="${p.name}" 
+                                 onerror="this.src='https://via.placeholder.com/300x300/f1f5f9/94a3b8?text=No+Image'">
+                            ${freeBadge}
+                        </div>
+                        <div class="product-info">
+                            <div class="product-stats">
+                                <span class="label">Downloads</span>
+                                <span class="value">${p.downloads}</span>
+                            </div>
+                            <div class="product-stats">
+                                <span class="label">Views</span>
+                                <span class="value">${p.views}</span>
+                            </div>
+                            <div class="product-stats">
+                                <span class="label">Earnings</span>
+                                <span class="value earn">$${p.earnings.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ===== RENDER SIMPLE BAR CHART =====
+        function renderChart(products) {
+            const chart = document.getElementById('barChart');
+            chart.innerHTML = '';
+            
+            // Generate 12 weeks of data (dummy data based on product downloads)
+            // In real app, you would fetch actual weekly data from Firestore
+            const weeks = ['Jul 20', 'Jul 27', 'Aug 3', 'Aug 10', 'Aug 17', 'Aug 24', 'Aug 31', 'Sep 7', 'Sep 14', 'Sep 21', 'Sep 28', 'Oct 5'];
+            
+            // Create dummy weekly data by distributing total downloads
+            const totalDownloads = products.reduce((sum, p) => sum + p.downloads, 0);
+            const weeklyData = weeks.map((w, i) => {
+                // Simple distribution: more weight to recent weeks
+                const base = Math.floor(totalDownloads / 12);
+                const variance = Math.floor(Math.random() * 3);
+                return Math.max(0, base + variance - (i > 9 ? 0 : 1));
+            });
+            
+            const maxVal = Math.max(...weeklyData, 1);
+            
+            weeks.forEach((week, i) => {
+                const heightPercent = (weeklyData[i] / maxVal) * 100;
+                const barWrapper = document.createElement('div');
+                barWrapper.className = 'bar-wrapper';
+                barWrapper.innerHTML = `
+                    <div class="bar" style="height: ${heightPercent}%;" title="${weeklyData[i]} downloads"></div>
+                    <div class="bar-label">${week}</div>
+                `;
+                chart.appendChild(barWrapper);
+            });
+        }
+
+        // ===== TAB FILTERING =====
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const tab = btn.dataset.tab;
+                let filtered = allProducts;
+                
+                if (tab !== 'all') {
+                    // Filter by category (if your product has a 'category' field)
+                    filtered = allProducts.filter(p => p.category === tab);
+                }
+                
+                renderProducts(filtered);
+            });
+        });
+
+        // ===== SEARCH FILTER =====
+        document.getElementById('searchFile').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allProducts.filter(p => 
+                (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+                (p.fileNumber && p.fileNumber.toLowerCase().includes(searchTerm))
+            );
+            renderProducts(filtered);
+        });
+
+        // ===== PRICE FILTER =====
+        document.getElementById('filterPrice').addEventListener('change', (e) => {
+            const val = e.target.value;
+            let filtered = allProducts;
+            
+            if (val === 'free') {
+                filtered = allProducts.filter(p => p.price === 0 || p.price === '0' || p.free === true);
+            } else if (val === 'paid') {
+                filtered = allProducts.filter(p => p.price > 0);
+            }
+            
+            renderProducts(filtered);
+        });
+
+        // ===== SORT FILTER =====
+        document.getElementById('sortBy').addEventListener('change', (e) => {
+            const val = e.target.value;
+            let sorted = [...allProducts];
+            
+            if (val === 'downloads') sorted.sort((a, b) => b.downloads - a.downloads);
+            else if (val === 'views') sorted.sort((a, b) => b.views - a.views);
+            else if (val === 'earnings') sorted.sort((a, b) => b.earnings - a.earnings);
+            else if (val === 'name') sorted.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+            
+            renderProducts(sorted);
+        });
+
+    </script>
+</body>
+</html>

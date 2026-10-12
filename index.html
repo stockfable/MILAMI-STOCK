@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINAMI STOCK - Premium Stock Photos & AI Tools</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ★★★ SIDEBAR MENU ★★★ */
+        .sidebar-dropdown {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            min-width: 220px;
+            background: #0a0a0a;
+            border-radius: 14px;
+            padding: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            display: none;
+            z-index: 999;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .sidebar-dropdown.show { display: block; }
+
+        .sidebar-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            overflow: hidden;
+            background: #0a0a0a;
+            transition: all 0.3s ease;
+        }
+        .sidebar-item::before {
+            content: "";
+            position: absolute;
+            top: 0; bottom: 0; left: 0;
+            width: 40%;
+            background: var(--edge-color, #3b82f6);
+            opacity: 0.35;
+            filter: blur(18px);
+            z-index: 0;
+            border-radius: 10px;
+        }
+        .sidebar-item::after {
+            content: "";
+            position: absolute;
+            top: 0; bottom: 0; right: 0;
+            width: 40%;
+            background: var(--edge-color, #3b82f6);
+            opacity: 0.35;
+            filter: blur(18px);
+            z-index: 0;
+            border-radius: 10px;
+        }
+        .sidebar-item .item-bg {
+            position: absolute;
+            top: 0; bottom: 0;
+            left: 20%;
+            right: 20%;
+            background: #0a0a0a;
+            z-index: 1;
+            border-radius: 10px;
+        }
+        .sidebar-item > * { position: relative; z-index: 2; }
+        .sidebar-item:hover { transform: translateX(4px); }
+        .sidebar-item:hover::before,
+        .sidebar-item:hover::after {
+            opacity: 0.85;
+            filter: blur(14px);
+        }
+
+        .sidebar-item[data-color="home"]     { --edge-color: #3b82f6; }
+        .sidebar-item[data-color="apps"]     { --edge-color: #8b5cf6; }
+        .sidebar-item[data-color="files"]    { --edge-color: #f59e0b; }
+        .sidebar-item[data-color="benefits"] { --edge-color: #ec4899; }
+        .sidebar-item[data-color="create"]   { --edge-color: #10b981; }
+        .sidebar-item[data-color="settings"] { --edge-color: #64748b; }
+        .sidebar-item[data-color="help"]     { --edge-color: #06b6d4; }
+
+        .sidebar-item.active::before,
+        .sidebar-item.active::after { opacity: 0.9; filter: blur(12px); }
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .sidebar-trigger {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+        .sidebar-trigger:hover { background: rgba(255,255,255,0.1); }
+        .sidebar-bottom-menu { position: relative; display: inline-block; }
+
+        /* ★★★ APP SWITCHER BAR (Generate Section) ★★★ */
+        .app-switcher-bar {
+            position: relative;
+            min-height: 90px;
+            background: #0a1a3a;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            z-index: 1;
+            overflow: hidden;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin: 16px 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .app-switcher-bar::before {
+            content: "";
+            position: absolute;
+            top: -60%; bottom: -60%; left: -10%; right: -10%;
+            background: 
+                radial-gradient(circle at 15% 30%, rgba(255,220,100,0.45) 0%, transparent 45%),
+                radial-gradient(circle at 85% 70%, rgba(255,200,50,0.5) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(255,230,120,0.25) 0%, transparent 55%),
+                radial-gradient(circle at 30% 75%, rgba(30,80,180,0.6) 0%, transparent 45%),
+                radial-gradient(circle at 70% 25%, rgba(20,60,150,0.55) 0%, transparent 50%),
+                radial-gradient(circle at 5% 50%, rgba(10,40,120,0.5) 0%, transparent 40%),
+                radial-gradient(circle at 95% 50%, rgba(10,40,120,0.5) 0%, transparent 40%);
+            filter: blur(22px);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .app-switcher-bar::after {
+            content: "";
+            position: absolute;
+            top: 0; bottom: 0; left: 0; right: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.3) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Generate Section Content */
+        .generate-section {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 15px;
+            gap: 6px;
+        }
+        .generate-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 800;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .generate-title i {
+            color: #fbbf24;
+        }
+        .generate-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 999px;
+            padding: 5px 5px 5px 20px;
+            width: 100%;
+            max-width: 700px;
+            gap: 10px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+        .generate-input-wrapper i {
+            color: #fbbf24;
+            font-size: 16px;
+        }
+        .generate-input-wrapper input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 14px;
+            font-family: inherit;
+            padding: 8px 0;
+            min-width: 50px;
+        }
+        .generate-input-wrapper input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        .generate-input-wrapper .gen-select {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 999px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .generate-input-wrapper .gen-select option {
+            background: #0a1a3a;
+            color: #fff;
+        }
+        .generate-go-btn {
+            background: #fff;
+            color: #0a1628;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+        .generate-go-btn:hover {
+            background: #fbbf24;
+            transform: scale(1.05);
+        }
+
+        .bar-tool {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bar-tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 800;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            transition: 0.3s;
+        }
+        .bar-tool-link i { color: #fbbf24; font-size: 15px; }
+        .bar-tool-link small {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.85;
+        }
+        .bar-tool-link:hover {
+            background: #fbbf24;
+            color: #0a1628;
+            transform: translateY(-1px);
+        }
+        .bar-tool-link:hover i { color: #0a1628; }
+
+        .shop-logo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fbbf24;
+            color: #0a1628;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .shop-logo-btn:hover { background: #f59e0b; }
+
+        .site-logo {
+            width: 48px; height: 48px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+
+        /* ★★★ AUTH BUTTONS (Sign In / Sign Up) ★★★ */
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-signin, .btn-signup {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+        .btn-signin {
+            background: transparent;
+            color: #e2e8f0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-signin:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .btn-signup {
+            background: #fbbf24;
+            color: #0a1628;
+            border: 1px solid #fbbf24;
+        }
+        .btn-signup:hover {
+            background: #f59e0b;
+            border-color: #f59e0b;
+        }
+        .btn-account {
+            width: 38px; height: 38px; flex: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: rgba(251, 191, 36, 0.12);
+            border: 1px solid #fbbf24;
+            color: #fbbf24; font-size: 17px;
+            text-decoration: none; transition: 0.3s;
+        }
+        .btn-account:hover { background: #fbbf24; color: #0a1628; }
+        #user-profile-btn { display: none; }
+
+        /* ★★★ ACCOUNT MENU ★★★ */
+        .account-wrapper { position: relative; display: inline-block; }
+        .account-dropdown {
+            position: absolute;
+            top: 55px; right: 0;
+            width: 280px;
+            background: #0a0a0a;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            display: none;
+            z-index: 999;
+        }
+        .account-dropdown.show { display: block !important; }
+        .account-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+        }
+        .account-avatar-large {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: #fbbf24;
+            color: #0a1628;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 800;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .account-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+        .account-info { flex: 1; overflow: hidden; }
+        .account-name { color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .account-email { color: #94a3b8; font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .account-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 8px 4px; }
+        .account-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #cbd5e1;
+            font-size: 13.5px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: inherit;
+        }
+        .account-menu-item:hover { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .account-menu-item i { width: 18px; text-align: center; font-size: 14px; }
+        .logout-item { color: #ef4444 !important; }
+        .logout-item:hover { background: rgba(239, 68, 68, 0.15) !important; color: #ef4444 !important; }
+        .login-highlight { color: #10b981 !important; font-weight: 700 !important; }
+        .login-highlight:hover { background: rgba(16, 185, 129, 0.1) !important; color: #10b981 !important; }
+
+        /* ★★★ TOP NAV LINKS ★★★ */
+        .nav-links-top a i { margin-right: 6px; font-size: 12px; }
+
+        /* ★★★ ALL PAGES BUTTON ★★★ */
+        .all-pages-section {
+            margin-top: 60px;
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .all-pages-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .all-pages-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 36px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            letter-spacing: 0.3px;
+        }
+
+        .all-pages-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+        }
+
+        .all-pages-btn .arrow-icon {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .all-pages-btn.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .all-pages-dropdown {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            min-width: 320px;
+            max-height: 450px;
+            overflow-y: auto;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            display: none;
+            z-index: 999;
+            margin-bottom: 12px;
+        }
+
+        .all-pages-dropdown.show {
+            display: block;
+            animation: slideUpFade 0.3s ease;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateX(-50%) translateY(0); }
+            to { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+        }
+
+        .all-pages-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #1a1a1a;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .all-pages-dropdown a:hover {
+            background: #f0f7ff;
+            color: #2563eb;
+            transform: translateX(4px);
+        }
+
+        .all-pages-dropdown a i {
+            width: 22px;
+            text-align: center;
+            font-size: 15px;
+            color: #3b82f6;
+        }
+
+        .all-pages-dropdown::-webkit-scrollbar { width: 6px; }
+        .all-pages-dropdown::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .all-pages-dropdown::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 10px; }
+        .all-pages-dropdown::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+
+        /* ★★★ FEATURED PRODUCTS ★★★ */
+        .center-content .home-shop-section {
+            max-width: 100% !important;
+            width: 100% !important;
+            margin: 40px 0 20px !important;
+            padding: 0 !important;
+            box-sizing: border-box;
+        }
+        .home-shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .home-shop-header h2 {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .home-shop-header h2 i { color: #fbbf24; }
+        .home-shop-header .view-all-link {
+            color: #fbbf24;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .home-shop-header .view-all-link:hover {
+            color: #f59e0b;
+            text-decoration: underline;
+        }
+
+        .home-shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 18px;
+            align-items: start;
+        }
+
+        .home-shop-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.35s ease;
+            box-shadow: 0 4px 15px -5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer;
+        }
+        .home-shop-card:hover {
+            transform: translateY(-6px);
+            border-color: #fbbf24;
+            box-shadow: 0 20px 40px -10px rgba(251, 191, 36, 0.3);
+        }
+
+        .home-shop-card .img-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            background: #1e293b;
+        }
+        .home-shop-card .img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .home-shop-card:hover .img-wrap img {
+            transform: scale(1.08);
+        }
+
+        .home-shop-card .discount-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .home-shop-card .hot-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            padding: 4px 9px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        .home-shop-card .card-body {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .home-shop-card .brand-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #1e40af;
+            color: #fff;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            align-self: flex-start;
+        }
+
+        .home-shop-card .card-body h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.35;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 38px;
+        }
+
+        .home-shop-card .product-rating {
+            font-size: 11px;
+            color: #f59e0b;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .home-shop-card .product-rating span {
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .home-shop-card .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .home-shop-card .price {
+            font-size: 22px;
+            font-weight: 800;
+            color: #f59e0b;
+        }
+        .home-shop-card .old-price {
+            font-size: 13px;
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+
+        .home-shop-card .desc-preview {
+            background: #1e293b;
+            border-left: 3px solid #fbbf24;
+            border-radius: 8px;
+            padding: 9px 11px;
+            margin-bottom: 10px;
+        }
+        .home-shop-card .desc-preview-text {
+            font-size: 11.5px;
+            color: #94a3b8;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .home-shop-card .buy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            padding: 11px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            margin-top: auto;
+        }
+        .home-shop-card .buy-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .home-shop-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            font-size: 14px;
+            background: #0f172a;
+            border-radius: 12px;
+            border: 1px dashed #334155;
+        }
+
+        /* ★★★ TOOLS APP ICONS ★★★ */
+        .mtx-tools {
+            display: block; position: relative; float: none; clear: both;
+            width: 100%; max-width: 100%; box-sizing: border-box;
+            margin: 0 0 28px; padding: 18px 14px 14px;
+            background: #0a1a3a;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+        }
+        .mtx-tools *, .mtx-tools *::before, .mtx-tools *::after { box-sizing: border-box; }
+        .mtx-title {
+            color: #fff; font-size: 14px; font-weight: 800;
+            margin: 0 0 16px 4px; display: flex; align-items: center; gap: 8px;
+            position: static; width: auto; height: auto;
+        }
+        .mtx-title i { color: #fbbf24; }
+        .mtx-grid {
+            display: grid; position: static; width: 100%; height: auto;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px 8px;
+        }
+        .mtx-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 8px; text-decoration: none; transition: 0.25s;
+            position: static; width: auto; height: auto; min-width: 0;
+            margin: 0; padding: 0; transform: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mtx-box {
+            position: static; flex: none;
+            width: 60px; height: 60px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 24px; margin: 0;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+            transition: 0.25s;
+        }
+        .mtx-item span {
+            position: static; display: block; width: 100%;
+            color: #e2e8f0; font-size: 12px; font-weight: 600;
+            text-align: center; line-height: 1.25; word-break: break-word;
+        }
+        .mtx-item:hover .mtx-box { transform: translateY(-4px) scale(1.06); box-shadow: 0 12px 24px rgba(0,0,0,0.5); }
+        .mtx-item:active .mtx-box { transform: scale(0.94); }
+        .mtx-calc  { background: linear-gradient(135deg,#f59e0b,#d97706); }
+        .mtx-enh   { background: linear-gradient(135deg,#8b5cf6,#6d28d9); }
+        .mtx-up    { background: linear-gradient(135deg,#ec4899,#be185d); }
+        .mtx-conv  { background: linear-gradient(135deg,#06b6d4,#0e7490); }
+        .mtx-i2p   { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+        .mtx-t2p   { background: linear-gradient(135deg,#ef4444,#b91c1c); }
+        .mtx-qr    { background: linear-gradient(135deg,#10b981,#047857); }
+        .mtx-word  { background: linear-gradient(135deg,#64748b,#334155); }
+        @media (max-width: 400px) {
+            .mtx-box { width: 52px; height: 52px; font-size: 21px; border-radius: 14px; }
+            .mtx-item span { font-size: 11px; }
+        }
+
+        /* ★ মোবাইলের জন্য ★ */
+        @media (max-width: 600px) {
+            .account-dropdown { width: 260px; right: -10px; }
+            .app-switcher-bar { min-height: 100px; }
+            .generate-section { padding: 10px 10px; gap: 4px; }
+            .generate-title { font-size: 15px; }
+            .generate-input-wrapper { padding: 4px 4px 4px 14px; gap: 6px; }
+            .generate-input-wrapper input { font-size: 12px; padding: 6px 0; }
+            .generate-input-wrapper .gen-select { font-size: 10px; padding: 6px 8px; }
+            .generate-go-btn { width: 34px; height: 34px; font-size: 14px; }
+            
+            .all-pages-dropdown { min-width: 260px; }
+            .all-pages-btn { padding: 13px 28px; font-size: 14px; }
+
+            .center-content .home-shop-section { padding: 0 !important; margin: 30px 0 15px !important; }
+            .home-shop-header h2 { font-size: 18px; }
+            .home-shop-header .view-all-link { font-size: 12px; }
+            .home-shop-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .home-shop-card { border-radius: 10px; }
+            .home-shop-card .card-body { padding: 8px; }
+            .home-shop-card .card-body h4 { font-size: 10px; min-height: 28px; margin-bottom: 4px; }
+            .home-shop-card .product-rating { font-size: 9px; margin-bottom: 6px; }
+            .home-shop-card .price { font-size: 14px; }
+            .home-shop-card .old-price { font-size: 9px; }
+            .home-shop-card .buy-btn { font-size: 10px; padding: 6px; }
+            .home-shop-card .brand-tag { font-size: 8px; padding: 2px 5px; margin-bottom: 5px; }
+            .home-shop-card .discount-badge { font-size: 9px; padding: 3px 6px; top: 6px; left: 6px; }
+            .home-shop-card .hot-badge { font-size: 8px; padding: 3px 5px; top: 6px; right: 6px; }
+            .home-shop-card .desc-preview { padding: 6px 8px; margin-bottom: 6px; }
+            .home-shop-card .desc-preview-text { font-size: 9.5px; }
+
+            .auth-buttons { gap: 5px; }
+            .btn-signin, .btn-signup { padding: 6px 10px; font-size: 11px; }
+            .btn-account { width: 32px; height: 32px; font-size: 14px; }
+        }
+
+        /* ★ খুব ছোট মোবাইলেও ৩টি কার্ড ★ */
+        @media (max-width: 360px) {
+            .home-shop-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+            .home-shop-card .card-body h4 { font-size: 9px; }
+            .home-shop-card .price { font-size: 12px; }
+            .home-shop-card .buy-btn { font-size: 9px; padding: 5px; }
+
+            .auth-buttons { gap: 3px; }
+            .btn-signin, .btn-signup { padding: 5px 8px; font-size: 10px; }
+            .btn-account { width: 28px; height: 28px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-nav">
+        <div class="nav-left">
+            <div class="sidebar-bottom-menu" id="sidebarMenu">
+                <button class="sidebar-trigger" onclick="toggleSidebarMenu(event)" title="Apps">
+                    <i class="fas fa-th"></i>
+                </button>
+
+                <div class="sidebar-dropdown">
+                    <a href="index.html" class="sidebar-item active" data-color="home">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-home"></i> <span>Home</span>
+                    </a>
+                    <a href="tools.html" class="sidebar-item" data-color="apps">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-th-large"></i> <span>Tools</span>
+                    </a>
+                    <a href="about.html" class="sidebar-item" data-color="files">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-folder"></i> <span>About</span>
+                    </a>
+                    <a href="shop.html" class="sidebar-item" data-color="benefits">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-shopping-bag"></i> <span>Shop</span>
+                    </a>
+                    <a href="login.html" class="sidebar-item" data-color="create">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-plus-circle"></i> <span>Login</span>
+                    </a>
+                    <a href="privacy.html" class="sidebar-item" data-color="help">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-question-circle"></i> <span>Privacy</span>
+                    </a>
+                </div>
+            </div>
+
+            <a href="index.html" class="logo-container">
+                <img src="https://i.ibb.co.com/xK8nP7KD/1000031217-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo"
+                     onerror="this.onerror=null; this.src='logo.png'">
+                <span class="logo-text">MINAMI STOCK</span>
+            </a>
+            
+            <div class="nav-links-top">
+                <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+                <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+                <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <a href="shop.html" class="shop-logo-btn" title="Shop">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Shop</span>
+            </a>
+
+            <!-- ★★★ AUTH BUTTONS (Sign In / Sign Up) ★★★ -->
+            <div id="guest-auth-buttons" class="auth-buttons">
+                <a href="account.html" class="btn-account" title="Account" aria-label="Account"><i class="fas fa-user-circle"></i></a>
+                <a href="login.html" class="btn-signin">Sign In</a>
+                <a href="register.html" class="btn-signup">Sign Up</a>
+            </div>
+
+            <!-- ★★★ USER PROFILE (Logged In) ★★★ -->
+            <div class="account-wrapper" id="user-profile-btn">
+                <button class="account-avatar" onclick="toggleAccountMenu(event)" title="Account">
+                    <i class="fas fa-user"></i>
+                </button>
+                
+                <div class="account-dropdown" id="accountDropdown">
+                    <div class="account-header">
+                        <div class="account-avatar-large" id="dropdownAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="account-info">
+                            <p class="account-name" id="dropdownName">Guest User</p>
+                            <p class="account-email" id="dropdownEmail">Not logged in</p>
+                        </div>
+                    </div>
+                    
+                    <div class="account-divider"></div>
+                    
+                    <a href="account.html" class="account-menu-item">
+                        <i class="fas fa-user-circle"></i> My Account
+                    </a>
+                    
+                    <div class="account-divider"></div>
+                    
+                    <button class="account-menu-item logout-item" onclick="handleLogout()" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <main class="center-content">
+
+            <!-- ★ GENERATE / EDIT / TRANSFORM SECTION ★ -->
+            <div class="app-switcher-bar">
+                <div class="generate-section">
+                    <div class="generate-title">
+                        <i class="fas fa-wand-magic-sparkles"></i> Generate. Edit. Transform.
+                    </div>
+                    <div class="generate-input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="generatePrompt" placeholder="Describe what you want to generate...">
+                        <select class="gen-select">
+                            <option>Image</option>
+                            <option>Video</option>
+                        </select>
+                        <select class="gen-select">
+                            <option>Auto</option>
+                            <option>1:1</option>
+                            <option>16:9</option>
+                            <option>9:16</option>
+                        </select>
+                        <button class="generate-go-btn" onclick="goToGenerator()">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ★★★ TOOLS APP ICONS ★★★ -->
+            <div class="mtx-tools">
+                <div class="mtx-title"><i class="fas fa-toolbox"></i> Tools</div>
+                <div class="mtx-grid">
+                    <a href="calculator.html" class="mtx-item"><div class="mtx-box mtx-calc"><i class="fas fa-calculator"></i></div><span>Calculator</span></a>
+                    <a href="image-inhancer.html" class="mtx-item"><div class="mtx-box mtx-enh"><i class="fas fa-wand-magic-sparkles"></i></div><span>Image Enhancer</span></a>
+                    <a href="upscaler.html" class="mtx-item"><div class="mtx-box mtx-up"><i class="fas fa-up-right-and-down-left-from-center"></i></div><span>Upscaler</span></a>
+                    <a href="converter.html" class="mtx-item"><div class="mtx-box mtx-conv"><i class="fas fa-right-left"></i></div><span>Converter</span></a>
+                    <a href="image-to-pdf.html" class="mtx-item"><div class="mtx-box mtx-i2p"><i class="fas fa-file-image"></i></div><span>Image to PDF</span></a>
+                    <a href="text-to-pdf.html" class="mtx-item"><div class="mtx-box mtx-t2p"><i class="fas fa-file-pdf"></i></div><span>Text to PDF</span></a>
+                    <a href="qr-code.html" class="mtx-item"><div class="mtx-box mtx-qr"><i class="fas fa-qrcode"></i></div><span>QR Code</span></a>
+                    <a href="word-counter.html" class="mtx-item"><div class="mtx-box mtx-word"><i class="fas fa-font"></i></div><span>Word Counter</span></a>
+                </div>
+            </div>
+
+            <!-- ★★★ FEATURED PRODUCTS ★★★ -->
+            <section class="home-shop-section">
+                <div class="home-shop-header">
+                    <h2><i class="fas fa-shopping-bag"></i> Featured Products</h2>
+                    <a href="shop.html" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="home-shop-grid" id="homeShopGrid">
+                    <p class="home-shop-empty">Loading products...</p>
+                </div>
+            </section>
+            <!-- ★★★ END FEATURED PRODUCTS ★★★ -->
+
+            <section class="collections-section">
+                <div class="collections-header">
+                    <h2>Hand-curated collections based on popular search keywords</h2>
+                    <p>Explore unique collections of in-demand stock categories</p>
+                </div>
+                <div class="collections-grid">
+                    <a href="#" class="collection-card">
+                        <div class="collection-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600" alt="Backgrounds" loading="lazy"></div>
+                        <h4>Backgrounds</h4>
+                        <p>Colorful photographs, illustrations, and videos of abstracts and textures</p>
+                    </a>
+                    <a href="#" class="collection-card">
+                        <div class="collection-img"><img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600" alt="Food and drink" loading="lazy"></div>
+                        <h4>Food and drink</h4>
+                        <p>Browse international food photographs, videos, and vectors</p>
+                    </a>
+                    <a href="#" class="collection-card">
+                        <div class="collection-img"><img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600" alt="Mockups" loading="lazy"></div>
+                        <h4>Mockups</h4>
+                        <p>Create stunning flyers, posters, product mockups, and more</p>
+                    </a>
+                    <a href="#" class="collection-card">
+                        <div class="collection-img"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600" alt="People" loading="lazy"></div>
+                        <h4>People</h4>
+                        <p>Explore illustrations and photos of diverse people</p>
+                    </a>
+                    <a href="#" class="collection-card">
+                        <div class="collection-img"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600" alt="Nature" loading="lazy"></div>
+                        <h4>Nature</h4>
+                        <p>Discover images and video of landscapes, plants, and wildlife</p>
+                    </a>
+                    <a href="#" class="collection-card">
+                        <div class="collection-img"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600" alt="Business" loading="lazy"></div>
+                        <h4>Business</h4>
+                        <p>Stock photos and videos of office culture, small business, and more</p>
+                    </a>
+                </div>
+            </section>
+
+            <section class="faq-section">
+                <h2>FAQ</h2>
+
+                <div class="faq-item active">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>What is MINAMI AI Studio?</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="faq-answer">
+                        MINAMI AI Studio is a collection of AI-powered editing tools that you can use before licensing and downloading content. It lets you search our catalog of premium content and then edit and download professional-quality images and videos in one place.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)"><span>Do I have to use MINAMI AI Studio?</span><i class="fas fa-chevron-right"></i></div>
+                    <div class="faq-answer">No, it's completely optional. You can browse, license, and download content without ever using the AI Studio tools.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)"><span>Do I need a MINAMI subscription?</span><i class="fas fa-chevron-right"></i></div>
+                    <div class="faq-answer">A free account lets you browse and preview. A subscription unlocks unlimited downloads, AI Studio features, and commercial licensing.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)"><span>How do I access MINAMI AI Studio?</span><i class="fas fa-chevron-right"></i></div>
+                    <div class="faq-answer">Sign in to your MINAMI account and click the "AI Studio" button on any image or video detail page.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)"><span>Can I edit content before I license it?</span><i class="fas fa-chevron-right"></i></div>
+                    <div class="faq-answer">Yes. You can preview and edit any content in AI Studio before purchasing a license.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)"><span>Can I upload my own images or video to edit?</span><i class="fas fa-chevron-right"></i></div>
+                    <div class="faq-answer">Yes, premium subscribers can upload their own media to edit using AI Studio tools.</div>
+                </div>
+            </section>
+
+            <section class="all-pages-section">
+                <div class="all-pages-wrapper">
+                    <button class="all-pages-btn" onclick="toggleAllPages(event)">
+                        <i class="fas fa-th-list"></i>
+                        <span>All Pages</span>
+                        <i class="fas fa-chevron-down arrow-icon"></i>
+                    </button>
+
+                    <div class="all-pages-dropdown" id="allPagesDropdown">
+                        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                        <a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a>
+                        <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i> Upload</a>
+                        <a href="portfolio.html"><i class="fas fa-briefcase"></i> Portfolio</a>
+                        <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+                        <a href="tools.html"><i class="fas fa-th-large"></i> Tools</a>
+                        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+                        <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        <a href="register.html"><i class="fas fa-user-plus"></i> Register</a>
+                        <a href="privacy.html"><i class="fas fa-shield-alt"></i> Privacy</a>
+                        <a href="upscaler.html"><i class="fas fa-magic"></i> Image Upscaler</a>
+                        <a href="image-inhancer.html"><i class="fas fa-image"></i> Image Enhancer</a>
+                        <a href="image-to-pdf.html"><i class="fas fa-file-image"></i> Image to PDF</a>
+                        <a href="text-to-pdf.html"><i class="fas fa-file-pdf"></i> Text to PDF</a>
+                        <a href="qr-code.html"><i class="fas fa-qrcode"></i> QR Code</a>
+                        <a href="calculator.html"><i class="fas fa-calculator"></i> Calculator</a>
+                        <a href="converter.html"><i class="fas fa-arrow-right-arrow-left"></i> Converter</a>
+                        <a href="age-calculator.html"><i class="fas fa-cake-candles"></i> Age Calculator</a>
+                        <a href="word-counter.html"><i class="fas fa-file-word"></i> Word Counter</a>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>MINAMI STOCK</h4>
+                <p class="footer-desc">Your one-stop destination for premium stock photos, AI tools, and the latest AI news.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <a href="about.html">About Us</a>
+                <a href="tools.html">Tools</a>
+                <a href="shop.html">Shop</a>
+                <a href="login.html">Login</a>
+            </div>
+            <div class="footer-col">
+                <h4>Tools &amp; Resources</h4>
+                <a href="upscaler.html">Image Upscaler</a>
+                <a href="image-inhancer.html">Image Enhancer</a>
+                <a href="text-to-pdf.html">Text to PDF</a>
+                <a href="word-counter.html">Word Counter</a>
+            </div>
+            <div class="footer-col">
+                <h4>Legal &amp; Support</h4>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="about.html">About Us</a>
+                <a href="shop.html">Shop</a>
+                <a href="tools.html">All Tools</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-left">
+                <span>🌐 Change region</span>
+                <span>🌙 Dark Theme</span>
+                <span>⚖️ License Terms</span>
+            </div>
+            <div class="footer-bottom-right">
+                <span>© 2026 MINAMI STOCK. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <script>
+        function toggleSidebarMenu(e) {
+            e.stopPropagation();
+            const dropdown = document.querySelector('.sidebar-dropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('sidebarMenu');
+            const dropdown = document.querySelector('.sidebar-dropdown');
+            if (menu && !menu.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        function toggleFaq(el) {
+            const item = el.parentElement;
+            const wasActive = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+            if (!wasActive) item.classList.add('active');
+        }
+
+        function toggleAllPages(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('allPagesDropdown');
+            const btn = document.querySelector('.all-pages-btn');
+            dropdown.classList.toggle('show');
+            btn.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(e) {
+            const wrapper = document.querySelector('.all-pages-wrapper');
+            const dropdown = document.getElementById('allPagesDropdown');
+            const btn = document.querySelector('.all-pages-btn');
+            if (wrapper && !wrapper.contains(e.target)) {
+                dropdown.classList.remove('show');
+                btn.classList.remove('active');
+            }
+        });
+
+        // ★★★ GENERATE BUTTON FUNCTION ★★★
+        function goToGenerator() {
+            const prompt = document.getElementById('generatePrompt').value;
+            if (prompt.trim() === '') {
+                alert('Please enter a prompt first!');
+                return;
+            }
+            window.location.href = 'image-generator.html?prompt=' + encodeURIComponent(prompt);
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { 
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            getDocs, 
+            query, 
+            limit 
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+            authDomain: "creoverse-stock.firebaseapp.com",
+            databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "creoverse-stock",
+            storageBucket: "creoverse-stock.firebasestorage.app",
+            messagingSenderId: "128072247505",
+            appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        console.log('🔥 Firebase initialized');
+
+        // ===== ACCOUNT MENU =====
+        window.toggleAccountMenu = function(e) {
+            if (e) e.stopPropagation();
+            const dropdown = document.getElementById('accountDropdown');
+            if (dropdown) dropdown.classList.toggle('show');
+        };
+
+        window.handleLogout = async function() {
+            const ok = confirm('Logout korte chan?');
+            if (!ok) return;
+            
+            try {
+                await signOut(auth);
+                console.log('✅ Logout successful');
+                window.location.href = 'login.html';
+            } catch (err) {
+                console.error('❌ Logout error:', err);
+                alert('Logout e problem hoyeche. Abar try korun.');
+            }
+        };
+
+        // ★★★ AUTH STATE CHANGE (Sign In / Sign Up Buttons Show/Hide) ★★★
+        onAuthStateChanged(auth, (user) => {
+            console.log('🔐 Auth state:', user ? user.email : 'Not logged in');
+            
+            const guestAuthButtons = document.getElementById('guest-auth-buttons');
+            const userProfileBtn = document.getElementById('user-profile-btn');
+            
+            const nameEl = document.getElementById('dropdownName');
+            const emailEl = document.getElementById('dropdownEmail');
+            const avatarEl = document.getElementById('dropdownAvatar');
+
+            if (user) {
+                // User is Logged In
+                if (guestAuthButtons) guestAuthButtons.style.display = 'none';
+                if (userProfileBtn) userProfileBtn.style.display = 'block';
+
+                const name = user.displayName || user.email?.split('@')[0] || 'User';
+                const email = user.email || user.phoneNumber || 'No email';
+
+                if (nameEl) nameEl.textContent = name;
+                if (emailEl) emailEl.textContent = email;
+                
+                if (avatarEl) {
+                    if (user.photoURL) {
+                        avatarEl.innerHTML = '<img src="' + user.photoURL + '" alt="avatar">';
+                    } else {
+                        avatarEl.textContent = name.charAt(0).toUpperCase();
+                    }
+                }
+            } else {
+                // User is Not Logged In
+                if (guestAuthButtons) guestAuthButtons.style.display = 'flex';
+                if (userProfileBtn) userProfileBtn.style.display = 'none';
+
+                if (nameEl) nameEl.textContent = 'Guest User';
+                if (emailEl) emailEl.textContent = 'Not logged in';
+                if (avatarEl) {
+                    avatarEl.innerHTML = '<i class="fas fa-user"></i>';
+                }
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('accountDropdown');
+            const wrapper = document.querySelector('.account-wrapper');
+            if (dropdown && wrapper && !wrapper.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // ===== HOME FEATURED PRODUCTS =====
+        async function loadHomeShop() {
+            const grid = document.getElementById('homeShopGrid');
+            if (!grid) return;
+
+            try {
+                const q = query(collection(db, "products"), limit(6));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    grid.innerHTML = '<p class="home-shop-empty">📭 No products posted yet. Be the first to post!</p>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const p = doc.data();
+                    
+                    let discountBadge = '';
+                    if (p.oldPrice && p.price && p.oldPrice > p.price) {
+                        const percent = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+                        discountBadge = `<span class="discount-badge">-${percent}%</span>`;
+                    }
+
+                    grid.innerHTML += `
+                        <div class="home-shop-card">
+                            <a href="${p.link || '#'}" target="_blank" rel="noopener sponsored" style="text-decoration:none;">
+                                <div class="img-wrap">
+                                    ${discountBadge}
+                                    <span class="hot-badge">Hot Deal</span>
+                                    <img src="${p.imageUrl}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300/1e293b/64748b?text=No+Image'">
+                                </div>
+                            </a>
+                            <div class="card-body">
+                                <div class="brand-tag"><i class="fas fa-tag"></i> Affiliate</div>
+                                <h4>${p.name}</h4>
+                                <div class="product-rating">⭐ 4.6 <span>(New)</span></div>
+                                <div class="price-row">
+                                    <span class="price">৳${p.price}</span>
+                                    ${p.oldPrice ? `<span class="old-price">৳${p.oldPrice}</span>` : ''}
+                                </div>
+                                <div class="desc-preview">
+                                    <div class="desc-preview-text">${p.description || 'No description.'}</div>
+                                </div>
+                                <a href="${p.link || '#'}" target="_blank" rel="noopener sponsored" class="buy-btn">
+                                    <i class="fas fa-shopping-cart"></i> Buy Now
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                console.log("✅ Home Featured Products loaded!");
+
+            } catch (error) {
+                console.error("❌ Home Shop error: ", error);
+                grid.innerHTML = '<p class="home-shop-empty">⚠️ Failed to load products. Please try again later.</p>';
+            }
+        }
+
+        window.addEventListener('load', loadHomeShop);
+    </script>
+
+</body>
+</html>

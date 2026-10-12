@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Text to PDF - STOCKFABLE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- jsPDF Library for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
+        body {
+            background: linear-gradient(160deg, #0a0a2a 0%, #4a1a5a 50%, #ff69b4 100%);
+            display: flex; justify-content: center; align-items: center; color: #fff;
+        }
+        
+        .container {
+            width: 100%; max-width: 600px; height: 95%; max-height: 800px;
+            display: flex; flex-direction: column; padding: 15px;
+            background: rgba(17, 17, 17, 0.4);
+            border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* হেডার ও ব্যাক বাটন */
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 15px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .header h2 { font-size: 18px; font-weight: 600; color: #fff; }
+        .back-btn {
+            background: rgba(34, 34, 34, 0.85); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 14px;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: 0.2s;
+        }
+        .back-btn:active { background: #444; }
+
+        /* টেক্সট এরিয়া */
+        .text-area-wrapper {
+            flex: 1; display: flex; flex-direction: column; margin-bottom: 15px;
+        }
+        textarea {
+            flex: 1; width: 100%; background: rgba(17, 17, 17, 0.85);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 15px;
+            padding: 15px; color: #fff; font-size: 15px; resize: none;
+            outline: none; line-height: 1.6;
+        }
+        textarea:focus { border-color: #a855f7; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3); }
+        textarea::placeholder { color: #666; }
+
+        /* সেটিংস এরিয়া */
+        .settings {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;
+        }
+        .setting-group { display: flex; flex-direction: column; gap: 6px; }
+        .setting-group label { font-size: 12px; color: #aaa; margin-left: 4px; }
+        .setting-group select, .setting-group input {
+            width: 100%; background: rgba(34, 34, 34, 0.85);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+            padding: 12px; color: #fff; font-size: 14px; outline: none;
+            appearance: none; -webkit-appearance: none;
+        }
+        .setting-group select:focus, .setting-group input:focus { border-color: #a855f7; }
+        
+        /* ডাউনলোড বাটন */
+        .action-btn {
+            width: 100%; background: #a855f7; color: #fff; border: none;
+            border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 600;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; transition: 0.2s; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+        .action-btn:active { background: #9333ea; transform: scale(0.98); }
+        .action-btn:disabled { background: #555; box-shadow: none; cursor: not-allowed; }
+        
+        /* সাকসেস মেসেজ */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #10b981; color: #fff; padding: 12px 24px; border-radius: 10px;
+            font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .toast.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- হেডার -->
+        <div class="header">
+            <h2><i class="fas fa-file-pdf" style="color: #a855f7; margin-right: 8px;"></i> Text to PDF</h2>
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+
+        <!-- টেক্সট ইনপুট -->
+        <div class="text-area-wrapper">
+            <textarea id="textInput" placeholder="এখানে আপনার লেখা টাইপ করুন বা পেস্ট করুন..."></textarea>
+        </div>
+
+        <!-- সেটিংস -->
+        <div class="settings">
+            <div class="setting-group">
+                <label>File Name</label>
+                <input type="text" id="fileName" value="My_Document" placeholder="File name">
+            </div>
+            <div class="setting-group">
+                <label>Page Size</label>
+                <select id="pageSize">
+                    <option value="a4">A4 (210 x 297 mm)</option>
+                    <option value="letter">Letter (8.5 x 11 in)</option>
+                    <option value="legal">Legal (8.5 x 14 in)</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label>Font Size</label>
+                <select id="fontSize">
+                    <option value="12">Small (12pt)</option>
+                    <option value="14" selected>Normal (14pt)</option>
+                    <option value="16">Medium (16pt)</option>
+                    <option value="18">Large (18pt)</option>
+                    <option value="20">Extra Large (20pt)</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label>Font Family</label>
+                <select id="fontFamily">
+                    <option value="helvetica">Helvetica (Sans-Serif)</option>
+                    <option value="times">Times (Serif)</option>
+                    <option value="courier">Courier (Monospace)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ডাউনলোড বাটন -->
+        <button class="action-btn" id="generateBtn" onclick="generatePDF()">
+            <i class="fas fa-download"></i> Download PDF
+        </button>
+    </div>
+
+    <!-- সাকসেস মেসেজ -->
+    <div class="toast" id="toast">PDF Successfully Downloaded!</div>
+
+    <script>
+        // আপনার আগের ড্যাশবোর্ডে ফিরে যাওয়ার জন্য
+        // নিশ্চিত করুন index.html ফাইলটি একই ফোল্ডারে আছে
+
+        async function generatePDF() {
+            const btn = document.getElementById('generateBtn');
+            const text = document.getElementById('textInput').value;
+            const fileNameInput = document.getElementById('fileName').value.trim();
+            const pageSize = document.getElementById('pageSize').value;
+            const fontSize = parseInt(document.getElementById('fontSize').value);
+            const fontFamily = document.getElementById('fontFamily').value;
+
+            // ভ্যালিডেশন (লেখা খালি থাকলে এরর দেবে)
+            if (!text || text.trim() === '') {
+                alert("⚠️ অনুগ্রহ করে কিছু লেখা টাইপ করুন!");
+                return;
+            }
+
+            // বাটন ডিজেবল করা (ডাবল ক্লিক আটকানোর জন্য)
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            try {
+                // jsPDF ইনিশিয়ালাইজ করা
+                const { jsPDF } = window.jspdf;
+                
+                // পেজ সাইজ অনুযায়ী ডকুমেন্ট তৈরি
+                const doc = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: pageSize
+                });
+
+                // ফন্ট সেট করা
+                doc.setFont(fontFamily, 'normal');
+                doc.setFontSize(fontSize);
+
+                // পেজের মাপ বের করা (মিলিমিটারে)
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                
+                // মার্জিন সেট করা (৪ দিকে ২০ মিমি)
+                const margin = 20;
+                const maxLineWidth = pageWidth - (margin * 2);
+                
+                // লাইনের উচ্চতা বের করা (ফন্ট সাইজের উপর ভিত্তি করে)
+                const lineHeight = fontSize * 0.5; 
+                
+                // টেক্সটকে পেজের প্রস্থ অনুযায়ী ভাগ করা (অটো ওয়ার্ড র‍্যাপিং)
+                const splitText = doc.splitTextToSize(text, maxLineWidth);
+                
+                let cursorY = margin + 10; // শুরুতে কার্সর Y পজিশন
+
+                // এক এক করে লাইন লেখা এবং পেজ শেষ হলে নতুন পেজ নেওয়া
+                for (let i = 0; i < splitText.length; i++) {
+                    // যদি পেজের নিচের মার্জিনে চলে যায়, তবে নতুন পেজ যোগ করবে
+                    if (cursorY + lineHeight > pageHeight - margin) {
+                        doc.addPage();
+                        cursorY = margin + 10; // নতুন পেজে কার্সর আপডেট
+                    }
+                    doc.text(splitText[i], margin, cursorY);
+                    cursorY += lineHeight;
+                }
+
+                // ফাইলের নাম সেট করা (খালি থাকলে ডিফল্ট নাম)
+                let finalFileName = fileNameInput ? fileNameInput : 'Document';
+                if (!finalFileName.toLowerCase().endsWith('.pdf')) {
+                    finalFileName += '.pdf';
+                }
+
+                // PDF সেভ করা
+                doc.save(finalFileName);
+
+                // সাকসেস মেসেজ দেখানো
+                showToast();
+                
+                // ইনপুট ক্লিয়ার করা
+                document.getElementById('textInput').value = '';
+
+            } catch (error) {
+                console.error("PDF Generation Error:", error);
+                alert("❌ দুঃখিত, PDF তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+            } finally {
+                // বাটন আবার চালু করা
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-download"></i> Download PDF';
+            }
+        }
+
+        // টোস্ট (সাকসেস) মেসেজ দেখানোর ফাংশন
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

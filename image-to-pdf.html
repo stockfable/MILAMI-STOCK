@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Image to PDF - STOCKFABLE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- jsPDF Library for PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
+        
+        body {
+            background-color: #0b1121;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 40%);
+            display: flex; justify-content: center; align-items: center; color: #f3f4f6;
+        }
+        
+        .container {
+            width: 100%; max-width: 600px; height: 95%; max-height: 800px;
+            display: flex; flex-direction: column; padding: 20px;
+            background: rgba(30, 34, 43, 0.6);
+            border-radius: 24px; 
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px; padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .header h2 { font-size: 18px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .header h2 i { color: #3b82f6; }
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #d1d5db; padding: 8px 14px; border-radius: 10px; font-size: 13px;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: all 0.2s ease;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+        .upload-area {
+            border: 2px dashed rgba(59, 130, 246, 0.3);
+            border-radius: 16px; padding: 25px 20px; text-align: center;
+            background: rgba(15, 23, 42, 0.5); cursor: pointer;
+            transition: all 0.3s ease; margin-bottom: 20px;
+        }
+        .upload-area:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.08); }
+        .upload-area i { font-size: 32px; color: #3b82f6; margin-bottom: 12px; }
+        .upload-area p { font-size: 14px; color: #9ca3af; }
+        .upload-area span { color: #3b82f6; font-weight: 600; }
+        input[type="file"] { display: none; }
+
+        .preview-grid {
+            flex: 1; overflow-y: auto; display: grid;
+            grid-template-columns: repeat(3, 1fr); gap: 12px;
+            margin-bottom: 20px; padding-right: 5px;
+        }
+        .preview-grid::-webkit-scrollbar { width: 5px; }
+        .preview-grid::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
+        
+        .preview-item {
+            position: relative; aspect-ratio: 1 / 1;
+            border-radius: 12px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.2);
+        }
+        .preview-item img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .remove-btn {
+            position: absolute; top: 6px; right: 6px;
+            background: rgba(239, 68, 68, 0.9); color: #fff;
+            border: none; border-radius: 50%; width: 26px; height: 26px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 12px; cursor: pointer; transition: 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .remove-btn:hover { background: #dc2626; transform: scale(1.1); }
+
+        .settings {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;
+        }
+        .setting-group { display: flex; flex-direction: column; gap: 8px; }
+        .setting-group label { font-size: 12px; color: #9ca3af; font-weight: 500; margin-left: 2px; }
+        .setting-group select {
+            width: 100%; background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            padding: 14px 16px; color: #f3f4f6; font-size: 14px; outline: none;
+            appearance: none; -webkit-appearance: none;
+            transition: border-color 0.2s;
+        }
+        .setting-group select:focus { border-color: #3b82f6; }
+
+        .action-btn {
+            width: 100%; background: #3b82f6; color: #fff; border: none;
+            border-radius: 14px; padding: 18px; font-size: 16px; font-weight: 600;
+            cursor: pointer; display: flex; justify-content: center; align-items: center;
+            gap: 10px; transition: all 0.3s ease; 
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
+        }
+        .action-btn:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:disabled { background: #4b5563; box-shadow: none; cursor: not-allowed; transform: none; }
+
+        /* ★ PDF Preview Modal ★ */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+            z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-content {
+            background: #1e222b; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 20px; width: 100%; max-width: 500px;
+            display: flex; flex-direction: column; gap: 15px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+        .modal-content h3 { font-size: 16px; font-weight: 600; color: #fff; text-align: center; }
+        
+        /* ★ সিরিয়ালি পেজ দেখানোর কন্টেইনার ★ */
+        .image-preview-container {
+            width: 100%; height: 60vh; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; background: #e5e7eb; /* ধূসর ব্যাকগ্রাউন্ড, PDF ভিউয়ারের মতো */
+            overflow-y: auto; padding: 15px; display: flex;
+            flex-direction: column; gap: 20px; align-items: center;
+        }
+        .image-preview-container::-webkit-scrollbar { width: 6px; }
+        .image-preview-container::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 10px; }
+        
+        /* প্রতিটি পেজের ডিজাইন */
+        .pdf-page {
+            width: 100%; max-width: 380px; background: #ffffff;
+            padding: 15px; border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; min-height: 200px;
+            transition: transform 0.2s;
+        }
+        .pdf-page:active { transform: scale(0.98); }
+        
+        /* পেজ নম্বরের ব্যাজ */
+        .page-number {
+            position: absolute; top: -10px; left: 15px;
+            background: #3b82f6; color: #fff; padding: 3px 10px;
+            border-radius: 6px; font-size: 11px; font-weight: bold;
+            box-shadow: 0 2px 5px rgba(59, 130, 246, 0.4); z-index: 10;
+        }
+        
+        .pdf-page img {
+            max-width: 100%; max-height: 100%; object-fit: contain;
+            border-radius: 4px;
+        }
+        
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions button {
+            flex: 1; padding: 14px; border-radius: 12px; font-size: 14px;
+            font-weight: 600; cursor: pointer; border: none; transition: 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-cancel { background: rgba(255,255,255,0.1); color: #d1d5db; }
+        .btn-cancel:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .btn-download { background: #10b981; color: #fff; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3); }
+        .btn-download:hover { background: #059669; transform: translateY(-2px); }
+
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: #10b981; color: #fff; padding: 12px 24px; border-radius: 12px;
+            font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1000; 
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2><i class="fas fa-file-image"></i> Image to PDF</h2>
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+
+        <label class="upload-area" for="imageInput">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Tap to <span>select images</span> or drop here</p>
+        </label>
+        <input type="file" id="imageInput" accept="image/*" multiple>
+
+        <div class="preview-grid" id="previewGrid"></div>
+
+        <div class="settings">
+            <div class="setting-group">
+                <label>Page Size</label>
+                <select id="pageSize">
+                    <option value="a4">A4 Size</option>
+                    <option value="letter">Letter Size</option>
+                </select>
+            </div>
+            <div class="setting-group">
+                <label>Orientation</label>
+                <select id="orientation">
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="action-btn" id="generateBtn" onclick="generateImagePDF()">
+            <i class="fas fa-file-pdf"></i> Convert to PDF
+        </button>
+    </div>
+
+    <!-- ★ PDF Preview Modal (এখন সিরিয়ালি পেজ দেখাবে) ★ -->
+    <div class="modal-overlay" id="pdfModal">
+        <div class="modal-content">
+            <h3>📄 PDF Preview</h3>
+            <!-- পেজগুলো এখানে সিরিয়ালি যোগ হবে -->
+            <div class="image-preview-container" id="imagePreviewContainer"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closePreviewModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn-download" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">PDF Successfully Downloaded!</div>
+
+    <script>
+        let uploadedImages = [];
+        let generatedPdfBlob = null;
+        let currentPdfName = "";
+
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        uploadedImages.push({ data: event.target.result, name: file.name });
+                        renderPreviews();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            e.target.value = ''; 
+        });
+
+        function renderPreviews() {
+            const grid = document.getElementById('previewGrid');
+            grid.innerHTML = '';
+            uploadedImages.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                div.innerHTML = `
+                    <img src="${img.data}" alt="preview">
+                    <button class="remove-btn" onclick="removeImage(${index})"><i class="fas fa-times"></i></button>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            renderPreviews();
+        }
+
+        async function generateImagePDF() {
+            if (uploadedImages.length === 0) {
+                alert("⚠️ অনুগ্রহ করে অন্তত একটি ছবি সিলেক্ট করুন!");
+                return;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+
+            if (!window.jspdf) {
+                alert("❌ ইন্টারনেট সমস্যার কারণে PDF জেনারেটর লোড হয়নি। ইন্টারনেট চেক করে আবার চেষ্টা করুন।");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Convert to PDF';
+                return;
+            }
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pageSize = document.getElementById('pageSize').value;
+                const orientation = document.getElementById('orientation').value;
+
+                const doc = new jsPDF({
+                    orientation: orientation,
+                    unit: 'mm',
+                    format: pageSize
+                });
+
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                for (let i = 0; i < uploadedImages.length; i++) {
+                    const imgData = uploadedImages[i].data;
+                    
+                    const img = new Image();
+                    img.src = imgData;
+                    await new Promise((resolve) => { img.onload = resolve; });
+
+                    const imgRatio = img.width / img.height;
+                    const pageRatio = pageWidth / pageHeight;
+
+                    let drawWidth = pageWidth;
+                    let drawHeight = pageHeight;
+
+                    if (imgRatio > pageRatio) {
+                        drawHeight = pageWidth / imgRatio;
+                    } else {
+                        drawWidth = pageHeight * imgRatio;
+                    }
+
+                    const x = (pageWidth - drawWidth) / 2;
+                    const y = (pageHeight - drawHeight) / 2;
+
+                    if (i > 0) doc.addPage();
+                    doc.addImage(imgData, 'JPEG', x, y, drawWidth, drawHeight, undefined, 'FAST');
+                }
+
+                // ★ PDF তৈরি করা এবং মেমোরিতে রাখা ★
+                generatedPdfBlob = doc.output('blob');
+                currentPdfName = "Converted_Images_" + Date.now() + ".pdf";
+
+                // ★ মোডালে ছবিগুলো সিরিয়ালি "Page 1, Page 2" আকারে দেখানো ★
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                previewContainer.innerHTML = '';
+                
+                uploadedImages.forEach((img, index) => {
+                    const pageDiv = document.createElement('div');
+                    pageDiv.className = 'pdf-page';
+                    pageDiv.innerHTML = `
+                        <div class="page-number">Page ${index + 1}</div>
+                        <img src="${img.data}" alt="Page ${index + 1}">
+                    `;
+                    previewContainer.appendChild(pageDiv);
+                });
+
+                // মোডাল ওপেন করা
+                document.getElementById('pdfModal').classList.add('show');
+
+            } catch (error) {
+                console.error("PDF Error:", error);
+                alert("❌ সমস্যা হয়েছে: " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Convert to PDF';
+            }
+        }
+
+        // ★ Download বাটনে ক্লিক করলে ফাইল ডাউনলোড হবে ★
+        function downloadPDF() {
+            if (!generatedPdfBlob) return;
+            
+            const downloadLink = document.createElement('a');
+            const url = URL.createObjectURL(generatedPdfBlob);
+            downloadLink.href = url;
+            downloadLink.download = currentPdfName;
+            
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            // মেমোরি ক্লিনআপ
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+            
+            showToast();
+        }
+
+        // ★ প্রিভিউ মোডাল বন্ধ করার ফাংশন ★
+        function closePreviewModal() {
+            document.getElementById('pdfModal').classList.remove('show');
+            document.getElementById('imagePreviewContainer').innerHTML = '';
+            generatedPdfBlob = null; // মেমোরি থেকে ডিলিট
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

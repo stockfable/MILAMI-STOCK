@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About MINAMI STOCK - Premium Stock Photos, AI Tools & Shop</title>
+    <meta name="description" content="MINAMI STOCK is a creative platform built in Bangladesh by Muhammad Mahmudul Hasan. Discover premium stock photos, free AI tools and a marketplace for sellers.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080c14;
+            --surface: #0f1522;
+            --surface-2: #151c2c;
+            --line: rgba(255,255,255,0.09);
+            --text: #e8ecf4;
+            --muted: #9aa5ba;
+            --blue: #2f6bff;
+            --gold: #fbbf24;
+            --green: #10b981;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-text-size-adjust: 100%;
+        }
+        a { color: inherit; text-decoration: none; }
+        a:focus-visible, button:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+        img { max-width: 100%; display: block; }
+
+        .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+        /* ===== Top bar ===== */
+        .topbar {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(8,12,20,0.92);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+        }
+        .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 62px; gap: 12px; }
+        .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: 0.5px; font-size: 15px; }
+        .brand img { width: 34px; height: 34px; object-fit: contain; }
+        .nav-links { display: flex; align-items: center; gap: 6px; }
+        .nav-links a { padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+        .nav-links a:hover, .nav-links a.active { color: #fff; background: rgba(255,255,255,0.07); }
+        .nav-links .btn-nav { background: var(--gold); color: #1a1300; }
+        .nav-links .btn-nav:hover { background: #fcd34d; color: #1a1300; }
+
+        /* ===== Hero ===== */
+        .hero {
+            position: relative; overflow: hidden;
+            padding: 84px 0 76px;
+            border-bottom: 1px solid var(--line);
+            background:
+                radial-gradient(ellipse at 12% 0%, rgba(47,107,255,0.28), transparent 55%),
+                radial-gradient(ellipse at 95% 100%, rgba(251,191,36,0.16), transparent 50%),
+                var(--bg);
+        }
+        .hero h1 {
+            font-size: clamp(34px, 6.4vw, 66px);
+            line-height: 1.08;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            max-width: 860px;
+        }
+        .hero p.lead { margin-top: 22px; max-width: 640px; font-size: clamp(16px, 2.2vw, 19px); color: var(--muted); }
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 24px; border-radius: 10px; border: 0;
+            font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+            transition: transform .15s ease, background .15s ease;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--blue); color: #fff; }
+        .btn-primary:hover { background: #4a7fff; }
+        .btn-ghost { background: transparent; color: var(--text); border: 1px solid rgba(255,255,255,0.22); }
+        .btn-ghost:hover { background: rgba(255,255,255,0.07); }
+
+        /* ===== Sections ===== */
+        section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+        section:last-of-type { border-bottom: 0; }
+        h2 { font-size: clamp(26px, 4vw, 38px); line-height: 1.2; font-weight: 800; letter-spacing: -0.6px; }
+        .section-intro { margin-top: 14px; color: var(--muted); max-width: 640px; }
+
+        /* Story */
+        .story { display: grid; grid-template-columns: 1.25fr 1fr; gap: 48px; align-items: start; }
+        .story p { color: #c3cbdb; margin-top: 18px; max-width: 62ch; }
+        .story p:first-of-type { margin-top: 22px; }
+        .pullquote {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--gold);
+            border-radius: 14px;
+            padding: 28px 26px;
+            font-size: 20px; line-height: 1.5; font-weight: 600;
+        }
+        .pullquote small { display: block; margin-top: 16px; font-size: 13px; font-weight: 500; color: var(--muted); }
+
+        /* What we offer */
+        .offer-list { margin-top: 36px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .offer {
+            display: flex; gap: 18px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 26px;
+        }
+        .offer .ico {
+            flex: 0 0 auto;
+            width: 46px; height: 46px; border-radius: 12px;
+            display: grid; place-items: center; font-size: 19px;
+        }
+        .ico.blue { background: rgba(47,107,255,0.16); color: #7ea3ff; }
+        .ico.gold { background: rgba(251,191,36,0.15); color: var(--gold); }
+        .ico.green { background: rgba(16,185,129,0.15); color: #34d399; }
+        .ico.pink { background: rgba(236,72,153,0.15); color: #f472b6; }
+        .offer h3 { font-size: 18px; font-weight: 700; }
+        .offer p { margin-top: 6px; font-size: 14.5px; color: var(--muted); }
+
+        /* Two audiences */
+        .split { margin-top: 36px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .panel { border-radius: 18px; padding: 32px 28px; border: 1px solid var(--line); }
+        .panel.buyers { background: linear-gradient(160deg, rgba(47,107,255,0.18), var(--surface) 60%); }
+        .panel.sellers { background: linear-gradient(160deg, rgba(251,191,36,0.15), var(--surface) 60%); }
+        .panel h3 { font-size: 22px; font-weight: 800; }
+        .panel ul { list-style: none; margin-top: 18px; display: grid; gap: 12px; }
+        .panel li { display: flex; gap: 12px; font-size: 15px; color: #cfd6e4; }
+        .panel li i { margin-top: 5px; color: var(--green); font-size: 13px; }
+        .panel .btn { margin-top: 26px; }
+
+        /* Values */
+        .values { margin-top: 36px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+        .value { padding: 28px 26px; background: var(--surface); }
+        .value + .value { border-left: 1px solid var(--line); }
+        .value h3 { font-size: 17px; font-weight: 700; }
+        .value p { margin-top: 8px; font-size: 14.5px; color: var(--muted); }
+
+        /* Founder */
+        .founder {
+            display: grid; grid-template-columns: 180px 1fr; gap: 36px; align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 36px;
+        }
+        .avatar {
+            width: 160px; height: 160px; border-radius: 50%;
+            display: grid; place-items: center;
+            background: linear-gradient(135deg, var(--blue), #7c3aed);
+            font-size: 52px; font-weight: 800; letter-spacing: 2px;
+            box-shadow: 0 0 0 6px rgba(255,255,255,0.05);
+            overflow: hidden;
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .founder h3 { font-size: 26px; font-weight: 800; }
+        .founder .role { margin-top: 4px; color: var(--gold); font-weight: 600; font-size: 14px; }
+        .founder .where { margin-top: 8px; color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .founder p.bio { margin-top: 16px; color: #c3cbdb; max-width: 62ch; }
+
+        /* FAQ */
+        .faq { margin-top: 32px; max-width: 760px; }
+        details { border-bottom: 1px solid var(--line); }
+        summary {
+            list-style: none; cursor: pointer;
+            padding: 20px 0; font-weight: 700; font-size: 16px;
+            display: flex; justify-content: space-between; align-items: center; gap: 16px;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: "+"; font-size: 22px; color: var(--muted); transition: transform .2s ease; }
+        details[open] summary::after { transform: rotate(45deg); color: var(--gold); }
+        details p { padding: 0 0 20px; color: var(--muted); font-size: 15px; max-width: 64ch; }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(47,107,255,0.3), transparent 65%),
+                var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 60px 24px;
+        }
+        .cta p { margin: 14px auto 0; max-width: 520px; color: var(--muted); }
+        .cta .hero-actions { justify-content: center; }
+
+        /* Footer */
+        footer { border-top: 1px solid var(--line); padding: 30px 0 44px; color: var(--muted); font-size: 13.5px; }
+        footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; }
+        footer .links { display: flex; flex-wrap: wrap; gap: 18px; }
+        footer a:hover { color: #fff; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 860px) {
+            .story { grid-template-columns: 1fr; gap: 32px; }
+            .offer-list, .split { grid-template-columns: 1fr; }
+            .values { grid-template-columns: 1fr; }
+            .value + .value { border-left: 0; border-top: 1px solid var(--line); }
+            .founder { grid-template-columns: 1fr; text-align: center; justify-items: center; padding: 30px 22px; }
+            .founder .where { justify-content: center; }
+        }
+        @media (max-width: 560px) {
+            .nav-links a:not(.btn-nav):not(.keep) { display: none; }
+            .hero { padding: 56px 0 52px; }
+            section { padding: 52px 0; }
+            .offer { padding: 22px 18px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top bar -->
+    <header class="topbar">
+        <div class="wrap">
+            <a href="index.html" class="brand">
+                <img src="https://i.ibb.co.com/xK8nP7KD/1000031217-removebg-preview.png" alt="MINAMI STOCK logo">
+                <span>MINAMI STOCK</span>
+            </a>
+            <nav class="nav-links" aria-label="Main">
+                <a href="index.html" class="keep">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="tools.html">Tools</a>
+                <a href="about.html" class="active" aria-current="page">About</a>
+                <a href="login.html" class="btn-nav">Sign in</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="wrap">
+                <h1>Made in Bangladesh. Built for creators everywhere.</h1>
+                <p class="lead">MINAMI STOCK is a home for premium stock photos, free AI tools and a growing marketplace, created so that anyone with a good idea, a camera or a product can find an audience.</p>
+                <div class="hero-actions">
+                    <a href="index.html" class="btn btn-primary"><i class="fas fa-images"></i> Explore MINAMI STOCK</a>
+                    <a href="upload.html" class="btn btn-ghost"><i class="fas fa-cloud-arrow-up"></i> Start contributing</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Our story -->
+        <section id="story">
+            <div class="wrap story">
+                <div>
+                    <h2>Our story</h2>
+                    <p>MINAMI STOCK began with a simple question: why should great creative tools and a global marketplace feel out of reach for people who live far from big cities?</p>
+                    <p>Muhammad Mahmudul Hasan started the platform from a village in Bangladesh, with a phone, a lot of curiosity and the belief that talent is spread evenly across the world while opportunity is not. He taught himself to design and build for the web, and he wanted to create the kind of place he had been looking for: one where photographers, designers and small sellers could share their work, and where everyday tools such as image converters and PDF makers were free, fast and easy to use.</p>
+                    <p>Today MINAMI STOCK brings those ideas together in one place. You can browse and license stock photos, use AI tools to generate and improve images, shop trusted products, and open your own seller account to start earning from what you create.</p>
+                </div>
+                <aside class="pullquote">
+                    Great work can come from anywhere. We build the tools and the stage, creators bring the rest.
+                    <small>Muhammad Mahmudul Hasan, Founder</small>
+                </aside>
+            </div>
+        </section>
+
+        <!-- What we offer -->
+        <section id="offer">
+            <div class="wrap">
+                <h2>Everything a creator needs, in one place</h2>
+                <p class="section-intro">Four tools that work together, so you can go from an idea to a finished design, a sale or a download without leaving the site.</p>
+                <div class="offer-list">
+                    <div class="offer">
+                        <div class="ico blue"><i class="fas fa-camera-retro"></i></div>
+                        <div>
+                            <h3>Premium stock photos</h3>
+                            <p>Browse a growing library of images and visuals for websites, posters, social posts and presentations, with clear and simple licensing.</p>
+                        </div>
+                    </div>
+                    <div class="offer">
+                        <div class="ico gold"><i class="fas fa-wand-magic-sparkles"></i></div>
+                        <div>
+                            <h3>AI image tools</h3>
+                            <p>Describe an idea and generate an image, then upscale, enhance and resize it. Every creation is saved to your own account.</p>
+                        </div>
+                    </div>
+                    <div class="offer">
+                        <div class="ico green"><i class="fas fa-screwdriver-wrench"></i></div>
+                        <div>
+                            <h3>Free everyday tools</h3>
+                            <p>Text to PDF, image to PDF, QR codes, converters, calculators and word counters. No sign-up needed and nothing to install.</p>
+                        </div>
+                    </div>
+                    <div class="offer">
+                        <div class="ico pink"><i class="fas fa-bag-shopping"></i></div>
+                        <div>
+                            <h3>Shop and seller dashboard</h3>
+                            <p>Discover products from sellers and post your own. Every seller gets a personal dashboard to manage their listings.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buyers and contributors -->
+        <section id="community">
+            <div class="wrap">
+                <h2>Built for people who use it and people who share on it</h2>
+                <div class="split">
+                    <div class="panel buyers">
+                        <h3>If you are looking for content</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Find photos and visuals that fit your project quickly.</li>
+                            <li><i class="fas fa-check"></i> Generate and edit images with AI in the same place.</li>
+                            <li><i class="fas fa-check"></i> Use free tools without creating an account.</li>
+                            <li><i class="fas fa-check"></i> Keep your generated images saved in your account.</li>
+                        </ul>
+                        <a href="index.html" class="btn btn-primary">Start exploring</a>
+                    </div>
+                    <div class="panel sellers">
+                        <h3>If you create and sell</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Upload your photos and build a public portfolio.</li>
+                            <li><i class="fas fa-check"></i> Open a free seller account with your own dashboard.</li>
+                            <li><i class="fas fa-check"></i> Post products with your own photos and prices.</li>
+                            <li><i class="fas fa-check"></i> Reach customers who are already browsing the site.</li>
+                        </ul>
+                        <a href="dashboard.html" class="btn btn-primary" style="background: var(--gold); color: #1a1300;">Open seller dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Values -->
+        <section id="values">
+            <div class="wrap">
+                <h2>What we stand for</h2>
+                <div class="values">
+                    <div class="value">
+                        <h3>Open to everyone</h3>
+                        <p>You do not need a big budget or a big city to start. A good idea and a device are enough.</p>
+                    </div>
+                    <div class="value">
+                        <h3>Simple and fast</h3>
+                        <p>Pages load quickly on a phone and tools do one job well, so you spend your time creating.</p>
+                    </div>
+                    <div class="value">
+                        <h3>Fair to creators</h3>
+                        <p>Your work stays yours. We keep licensing clear and your account and data private.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Founder -->
+        <section id="founder">
+            <div class="wrap">
+                <div class="founder">
+                    <!-- To show your photo: replace the "MH" text below with  <img src="YOUR-PHOTO-URL" alt="Muhammad Mahmudul Hasan">  -->
+                    <div class="avatar" aria-hidden="true">MH</div>
+                    <div>
+                        <h3>Muhammad Mahmudul Hasan</h3>
+                        <p class="role">Founder and developer, MINAMI STOCK</p>
+                        <p class="where"><i class="fas fa-location-dot"></i> A village in Bangladesh</p>
+                        <p class="bio">I built MINAMI STOCK to prove that a creative platform can start anywhere, even a small village. I design, code and run every part of this site myself, and I am improving it every week with feedback from the people who use it. If you have an idea, a bug to report or a feature you would like to see, I would love to hear from you.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+            <div class="wrap">
+                <h2>Frequently asked questions</h2>
+                <div class="faq">
+                    <details>
+                        <summary>What is MINAMI STOCK?</summary>
+                        <p>MINAMI STOCK is a creative platform with stock photos, AI image tools, free everyday tools and a marketplace where sellers can post their own products.</p>
+                    </details>
+                    <details>
+                        <summary>Who runs the site?</summary>
+                        <p>MINAMI STOCK was created and is run by Muhammad Mahmudul Hasan from Bangladesh.</p>
+                    </details>
+                    <details>
+                        <summary>Do I need an account to use the tools?</summary>
+                        <p>No. The free tools such as Text to PDF, QR Code and Word Counter work without signing in. An account is needed to save your AI creations, upload content or sell products.</p>
+                    </details>
+                    <details>
+                        <summary>How do I become a seller?</summary>
+                        <p>Create an account, open your dashboard and add your first product with a photo, a title and a price. Your listing appears in the shop once it is posted.</p>
+                    </details>
+                    <details>
+                        <summary>How can I contact you?</summary>
+                        <p>Use the links in the footer of the home page, or write to the founder through the contact details listed on the site.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to action -->
+        <section id="join">
+            <div class="wrap">
+                <div class="cta">
+                    <h2>Ready to create something?</h2>
+                    <p>Join MINAMI STOCK to explore, generate, upload and sell. It takes less than a minute to get started.</p>
+                    <div class="hero-actions">
+                        <a href="login.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Create your account</a>
+                        <a href="shop.html" class="btn btn-ghost"><i class="fas fa-bag-shopping"></i> Visit the shop</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <span>© 2026 MINAMI STOCK. All rights reserved.</span>
+            <div class="links">
+                <a href="index.html">Home</a>
+                <a href="shop.html">Shop</a>
+                <a href="tools.html">Tools</a>
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

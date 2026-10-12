@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit Converter - STOCKFABLE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
+        
+        /* ★ লাল এবং সবুজ মিশ্রিত প্রিমিয়াম ডার্ক ব্যাকগ্রাউন্ড ★ */
+        body {
+            background-color: #0b1121; /* ডার্ক বেস */
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(239, 68, 68, 0.4) 0%, transparent 50%), /* লাল গ্লো */
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.4) 0%, transparent 50%); /* সবুজ গ্লো */
+            display: flex; justify-content: center; align-items: center; color: #f3f4f6;
+            padding: 20px; /* ★ আশেপাশে স্পেস (Tyle) ★ */
+            height: 100vh;
+        }
+        
+        .container {
+            width: 100%; max-width: 480px;
+            height: 100%; max-height: 780px;
+            display: flex; flex-direction: column; padding: 24px;
+            background: rgba(30, 41, 59, 0.6); /* ডার্ক গ্লাস ইফেক্ট */
+            border-radius: 28px; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+        }
+
+        /* হেডার */
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 25px; padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .header h2 { font-size: 20px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .header h2 i { color: #10b981; } 
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: #cbd5e1; padding: 8px 16px; border-radius: 12px; font-size: 13px;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: all 0.2s ease;
+        }
+        .back-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+        /* ক্যাটাগরি ট্যাব */
+        .category-tabs {
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px;
+            margin-bottom: 20px; scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+        
+        .cat-tab {
+            flex: 0 0 auto; padding: 10px 18px; border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.08);
+            color: #94a3b8; font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        /* ★ অ্যাক্টিভ ট্যাবে লাল-সবুজ গ্রেডিয়েন্ট ★ */
+        .cat-tab.active {
+            background: linear-gradient(135deg, #ef4444, #10b981); 
+            color: #fff; border-color: transparent;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* কনভার্টার কার্ড */
+        .converter-box {
+            flex: 1; display: flex; flex-direction: column; gap: 15px;
+            justify-content: center;
+        }
+
+        .input-group {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px; padding: 18px;
+            display: flex; flex-direction: column; gap: 10px;
+            transition: all 0.3s ease;
+        }
+        .input-group:focus-within { 
+            border-color: #10b981; 
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+        }
+        
+        .input-group label { font-size: 12px; color: #94a3b8; font-weight: 600; }
+        
+        .input-row { display: flex; gap: 12px; align-items: center; }
+        
+        .input-row input {
+            flex: 1; background: transparent; border: none; outline: none;
+            color: #fff; font-size: 26px; font-weight: 700; width: 100%;
+        }
+        .input-row input::placeholder { color: #475569; }
+        
+        .input-row select {
+            background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 10px 14px; color: #fff; font-size: 14px;
+            outline: none; cursor: pointer; appearance: none; -webkit-appearance: none;
+            min-width: 100px; text-align: center;
+        }
+        .input-row select:focus { border-color: #10b981; }
+        .input-row select option { background: #0f172a; color: #fff; }
+
+        /* অদলবদল বাটন (Swap) */
+        .swap-container {
+            display: flex; justify-content: center; align-items: center; position: relative;
+            margin: -5px 0; z-index: 10;
+        }
+        .swap-btn {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: #1e293b; border: 2px solid #0b1121;
+            color: #10b981; font-size: 18px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.3s ease;
+        }
+        .swap-btn:hover { background: #10b981; color: #fff; transform: scale(1.1) rotate(180deg); }
+        .swap-btn:active { transform: scale(0.9); }
+
+        /* ক্লিয়ার বাটন */
+        .clear-btn {
+            width: 100%; background: rgba(255, 255, 255, 0.05); color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+            padding: 16px; font-size: 15px; font-weight: 600; cursor: pointer;
+            margin-top: 10px; transition: all 0.2s ease;
+        }
+        .clear-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+        .clear-btn:active { transform: scale(0.98); }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2><i class="fas fa-arrow-right-arrow-left"></i> Unit Converter</h2>
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+
+        <!-- ক্যাটাগরি ট্যাব -->
+        <div class="category-tabs" id="categoryTabs">
+            <button class="cat-tab active" onclick="changeCategory('length')">Length</button>
+            <button class="cat-tab" onclick="changeCategory('weight')">Weight</button>
+            <button class="cat-tab" onclick="changeCategory('temp')">Temperature</button>
+            <button class="cat-tab" onclick="changeCategory('area')">Area</button>
+            <button class="cat-tab" onclick="changeCategory('speed')">Speed</button>
+        </div>
+
+        <!-- কনভার্টার বক্স -->
+        <div class="converter-box">
+            <!-- From Input -->
+            <div class="input-group">
+                <label>From</label>
+                <div class="input-row">
+                    <input type="number" id="fromValue" placeholder="0" oninput="convert()">
+                    <select id="fromUnit" onchange="convert()"></select>
+                </div>
+            </div>
+
+            <!-- Swap Button -->
+            <div class="swap-container">
+                <button class="swap-btn" onclick="swapUnits()" title="Swap Units">
+                    <i class="fas fa-arrow-down"></i>
+                </button>
+            </div>
+
+            <!-- To Input -->
+            <div class="input-group">
+                <label>To</label>
+                <div class="input-row">
+                    <input type="number" id="toValue" placeholder="0" readonly>
+                    <select id="toUnit" onchange="convert()"></select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clear Button -->
+        <button class="clear-btn" onclick="clearConverter()">
+            <i class="fas fa-times" style="margin-right: 8px;"></i> Clear
+        </button>
+    </div>
+
+    <script>
+        // ★ কনভার্সন রেট ডেটা ★
+        const conversionData = {
+            length: {
+                base: 'm',
+                units: {
+                    m: { name: 'Meter (m)', rate: 1 },
+                    km: { name: 'Kilometer (km)', rate: 1000 },
+                    cm: { name: 'Centimeter (cm)', rate: 0.01 },
+                    mm: { name: 'Millimeter (mm)', rate: 0.001 },
+                    mile: { name: 'Mile (mi)', rate: 1609.34 },
+                    yard: { name: 'Yard (yd)', rate: 0.9144 },
+                    foot: { name: 'Foot (ft)', rate: 0.3048 },
+                    inch: { name: 'Inch (in)', rate: 0.0254 }
+                }
+            },
+            weight: {
+                base: 'kg',
+                units: {
+                    kg: { name: 'Kilogram (kg)', rate: 1 },
+                    g: { name: 'Gram (g)', rate: 0.001 },
+                    mg: { name: 'Milligram (mg)', rate: 0.000001 },
+                    lb: { name: 'Pound (lb)', rate: 0.453592 },
+                    oz: { name: 'Ounce (oz)', rate: 0.0283495 },
+                    ton: { name: 'Metric Ton (t)', rate: 1000 }
+                }
+            },
+            temp: {
+                base: 'c',
+                units: {
+                    c: { name: 'Celsius (°C)' },
+                    f: { name: 'Fahrenheit (°F)' },
+                    k: { name: 'Kelvin (K)' }
+                }
+            },
+            area: {
+                base: 'sqm',
+                units: {
+                    sqm: { name: 'Square Meter (m²)', rate: 1 },
+                    sqkm: { name: 'Square Kilometer (km²)', rate: 1000000 },
+                    sqft: { name: 'Square Foot (ft²)', rate: 0.092903 },
+                    acre: { name: 'Acre', rate: 4046.86 },
+                    hectare: { name: 'Hectare (ha)', rate: 10000 }
+                }
+            },
+            speed: {
+                base: 'mps',
+                units: {
+                    mps: { name: 'Meter/second (m/s)', rate: 1 },
+                    kph: { name: 'Kilometer/hour (km/h)', rate: 0.277778 },
+                    mph: { name: 'Mile/hour (mph)', rate: 0.44704 },
+                    knot: { name: 'Knot (kn)', rate: 0.514444 }
+                }
+            }
+        };
+
+        let currentCategory = 'length';
+
+        window.onload = () => {
+            changeCategory('length');
+        };
+
+        // ★ ক্যাটাগরি পরিবর্তন করার ফাংশন ★
+        function changeCategory(cat) {
+            currentCategory = cat;
+            
+            // বাটন অ্যাক্টিভ করা
+            document.querySelectorAll('.cat-tab').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // ড্রপডাউন আপডেট করা
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            const units = conversionData[cat].units;
+            
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+
+            for (let key in units) {
+                const option1 = document.createElement('option');
+                option1.value = key;
+                option1.text = units[key].name;
+                fromSelect.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = key;
+                option2.text = units[key].name;
+                toSelect.appendChild(option2);
+            }
+
+            // ডিফল্ট রূপান্তর সেট করা
+            fromSelect.selectedIndex = 0;
+            toSelect.selectedIndex = 1 > Object.keys(units).length - 1 ? 0 : 1;
+
+            // ইনপুট ক্লিয়ার করা
+            document.getElementById('fromValue').value = '';
+            document.getElementById('toValue').value = '';
+        }
+
+        // ★ রূপান্তর (Convert) করার মেইন ফাংশন ★
+        function convert() {
+            const fromValue = parseFloat(document.getElementById('fromValue').value);
+            const fromUnit = document.getElementById('fromUnit').value;
+            const toUnit = document.getElementById('toUnit').value;
+            const resultInput = document.getElementById('toValue');
+
+            if (isNaN(fromValue)) {
+                resultInput.value = '';
+                return;
+            }
+
+            if (fromUnit === toUnit) {
+                resultInput.value = fromValue;
+                return;
+            }
+
+            let result = 0;
+
+            // ★ তাপমাত্রার জন্য আলাদা সূত্র ★
+            if (currentCategory === 'temp') {
+                let celsius;
+                if (fromUnit === 'c') celsius = fromValue;
+                else if (fromUnit === 'f') celsius = (fromValue - 32) * (5/9);
+                else if (fromUnit === 'k') celsius = fromValue - 273.15;
+
+                if (toUnit === 'c') result = celsius;
+                else if (toUnit === 'f') result = (celsius * (9/5)) + 32;
+                else if (toUnit === 'k') result = celsius + 273.15;
+
+            } else {
+                // ★ বাকি সব ক্যাটাগরির জন্য সাধারণ রেট ক্যালকুলেশন ★
+                const units = conversionData[currentCategory].units;
+                const baseValue = fromValue * units[fromUnit].rate;
+                result = baseValue / units[toUnit].rate;
+            }
+
+            // রেজাল্টকে সুন্দরভাবে ফরম্যাট করা
+            if (result % 1 !== 0) {
+                result = parseFloat(result.toFixed(6)); 
+            }
+            resultInput.value = result;
+        }
+
+        // ★ ইউনিট অদলবদল (Swap) করার ফাংশন ★
+        function swapUnits() {
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            
+            const temp = fromSelect.value;
+            fromSelect.value = toSelect.value;
+            toSelect.value = temp;
+
+            const fromVal = document.getElementById('fromValue').value;
+            const toVal = document.getElementById('toValue').value;
+            
+            document.getElementById('fromValue').value = toVal;
+            document.getElementById('toValue').value = fromVal;
+
+            convert();
+        }
+
+        // ★ ক্লিয়ার করার ফাংশন ★
+        function clearConverter() {
+            document.getElementById('fromValue').value = '';
+            document.getElementById('toValue').value = '';
+            document.getElementById('fromValue').focus();
+        }
+    </script>
+</body>
+</html>

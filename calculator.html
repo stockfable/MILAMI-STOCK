@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>calculator - STOCK-FABLE</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; width: 100%; overflow: hidden; }
+  body {
+    background: linear-gradient(160deg, #0a0a2a 0%, #4a1a5a 50%, #ff69b4 100%);
+    display: flex; justify-content: center; align-items: center; color: #fff;
+  }
+  .calculator { width: 100%; max-width: 420px; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+  .display {
+    background: rgba(17, 17, 17, 0.85); border-radius: 20px; padding: 18px;
+    text-align: right; min-height: 120px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    border: 1px solid rgba(255,255,255,0.08); overflow: hidden;
+  }
+  .expression {
+    color: #aaa; font-size: 17px; min-height: 22px; margin-bottom: 8px;
+    white-space: nowrap; overflow-x: auto; scrollbar-width: none;
+    direction: rtl; text-align: right;
+  }
+  .expression::-webkit-scrollbar { display: none; }
+  .result {
+    color: #fff; font-size: 42px; font-weight: 300;
+    white-space: nowrap; overflow-x: auto; scrollbar-width: none;
+    direction: rtl; text-align: right; transition: font-size 0.15s;
+  }
+  .result::-webkit-scrollbar { display: none; }
+  .scientific-buttons { display: none; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .scientific-buttons.show { display: grid; }
+  .scientific-buttons button {
+    background: rgba(26, 26, 26, 0.85); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; color: #fff; font-size: 15px; padding: 12px 0; cursor: pointer;
+  }
+  .scientific-buttons button:active { background: #444; }
+  .buttons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .buttons button {
+    aspect-ratio: 1 / 1; width: 100%; min-width: 0; border-radius: 50%;
+    background: rgba(34, 34, 34, 0.85); border: 1px solid rgba(255,255,255,0.08);
+    color: #fff; font-size: 22px; cursor: pointer;
+    display: flex; justify-content: center; align-items: center;
+    transition: 0.15s; padding: 0;
+  }
+  .buttons button:active { background: #444; transform: scale(0.95); }
+  .buttons button.operator { color: #a855f7; font-weight: bold; }
+  .buttons button.equals { background: #a855f7; color: #fff; }
+  .buttons button.equals:active { background: #9333ea; }
+  .buttons button.clear { color: #ff5555; font-size: 24px; }
+  .bottom-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 4px; }
+  .toggle { background: rgba(34, 34, 34, 0.85); border-radius: 22px; display: flex; padding: 4px; border: 1px solid rgba(255,255,255,0.08); }
+  .toggle button { background: transparent; border: none; border-radius: 18px; padding: 8px 20px; font-size: 14px; color: #aaa; cursor: pointer; }
+  .toggle button.active { background: #a855f7; color: #fff; }
+  .maths-solver {
+    background: rgba(34, 34, 34, 0.85); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 22px; padding: 12px 20px; font-size: 14px; color: #fff;
+    display: flex; align-items: center; gap: 8px; cursor: pointer; flex: 1; justify-content: center;
+  }
+  .maths-solver i { font-size: 12px; }
+  .feedback { text-align: right; color: #777; font-size: 12px; padding-right: 5px; }
+
+  /* Math Solver Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+    z-index: 1000; justify-content: center; align-items: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #151515; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 24px; width: 100%; max-width: 460px;
+    max-height: 85vh; overflow-y: auto;
+  }
+  .modal h2 { font-size: 20px; margin-bottom: 6px; }
+  .modal .sub { color: #888; font-size: 13px; margin-bottom: 18px; }
+  .modal input, .modal select {
+    width: 100%; background: #0f0f0f; border: 1px solid #333;
+    border-radius: 12px; padding: 14px 16px; font-size: 16px;
+    color: #fff; outline: none; margin-bottom: 12px;
+  }
+  .modal input:focus, .modal select:focus { border-color: #a855f7; }
+  .modal button.solve-btn {
+    width: 100%; background: #a855f7; border: none; border-radius: 12px;
+    padding: 14px; font-size: 16px; font-weight: 600; color: #fff;
+    cursor: pointer; margin-bottom: 12px;
+  }
+  .modal button.solve-btn:active { background: #9333ea; }
+  .modal .close-btn {
+    background: transparent; border: 1px solid #333; border-radius: 12px;
+    padding: 10px; color: #aaa; cursor: pointer; width: 100%; font-size: 14px;
+  }
+  .modal .close-btn:hover { color: #fff; border-color: #555; }
+  .answer-box {
+    background: #0f0f0f; border: 1px solid #333; border-radius: 12px;
+    padding: 16px; margin-bottom: 14px; font-size: 15px;
+    color: #fff; white-space: pre-wrap; line-height: 1.7;
+    display: none;
+  }
+  .answer-box.show { display: block; }
+  .answer-box .label { color: #a855f7; font-weight: 600; }
+  .quick-examples { font-size: 12px; color: #777; margin-bottom: 14px; line-height: 1.8; }
+  .quick-examples span {
+    display: inline-block; background: #0f0f0f; border: 1px solid #333;
+    border-radius: 8px; padding: 4px 10px; margin: 3px 4px 3px 0;
+    color: #aaa; cursor: pointer; transition: 0.15s;
+  }
+  .quick-examples span:hover { color: #a855f7; border-color: #a855f7; }
+</style>
+</head>
+<body>
+<div class="calculator">
+  <div class="display">
+    <div class="expression" id="expression"></div>
+    <div class="result" id="result">0</div>
+  </div>
+
+  <div class="scientific-buttons" id="scientificButtons">
+    <button onclick="append('sin(')">sin</button>
+    <button onclick="append('cos(')">cos</button>
+    <button onclick="append('tan(')">tan</button>
+    <button onclick="append('log(')">log</button>
+    <button onclick="append('ln(')">ln</button>
+    <button onclick="append('sqrt(')">√</button>
+    <button onclick="append('^')">x^y</button>
+    <button onclick="append('pi')">π</button>
+  </div>
+
+  <div class="buttons">
+    <button onclick="append('(')">(</button>
+    <button onclick="append(')')">)</button>
+    <button onclick="append('%')">%</button>
+    <!-- এখানে clearAll() এর পরিবর্তে backspace() করা হয়েছে -->
+    <button class="clear" onclick="backspace()">❌</button>
+
+    <button onclick="append('7')">7</button>
+    <button onclick="append('8')">8</button>
+    <button onclick="append('9')">9</button>
+    <button class="operator" onclick="append('÷')">÷</button>
+
+    <button onclick="append('4')">4</button>
+    <button onclick="append('5')">5</button>
+    <button onclick="append('6')">6</button>
+    <button class="operator" onclick="append('×')">×</button>
+
+    <button onclick="append('1')">1</button>
+    <button onclick="append('2')">2</button>
+    <button onclick="append('3')">3</button>
+    <button class="operator" onclick="append('-')">−</button>
+
+    <button onclick="append('0')">0</button>
+    <button onclick="append('.')">.</button>
+    <button class="equals" onclick="calculate()">=</button>
+    <button class="operator" onclick="append('+')">+</button>
+  </div>
+
+  <div class="bottom-row">
+    <div class="toggle">
+      <button class="active" id="basicBtn" onclick="setMode('basic')">123</button>
+      <button id="fxBtn" onclick="setMode('fx')">Fx</button>
+    </div>
+    <div class="maths-solver" onclick="openMathSolver()">
+      Maths solver <i class="fas fa-chevron-right"></i>
+    </div>
+  </div>
+  <div class="feedback">Feedback</div>
+</div>
+
+<!-- Maths Solver Modal -->
+<div class="modal-overlay" id="mathModal">
+  <div class="modal">
+    <h2>🧮 Maths Solver</h2>
+    <p class="sub">Enter an equation or pick an example below</p>
+
+    <div class="quick-examples">
+      Examples:
+      <span onclick="useExample('2x + 5 = 15')">2x + 5 = 15</span>
+      <span onclick="useExample('3x - 7 = 14')">3x - 7 = 14</span>
+      <span onclick="useExample('x^2 + 5x + 6 = 0')">x² + 5x + 6 = 0</span>
+      <span onclick="useExample('x^2 - 4 = 0')">x² - 4 = 0</span>
+      <span onclick="useExample('2x + 3y = 12')">2x + 3y = 12</span>
+    </div>
+
+    <input type="text" id="eqInput" placeholder="e.g. 2x + 5 = 15" autocomplete="off">
+
+    <select id="eqType">
+      <option value="auto">🔍 Auto Detect</option>
+      <option value="linear">Linear (x to the 1st power)</option>
+      <option value="quadratic">Quadratic (has x²)</option>
+    </select>
+
+    <button class="solve-btn" onclick="solveEquation()">Solve</button>
+
+    <div class="answer-box" id="answerBox"></div>
+
+    <button class="close-btn" onclick="closeMathSolver()">Close</button>
+  </div>
+</div>
+
+<script>
+  /* ============ Calculator ============ */
+  let currentInput = '0';
+  let fullExpression = '';
+  let state = 'fresh';
+  let lastExpression = '';
+  let accumulatedValue = null;
+
+  const expressionEl = document.getElementById('expression');
+  const resultEl = document.getElementById('result');
+
+  function isOperator(ch) {
+    return ['+', '-', '×', '÷', '%', '^'].includes(ch);
+  }
+
+  function updateDisplay() {
+    resultEl.textContent = currentInput;
+    expressionEl.textContent = fullExpression;
+    fitResult(currentInput);
+  }
+
+  function fitResult(text) {
+    const len = text.length;
+    let size = 42;
+    if (len > 9) size = 34;
+    if (len > 12) size = 28;
+    if (len > 15) size = 22;
+    if (len > 20) size = 18;
+    resultEl.style.fontSize = size + 'px';
+  }
+
+  function append(value) {
+    if (state === 'result') {
+      if (isOperator(value) || value === ')' || value === '%') {
+        fullExpression = lastExpression + ' ' + value + ' ';
+        currentInput = '0';
+      } else {
+        fullExpression = '';
+        currentInput = value;
+      }
+      state = 'typing';
+      updateDisplay();
+      return;
+    }
+    if (state === 'accumulated') {
+      fullExpression = '';
+      currentInput = value;
+      state = 'typing';
+      updateDisplay();
+      return;
+    }
+    if (isOperator(value)) {
+      let trimmed = fullExpression.trimEnd();
+      if (trimmed.length > 0 && isOperator(trimmed[trimmed.length - 1])) {
+        fullExpression = trimmed.slice(0, -1) + ' ' + value + ' ';
+      } else {
+        fullExpression = (fullExpression + ' ' + currentInput + ' ' + value + ' ').trimStart();
+      }
+      currentInput = '0';
+      state = 'typing';
+      updateDisplay();
+      return;
+    }
+    if (currentInput === '0' && value !== '.') {
+      currentInput = value;
+    } else {
+      if (value === '.' && currentInput.includes('.')) return;
+      currentInput += value;
+    }
+    state = 'typing';
+    updateDisplay();
+  }
+
+  // ❌ বাটনের জন্য নতুন ফাংশন
+  function backspace() {
+    // যদি একদম নতুন অবস্থায় থাকে, তবে কিছু করবে না
+    if (state === 'fresh') return;
+
+    // যদি রেজাল্ট বা অ্যাকিউমুলেটেড অবস্থায় থাকে, তবে পুরোটা ক্লিয়ার করবে (AC এর মতো)
+    if (state === 'result' || state === 'accumulated') {
+      clearAll();
+      return;
+    }
+
+    // টাইপ করার সময় একটা একটা করে মুছবে
+    if (currentInput.length > 1) {
+      currentInput = currentInput.slice(0, -1);
+    } else {
+      currentInput = '0';
+    }
+    updateDisplay();
+  }
+
+  function evalExpression(exp) {
+    let evalExp = exp
+      .replace(/÷/g, '/').replace(/×/g, '*').replace(/−/g, '-')
+      .replace(/sin\(/g, 'Math.sin(').replace(/cos\(/g, 'Math.cos(')
+      .replace(/tan\(/g, 'Math.tan(').replace(/log\(/g, 'Math.log10(')
+      .replace(/ln\(/g, 'Math.log(').replace(/sqrt\(/g, 'Math.sqrt(')
+      .replace(/\^/g, '**').replace(/pi/g, 'Math.PI').replace(/%/g, '/100');
+    return Function('"use strict";return (' + evalExp + ')')();
+  }
+
+  function calculate() {
+    if (state === 'fresh') return;
+    if (state === 'result') {
+      accumulatedValue = parseFloat(currentInput) || 0;
+      currentInput = '0';
+      state = 'accumulated';
+      updateDisplay();
+      return;
+    }
+    if (state === 'accumulated') return;
+
+    let fullExpr = (fullExpression + ' ' + currentInput).trim();
+    if (fullExpr === '' || fullExpr === '0') return;
+
+    try {
+      let result = evalExpression(fullExpr);
+      if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
+        let resultStr = parseFloat(result.toFixed(10)).toString();
+        if (accumulatedValue !== null) {
+          const combined = accumulatedValue + parseFloat(resultStr);
+          resultStr = parseFloat(combined.toFixed(10)).toString();
+          lastExpression = accumulatedValue + ' + ' + fullExpr;
+          fullExpression = lastExpression + ' =';
+          accumulatedValue = null;
+        } else {
+          lastExpression = fullExpr;
+          fullExpression = lastExpression + ' =';
+        }
+        currentInput = resultStr;
+        state = 'result';
+        updateDisplay();
+      } else {
+        currentInput = 'Error'; state = 'result'; updateDisplay();
+      }
+    } catch (e) {
+      currentInput = 'Error'; state = 'result'; updateDisplay();
+    }
+  }
+
+  function clearAll() {
+    currentInput = '0'; fullExpression = ''; state = 'fresh';
+    lastExpression = ''; accumulatedValue = null; updateDisplay();
+  }
+
+  function setMode(m) {
+    const basicBtn = document.getElementById('basicBtn');
+    const fxBtn = document.getElementById('fxBtn');
+    const sciButtons = document.getElementById('scientificButtons');
+    if (m === 'basic') {
+      basicBtn.classList.add('active'); fxBtn.classList.remove('active');
+      sciButtons.classList.remove('show');
+    } else {
+      fxBtn.classList.add('active'); basicBtn.classList.remove('active');
+      sciButtons.classList.add('show');
+    }
+  }
+
+  /* ============ Maths Solver ============ */
+  function openMathSolver() {
+    document.getElementById('mathModal').classList.add('show');
+    document.getElementById('answerBox').classList.remove('show');
+  }
+  function closeMathSolver() {
+    document.getElementById('mathModal').classList.remove('show');
+  }
+  function useExample(eq) {
+    document.getElementById('eqInput').value = eq;
+    document.getElementById('eqInput').focus();
+  }
+
+  function solveEquation() {
+    const input = document.getElementById('eqInput').value.trim();
+    const answerBox = document.getElementById('answerBox');
+
+    if (!input) {
+      answerBox.innerHTML = '<span class="label">⚠️</span> Please enter an equation.';
+      answerBox.classList.add('show');
+      return;
+    }
+
+    if (!input.includes('=')) {
+      answerBox.innerHTML = '<span class="label">⚠️</span> Equation must contain <b>=</b>.<br>Example: <b>2x + 5 = 15</b>';
+      answerBox.classList.add('show');
+      return;
+    }
+
+    try {
+      const parts = input.split('=');
+      if (parts.length !== 2) {
+        answerBox.innerHTML = '<span class="label">⚠️</span> Only one <b>=</b> is allowed.';
+        answerBox.classList.add('show');
+        return;
+      }
+
+      const left = parts[0].trim();
+      const right = parts[1].trim();
+
+      const isQuad = /x\s*\^?\s*2|x²|x\*x/.test(input);
+      const mode = document.getElementById('eqType').value;
+
+      if (isQuad || mode === 'quadratic') {
+        solveQuadratic(left, right, answerBox);
+      } else {
+        solveLinear(left, right, answerBox);
+      }
+    } catch (e) {
+      answerBox.innerHTML = '<span class="label">❌ Error:</span> Could not parse the equation.<br>Correct format: <b>2x + 5 = 15</b>';
+      answerBox.classList.add('show');
+    }
+  }
+
+  function solveLinear(left, right, answerBox) {
+    function parseSide(s) {
+      const cleaned = s.replace(/\s/g, '').replace(/-/g, '+-');
+      const terms = cleaned.split('+').filter(t => t !== '');
+      let a = 0, c = 0;
+      for (let term of terms) {
+        if (term.includes('x')) {
+          let coef = term.replace('x', '');
+          if (coef === '' || coef === '+') a += 1;
+          else if (coef === '-') a += -1;
+          else a += parseFloat(coef);
+        } else {
+          c += parseFloat(term) || 0;
+        }
+      }
+      return { a, c };
+    }
+
+    const L = parseSide(left);
+    const R = parseSide(right);
+
+    const A = L.a - R.a;
+    const C = L.c - R.c;
+
+    if (A === 0) {
+      if (C === 0) {
+        answerBox.innerHTML = '<span class="label">♾️ Infinite solutions</span><br>Any value of x satisfies the equation.';
+      } else {
+        answerBox.innerHTML = '<span class="label">❌ No solution</span><br>The equation is not valid.';
+      }
+      answerBox.classList.add('show');
+      return;
+    }
+
+    const x = -C / A;
+    const xRounded = parseFloat(x.toFixed(6));
+
+    answerBox.innerHTML =
+      '<span class="label">✅ Solution:</span><br>' +
+      '<b style="font-size:22px;color:#a855f7;">x = ' + xRounded + '</b><br><br>' +
+      '<span style="color:#888;font-size:13px;">Steps:</span><br>' +
+      '<span style="color:#aaa;font-size:13px;">' + left + ' = ' + right + '</span><br>' +
+      '<span style="color:#aaa;font-size:13px;">' + A + 'x + ' + C + ' = 0</span><br>' +
+      '<span style="color:#aaa;font-size:13px;">x = -(' + C + ') / ' + A + ' = ' + xRounded + '</span>';
+    answerBox.classList.add('show');
+  }
+
+  function solveQuadratic(left, right, answerBox) {
+    function parseSide(s) {
+      const cleaned = s.replace(/\s/g, '').replace(/-/g, '+-');
+      const terms = cleaned.split('+').filter(t => t !== '');
+      let a = 0, b = 0, c = 0;
+      for (let term of terms) {
+        if (/x\^2|x²/.test(term)) {
+          let coef = term.replace(/x\^2|x²/, '');
+          if (coef === '' || coef === '+') a += 1;
+          else if (coef === '-') a += -1;
+          else a += parseFloat(coef);
+        } else if (term.includes('x')) {
+          let coef = term.replace('x', '');
+          if (coef === '' || coef === '+') b += 1;
+          else if (coef === '-') b += -1;
+          else b += parseFloat(coef);
+        } else {
+          c += parseFloat(term) || 0;
+        }
+      }
+      return { a, b, c };
+    }
+
+    const L = parseSide(left);
+    const R = parseSide(right);
+
+    const A = L.a - R.a;
+    const B = L.b - R.b;
+    const C = L.c - R.c;
+
+    if (A === 0) {
+      solveLinear(left, right, answerBox);
+      return;
+    }
+
+    const D = B * B - 4 * A * C;
+    const Dround = parseFloat(D.toFixed(6));
+
+    let html = '<span class="label">✅ Solution:</span><br>';
+    html += '<span style="color:#aaa;font-size:13px;">' + A + 'x² + ' + B + 'x + ' + C + ' = 0</span><br><br>';
+
+    if (D > 0) {
+      const x1 = (-B + Math.sqrt(D)) / (2 * A);
+      const x2 = (-B - Math.sqrt(D)) / (2 * A);
+      html += '<b style="font-size:20px;color:#a855f7;">x₁ = ' + parseFloat(x1.toFixed(6)) + '</b><br>';
+      html += '<b style="font-size:20px;color:#a855f7;">x₂ = ' + parseFloat(x2.toFixed(6)) + '</b><br><br>';
+      html += '<span style="color:#888;font-size:13px;">Discriminant (D) = ' + Dround + ' > 0 → two distinct real roots</span>';
+    } else if (D === 0) {
+      const x = -B / (2 * A);
+      html += '<b style="font-size:22px;color:#a855f7;">x = ' + parseFloat(x.toFixed(6)) + '</b><br><br>';
+      html += '<span style="color:#888;font-size:13px;">Discriminant (D) = 0 → two equal roots</span>';
+    } else {
+      const real = -B / (2 * A);
+      const imag = Math.sqrt(-D) / (2 * A);
+      html += '<b style="font-size:18px;color:#a855f7;">x₁ = ' + parseFloat(real.toFixed(4)) + ' + ' + parseFloat(imag.toFixed(4)) + 'i</b><br>';
+      html += '<b style="font-size:18px;color:#a855f7;">x₂ = ' + parseFloat(real.toFixed(4)) + ' - ' + parseFloat(imag.toFixed(4)) + 'i</b><br><br>';
+      html += '<span style="color:#888;font-size:13px;">Discriminant (D) = ' + Dround + ' < 0 → complex roots</span>';
+    }
+
+    answerBox.innerHTML = html;
+    answerBox.classList.add('show');
+  }
+
+  document.getElementById('mathModal').addEventListener('click', (e) => {
+    if (e.target.id === 'mathModal') closeMathSolver();
+  });
+
+  document.getElementById('eqInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') solveEquation();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (document.getElementById('mathModal').classList.contains('show')) return;
+    if (e.key >= '0' && e.key <= '9') append(e.key);
+    else if (e.key === '.') append('.');
+    else if (e.key === '+') append('+');
+    else if (e.key === '-') append('-');
+    else if (e.key === '*') append('×');
+    else if (e.key === '/') { e.preventDefault(); append('÷'); }
+    else if (e.key === '%') append('%');
+    else if (e.key === '(') append('(');
+    else if (e.key === ')') append(')');
+    else if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); calculate(); }
+    else if (e.key === 'Escape') clearAll();
+    else if (e.key === 'Backspace') {
+      e.preventDefault();
+      if (state === 'fresh') return;
+      if (currentInput.length > 1) currentInput = currentInput.slice(0, -1);
+      else currentInput = '0';
+      updateDisplay();
+    }
+  });
+
+  updateDisplay();
+</script>
+</body>
+</html>

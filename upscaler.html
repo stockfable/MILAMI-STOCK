@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Upscaler - Free</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: #ffffff; color: #111; line-height: 1.6; }
+
+        /* ★★★ NAVBAR — Back Button + Image Upscaler (Image Enhancer & Pricing বাদ) ★★★ */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #f3f4f6;
+            color: #111;
+            text-decoration: none;
+            font-size: 15px;
+            border: 1px solid #e5e7eb;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #e5e7eb;
+            transform: translateX(-2px);
+        }
+
+        .logo { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .logo i { color: #3b82f6; }
+
+        .nav-links { display: flex; gap: 20px; font-size: 13px; }
+        .nav-links a { color: #555; text-decoration: none; transition: 0.3s; }
+        .nav-links a:hover { color: #000; }
+
+        .hero { text-align: center; padding: 40px 5% 20px; }
+        .hero-badge { display: inline-block; background: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 11px; font-weight: bold; padding: 6px 15px; border-radius: 20px; margin-bottom: 15px; }
+        .hero h1 { font-size: 32px; font-weight: 900; margin-bottom: 10px; }
+        .hero p { color: #666; font-size: 14px; max-width: 600px; margin: 0 auto 30px; }
+
+        .upload-container { max-width: 800px; margin: 0 auto; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden; }
+        input[type="file"] { display: none; }
+        .drop-zone { border: 2px dashed #cbd5e1; border-radius: 12px; padding: 40px 20px; margin: 15px; background: #f8fafc; cursor: pointer; transition: 0.3s; }
+        .drop-zone:hover { border-color: #3b82f6; background: #eff6ff; }
+        .btn-choose { background: #111; color: #fff; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 15px; display: inline-flex; align-items: center; gap: 8px; }
+        .upload-text { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .upload-subtext { font-size: 12px; color: #777; }
+
+        .file-controls { padding: 15px; border-top: 1px solid #e5e7eb; display: none; }
+        .file-info { display: flex; align-items: center; gap: 15px; background: #f3f4f6; padding: 12px; border-radius: 10px; margin-bottom: 15px; }
+        .file-thumb { font-size: 24px; background: #e5e7eb; padding: 8px; border-radius: 8px; }
+        .file-info p { font-size: 14px; margin-bottom: 2px; }
+        .file-info small { font-size: 11px; color: #777; }
+        .btn-remove { margin-left: auto; background: #d1d5db; color: #111; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+        .action-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .ratio-selector { display: flex; align-items: center; gap: 15px; font-size: 13px; color: #555; }
+        .action-buttons { display: flex; gap: 10px; width: 100%; justify-content: space-between; }
+        .btn-clear { background: transparent; color: #555; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+        .btn-start { background: #3b82f6; color: #fff; border: none; padding: 10px 25px; border-radius: 10px; font-weight: bold; cursor: pointer; flex: 1; max-width: 200px; }
+
+        .result-area { max-width: 900px; margin: 20px auto; text-align: center; display: none; }
+        .loading-box { background: #f9fafb; padding: 40px; border-radius: 16px; border: 1px solid #e5e7eb; display: none; }
+        .loading-box i { font-size: 30px; color: #3b82f6; margin-bottom: 15px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-box p { color: #f59e0b; font-size: 14px; font-weight: bold; }
+
+        .output-box { display: none; }
+
+        /* ★★★ FIXED COMPARISON — Before/After ছোট বক্সে ★★★ */
+        .comparison-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .image-wrapper {
+            position: relative;
+            flex: 0 1 600px;
+            min-width: 250px;
+            max-width: 100%;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 10px;
+            height: 380px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .image-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .label { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; z-index: 10; }
+        .upscaled-label { background: rgba(59, 130, 246, 0.9); }
+
+        .btn-download {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-download:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .features-section { padding: 40px 5% 20px; max-width: 1000px; margin: 0 auto; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .feature-card { background: #f9fafb; border: 1px solid #e5e7eb; padding: 25px 15px; border-radius: 16px; text-align: center; }
+        .feature-icon { font-size: 24px; color: #3b82f6; margin-bottom: 15px; }
+        .feature-card h3 { font-size: 15px; margin-bottom: 10px; }
+        .feature-card p { font-size: 12px; color: #666; }
+
+        /* SAMPLE IMAGES */
+        .samples-section { padding: 40px 5% 20px; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+        .section-subtitle { text-align: center; color: #666; font-size: 13px; margin-bottom: 30px; }
+
+        .samples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .sample-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .sample-card:hover { transform: translateY(-4px); border-color: #3b82f6; }
+        .sample-img-wrap { position: relative; width: 100%; height: 160px; overflow: hidden; background: #f3f4f6; }
+        .sample-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .px-60 img { image-rendering: pixelated; filter: blur(1.5px) contrast(0.9) saturate(0.8); }
+        .px-120 img { image-rendering: pixelated; filter: blur(0.8px) contrast(0.95) saturate(0.9); }
+        .px-300 img { filter: blur(0.3px) contrast(1.0); }
+        .px-800 img { filter: none; }
+
+        .sample-badge {
+            position: absolute;
+            top: 10px; left: 10px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+        .sample-badge.good { background: rgba(16, 185, 129, 0.95); }
+        .sample-badge.bad { background: rgba(220, 38, 38, 0.95); }
+        .sample-badge.warn { background: rgba(245, 158, 11, 0.95); }
+
+        .sample-info { padding: 12px 14px; }
+        .sample-info h4 { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+        .sample-info p { font-size: 11.5px; color: #666; line-height: 1.4; }
+        .pixel-tag { display: inline-block; margin-top: 6px; padding: 3px 8px; background: #e5e7eb; border-radius: 10px; font-size: 10px; font-weight: 700; color: #555; }
+
+        /* FAQ */
+        .faq-section { padding: 60px 5% 80px; max-width: 900px; margin: 0 auto; }
+        .faq-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 12px; overflow: hidden; transition: 0.3s; }
+        .faq-item:hover { border-color: #cbd5e1; }
+        .faq-question { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; cursor: pointer; font-size: 15px; font-weight: 700; color: #111; user-select: none; }
+        .faq-question i { font-size: 14px; color: #3b82f6; transition: transform 0.3s ease; }
+        .faq-item.active .faq-question i { transform: rotate(90deg); }
+        .faq-answer { max-height: 0; overflow: hidden; padding: 0 20px; color: #555; font-size: 13.5px; line-height: 1.7; transition: all 0.3s ease; }
+        .faq-item.active .faq-answer { max-height: 300px; padding: 0 20px 18px; }
+
+        @media (max-width: 600px) {
+            .navbar { flex-direction: column; gap: 15px; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 26px; }
+            .comparison-container { flex-direction: column; }
+            .image-wrapper { max-width: 100%; height: 300px; }
+            .action-buttons { flex-direction: column; }
+            .btn-start, .btn-clear { width: 100%; max-width: 100%; }
+            .section-title { font-size: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ★★★ NAVBAR — Back Button + Image Upscaler ★★★ -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="index.html" class="back-btn" title="Back to Home">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="logo"><i class="fas fa-magic"></i> Img.Upscaler</div>
+        </div>
+        <div class="nav-links">
+            <a href="upscaler.html">Image Upscaler</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-badge">100% Free AI Image Upscaler</div>
+        <h1>Upscale images online with AI</h1>
+        <p>Enlarge photos by 2x or 4x. This tool runs directly in your browser, so it's completely free and private.</p>
+
+        <div class="upload-container" id="uploadContainer">
+            <input type="file" id="fileInput" accept="image/*">
+            <div class="drop-zone" id="dropZone">
+                <button class="btn-choose" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-upload"></i> Choose Image
+                </button>
+                <p class="upload-text">Drag and drop your image here</p>
+                <p class="upload-subtext">Supports JPG, PNG, WebP</p>
+            </div>
+
+            <div class="file-controls" id="fileControls">
+                <div class="file-info">
+                    <div class="file-thumb" id="fileThumb">🖼️</div>
+                    <div>
+                        <p id="fileName">image.jpg</p>
+                        <small id="fileSize">0 KB</small>
+                    </div>
+                    <button class="btn-remove" onclick="removeFile()">✕</button>
+                </div>
+                <div class="action-row">
+                    <div class="ratio-selector">
+                        <span>Scale:</span>
+                        <label class="radio-label"><input type="radio" name="ratio" value="2" checked> 2x</label>
+                        <label class="radio-label"><input type="radio" name="ratio" value="4"> 4x</label>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-clear" onclick="removeFile()">Clear</button>
+                        <button class="btn-start" onclick="startUpscale()">Upload & Start</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-area" id="resultArea">
+            <div class="loading-box" id="loadingBox">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p id="loadingText">AI is upscaling your image... Please wait.</p>
+            </div>
+            
+            <div class="output-box" id="outputBox">
+                <div class="comparison-container">
+                    <div class="image-wrapper">
+                        <span class="label upscaled-label">Upscaled ✨</span>
+                        <img id="resultImage" src="" alt="Upscaled">
+                    </div>
+                </div>
+                <button class="btn-download" id="downloadBtn"><i class="fas fa-download"></i> Download Upscaled Image</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>100% Free</h3>
+                <p>No hidden costs, no API keys, and no sign-up required. Runs directly on your device.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+                <h3>2x and 4x Upscaling</h3>
+                <p>Choose the right upscale ratio for your web assets, product listings, and social posts.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Privacy First</h3>
+                <p>Your images never leave your device. All processing is done locally in your browser.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SAMPLE IMAGES -->
+    <section class="samples-section">
+        <h2 class="section-title">🖼️ Sample Images — Different Pixel Sizes</h2>
+        <p class="section-subtitle">ভিন্ন ভিন্ন পিক্সেল সাইজের ছবি — দেখে বুঝুন কোনটা ভালো, কোনটা খারাপ।</p>
+
+        <div class="samples-grid">
+            <div class="sample-card px-60">
+                <div class="sample-img-wrap">
+                    <span class="sample-badge bad">✘ Very Low</span>
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=60&q=20" alt="60px">
+                </div>
+                <div class="sample-info">
+                    <h4>Very Low Resolution</h4>
+                    <p>খুব ছোট ও ব্লার — আপস্কেল করলে খারাপ দেখাবে।</p>
+                    <span class="pixel-tag">60 × 40 px</span>
+                </div>
+            </div>
+
+            <div class="sample-card px-120">
+                <div class="sample-img-wrap">
+                    <span class="sample-badge warn">⚠ Medium-Low</span>
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&q=30" alt="120px">
+                </div>
+                <div class="sample-info">
+                    <h4>Medium-Low Resolution</h4>
+                    <p>কিছুটা ডিটেইল আছে — আপস্কেল করলে ভালো হবে।</p>
+                    <span class="pixel-tag">120 × 80 px</span>
+                </div>
+            </div>
+
+            <div class="sample-card px-300">
+                <div class="sample-img-wrap">
+                    <span class="sample-badge good">✔ Good</span>
+                    <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&q=80" alt="300px">
+                </div>
+                <div class="sample-info">
+                    <h4>Good Resolution</h4>
+                    <p>পরিষ্কার ছবি — 2x বা 4x আপস্কেল করলে দারুণ রেজাল্ট আসবে।</p>
+                    <span class="pixel-tag">300 × 200 px</span>
+                </div>
+            </div>
+
+            <div class="sample-card px-800">
+                <div class="sample-img-wrap">
+                    <span class="sample-badge good">✔ High Quality</span>
+                    <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=90" alt="800px">
+                </div>
+                <div class="sample-info">
+                    <h4>High Resolution</h4>
+                    <p>সবচেয়ে ভালো মান — ক্রিস্টাল ক্লিয়ার ডিটেইল।</p>
+                    <span class="pixel-tag">800 × 533 px</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+        <h2 class="section-title">❓ Frequently Asked Questions</h2>
+        <p class="section-subtitle">সাধারণ কিছু প্রশ্নের উত্তর — আরও জানতে পড়ুন।</p>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>What is Img.Upscaler?</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="faq-answer">
+                Img.Upscaler is a 100% free AI-powered image upscaling tool that runs directly in your browser. It enlarges images by 2x or 4x while improving clarity, sharpness, and overall quality — no sign-up required.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Is it really free to use?</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="faq-answer">
+                Yes, absolutely. Img.Upscaler is completely free with no hidden costs, no subscriptions, and no limits. All processing happens directly on your device.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Are my images safe and private?</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="faq-answer">
+                Yes, 100%. Your images never leave your device. All upscaling is done locally in your browser, so nothing is uploaded to any server.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>What image formats are supported?</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="faq-answer">
+                You can upload JPG, PNG, WebP, and most other common image formats. The upscaled result is saved as a high-quality JPEG file.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>What's the difference between 2x and 4x upscaling?</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="faq-answer">
+                2x doubles the image dimensions (500×500 → 1000×1000) and is ideal for web use. 4x quadruples them (500×500 → 2000×2000) and is better for printing, large displays, or detailed zooming.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>Can I upscale multiple images at once?</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="faq-answer">
+                Currently, Img.Upscaler processes one image at a time to ensure the highest quality output. Simply upload the next image after downloading the previous one.
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const fileControls = document.getElementById('fileControls');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const fileThumb = document.getElementById('fileThumb');
+        const resultArea = document.getElementById('resultArea');
+        const loadingBox = document.getElementById('loadingBox');
+        const outputBox = document.getElementById('outputBox');
+        const resultImage = document.getElementById('resultImage');
+        const loadingText = document.getElementById('loadingText');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let originalImageSrc = '';
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.style.borderColor = '#3b82f6'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = '#cbd5e1'; });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#cbd5e1';
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) { alert('Please select an image file.'); return; }
+            
+            fileName.innerText = file.name;
+            fileSize.innerText = (file.size / 1024).toFixed(2) + ' KB';
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImageSrc = e.target.result;
+                fileThumb.innerHTML = `<img src="${originalImageSrc}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;">`;
+            };
+            reader.readAsDataURL(file);
+
+            dropZone.style.display = 'none';
+            fileControls.style.display = 'block';
+            resultArea.style.display = 'none';
+        }
+
+        function removeFile() {
+            fileInput.value = '';
+            fileThumb.innerHTML = '🖼️';
+            dropZone.style.display = 'block';
+            fileControls.style.display = 'none';
+            resultArea.style.display = 'none';
+            loadingBox.style.display = 'none';
+            outputBox.style.display = 'none';
+        }
+
+        function toggleFaq(el) {
+            const item = el.parentElement;
+            const wasActive = item.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+            if (!wasActive) item.classList.add('active');
+        }
+
+        // ★★★ UPSCALE — SMOOTH + LIGHT FILTER ★★★
+        function startUpscale() {
+            fileControls.style.display = 'none';
+            resultArea.style.display = 'block';
+            loadingBox.style.display = 'block';
+            outputBox.style.display = 'none';
+
+            loadingText.innerText = "AI is upscaling your image... Please wait.";
+
+            setTimeout(() => {
+                const img = new Image();
+                img.onload = () => {
+                    const scaleFactor = parseInt(document.querySelector('input[name="ratio"]:checked').value);
+
+                    // Smooth Multi-Step Upscale
+                    let currentCanvas = document.createElement('canvas');
+                    currentCanvas.width = img.width;
+                    currentCanvas.height = img.height;
+                    let currentCtx = currentCanvas.getContext('2d');
+                    currentCtx.drawImage(img, 0, 0);
+
+                    let currentWidth = img.width;
+                    let currentHeight = img.height;
+                    const targetWidth = img.width * scaleFactor;
+                    const targetHeight = img.height * scaleFactor;
+
+                    while (currentWidth < targetWidth || currentHeight < targetHeight) {
+                        const nextWidth = Math.min(Math.round(currentWidth * 1.5), targetWidth);
+                        const nextHeight = Math.min(Math.round(currentHeight * 1.5), targetHeight);
+
+                        const nextCanvas = document.createElement('canvas');
+                        nextCanvas.width = nextWidth;
+                        nextCanvas.height = nextHeight;
+                        const nextCtx = nextCanvas.getContext('2d');
+                        nextCtx.imageSmoothingEnabled = true;
+                        nextCtx.imageSmoothingQuality = 'high';
+                        nextCtx.drawImage(currentCanvas, 0, 0, nextWidth, nextHeight);
+
+                        currentCanvas = nextCanvas;
+                        currentWidth = nextWidth;
+                        currentHeight = nextHeight;
+                    }
+
+                    // Light Filter
+                    const finalCanvas = document.createElement('canvas');
+                    finalCanvas.width = currentWidth;
+                    finalCanvas.height = currentHeight;
+                    const finalCtx = finalCanvas.getContext('2d');
+                    finalCtx.imageSmoothingEnabled = true;
+                    finalCtx.imageSmoothingQuality = 'high';
+
+                    finalCtx.filter = 'brightness(1.05) contrast(1.05)';
+                    finalCtx.drawImage(currentCanvas, 0, 0);
+                    finalCtx.filter = 'none';
+
+                    // Light Sharpen
+                    const imageData = finalCtx.getImageData(0, 0, finalCanvas.width, finalCanvas.height);
+                    const data = imageData.data;
+                    const w = finalCanvas.width;
+                    const h = finalCanvas.height;
+                    const copy = new Uint8ClampedArray(data);
+                    const strength = 0.2;
+
+                    for (let y = 1; y < h - 1; y++) {
+                        for (let x = 1; x < w - 1; x++) {
+                            const i = (y * w + x) * 4;
+                            for (let c = 0; c < 3; c++) {
+                                const val = 5 * copy[i + c]
+                                    - copy[i - 4 + c]
+                                    - copy[i + 4 + c]
+                                    - copy[i - w * 4 + c]
+                                    - copy[i + w * 4 + c];
+                                data[i + c] = Math.min(255, Math.max(0, copy[i + c] + strength * (val - copy[i + c]) / 5));
+                            }
+                        }
+                    }
+                    finalCtx.putImageData(imageData, 0, 0);
+
+                    const upscaledImageSrc = finalCanvas.toDataURL('image/jpeg', 0.95);
+
+                    resultImage.src = upscaledImageSrc;
+                    
+                    loadingBox.style.display = 'none';
+                    outputBox.style.display = 'block';
+                };
+                img.src = originalImageSrc;
+            }, 1500); 
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = resultImage.src;
+            link.download = 'upscaled-image.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    </script>
+</body>
+</html>

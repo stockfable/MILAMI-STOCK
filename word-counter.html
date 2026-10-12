@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Word Counter - STOCKFABLE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; }
+        
+        /* Background: Red mixed with all colors (Multi-color Gradient) */
+        body {
+            background: linear-gradient(135deg, #ef4444 0%, #f59e0b 25%, #10b981 50%, #3b82f6 75%, #8b5cf6 100%);
+            display: flex; justify-content: center; align-items: center; color: #1e293b;
+            padding: 15px; 
+        }
+        
+        .container {
+            width: 100%; max-width: 420px; 
+            height: 100%; max-height: 780px;
+            display: flex; flex-direction: column; padding: 22px;
+            background: #ffffff; 
+            border-radius: 24px; 
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+        }
+        .container::-webkit-scrollbar { width: 5px; }
+        .container::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+
+        /* Header */
+        .header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px; padding-bottom: 12px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+        .header h2 { font-size: 18px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px; }
+        .header h2 i { color: #3b82f6; } /* Blue Icon */
+        .back-btn {
+            background: #f1f5f9; border: 1px solid #e2e8f0;
+            color: #475569; padding: 6px 12px; border-radius: 10px; font-size: 13px;
+            cursor: pointer; display: flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: all 0.2s ease;
+        }
+        .back-btn:hover { background: #e2e8f0; color: #0f172a; }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-box {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px; padding: 12px;
+            display: flex; flex-direction: column; gap: 4px;
+            transition: all 0.3s ease;
+        }
+        .stat-box:hover { border-color: #3b82f6; background: #eff6ff; } /* Blue Hover */
+        .stat-box .label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-box .value { font-size: 22px; font-weight: 700; color: #0f172a; }
+
+        /* Textarea */
+        .textarea-wrapper {
+            flex: 1; display: flex; flex-direction: column;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px; padding: 15px;
+            margin-bottom: 15px; transition: all 0.3s ease;
+            min-height: 200px;
+        }
+        .textarea-wrapper:focus-within {
+            border-color: #3b82f6; /* Blue Focus */
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+            background: #ffffff;
+        }
+        textarea {
+            flex: 1; width: 100%; background: transparent; border: none; outline: none;
+            color: #0f172a; font-size: 15px; resize: none; line-height: 1.6;
+        }
+        textarea::placeholder { color: #94a3b8; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+        }
+        .btn {
+            padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 600;
+            cursor: pointer; border: none; display: flex; justify-content: center;
+            align-items: center; gap: 8px; transition: all 0.2s ease;
+        }
+        .btn:active { transform: scale(0.97); }
+        
+        .btn-copy { 
+            background: #3b82f6; color: #fff; /* Solid Blue */
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        .btn-copy:hover { background: #2563eb; }
+        
+        .btn-clear { 
+            background: #eff6ff; color: #3b82f6; /* Light Blue */
+            border: 1px solid #bfdbfe;
+        }
+        .btn-clear:hover { background: #dbeafe; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2><i class="fas fa-file-word"></i> Word Counter</h2>
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="label">Words</span>
+                <span class="value" id="wordCount">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Characters</span>
+                <span class="value" id="charCount">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Sentences</span>
+                <span class="value" id="sentenceCount">0</span>
+            </div>
+            <div class="stat-box">
+                <span class="label">Paragraphs</span>
+                <span class="value" id="paragraphCount">0</span>
+            </div>
+        </div>
+
+        <!-- Textarea -->
+        <div class="textarea-wrapper">
+            <textarea id="textInput" placeholder="Type or paste your text here..."></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-copy" onclick="copyText()">
+                <i class="fas fa-copy"></i> Copy Text
+            </button>
+            <button class="btn btn-clear" onclick="clearText()">
+                <i class="fas fa-trash"></i> Clear
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const textInput = document.getElementById('textInput');
+        const wordCountEl = document.getElementById('wordCount');
+        const charCountEl = document.getElementById('charCount');
+        const sentenceCountEl = document.getElementById('sentenceCount');
+        const paragraphCountEl = document.getElementById('paragraphCount');
+
+        // Real-time text analysis function
+        textInput.addEventListener('input', () => {
+            const text = textInput.value;
+
+            // 1. Count Words
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            const wordCount = words.length;
+
+            // 2. Count Characters (including spaces)
+            const charCount = text.length;
+
+            // 3. Count Sentences (split by ., !, ?)
+            const sentences = text.split(/[.!?]+/).filter(sentence => sentence.trim().length > 0);
+            const sentenceCount = sentences.length;
+
+            // 4. Count Paragraphs (split by new lines)
+            const paragraphs = text.split(/\n+/).filter(para => para.trim().length > 0);
+            const paragraphCount = paragraphs.length;
+
+            // Update UI
+            wordCountEl.textContent = wordCount;
+            charCountEl.textContent = charCount;
+            sentenceCountEl.textContent = sentenceCount;
+            paragraphCountEl.textContent = paragraphCount;
+        });
+
+        // Copy Text Function (English alerts)
+        function copyText() {
+            const text = textInput.value;
+            if (!text) {
+                alert("Please enter some text first!");
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Text copied successfully!");
+            }).catch(err => {
+                alert("Failed to copy text. Please try again.");
+            });
+        }
+
+        // Clear Text Function (English alerts)
+        function clearText() {
+            if (!textInput.value) return;
+            if (confirm("Are you sure you want to clear all text?")) {
+                textInput.value = '';
+                textInput.dispatchEvent(new Event('input')); // Reset statistics
+                textInput.focus();
+            }
+        }
+    </script>
+</body>
+</html>

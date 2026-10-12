@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Design Studio - Free Online Design Tool</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Playfair+Display:wght@400;700&family=Bebas+Neue&family=Pacifico&family=Roboto:wght@400;700&family=Oswald:wght@400;700&family=Lobster&family=Montserrat:wght@400;700&family=Dancing+Script:wght@400;700&family=Anton&family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+<style>
+:root{--bg:#0d1216;--p:#1b2026;--p2:#272d35;--m:#9aa3ad}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:#fff;overflow:hidden}
+#app{max-width:560px;height:100%;margin:auto;display:flex;flex-direction:column;position:relative}
+.view{display:none;flex:1;min-height:0;flex-direction:column}.view.on{display:flex}
+.hide{display:none!important}
+button,select,input{font-size:13px;color:#fff;background:var(--p2);border:0;border-radius:10px;padding:8px 10px;cursor:pointer}
+/* home */
+.sc{flex:1;overflow:auto;padding:0 16px 90px}
+.hero{margin:0 -16px 6px;padding:26px 16px 16px;text-align:center;background:radial-gradient(circle at 50% 0,#5b21b6 0,#1e1b4b 45%,var(--bg) 100%)}
+.hero h1{font-size:24px;font-weight:800;background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:16px}
+.se{display:flex;align-items:center;gap:10px;background:#121820;border:1px solid #3b3f5c;border-radius:14px;padding:0 14px}
+.se input{flex:1;background:none;padding:13px 0;cursor:text;outline:0}
+h3{font-size:15px;margin:20px 0 12px}h5{font-size:12px;color:var(--m);margin:14px 0 8px;text-transform:uppercase}
+.row{display:flex;gap:12px;overflow:auto;padding-bottom:4px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 6px}
+.it{display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11px;color:#ddd;cursor:pointer;text-align:center}
+.it.soon{opacity:.5}
+.ci{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:20px;color:#fff}
+.tl{width:84px;height:62px;border-radius:10px;background:var(--p2);display:grid;place-items:center;font-size:22px;color:var(--m)}
+.proj{width:110px;flex:none}.proj img{width:110px;height:92px;object-fit:contain;background:var(--p2);border-radius:10px}
+.fab{position:absolute;right:16px;bottom:70px;width:50px;height:50px;border-radius:50%;background:#7c3aed;font-size:18px;padding:0;box-shadow:0 4px 14px #0008}
+.nav{display:flex;border-top:1px solid #222;background:var(--bg)}
+.nav button{flex:1;background:none;color:var(--m);font-size:10px;display:flex;flex-direction:column;gap:4px;align-items:center;border-radius:0;padding:9px 0}
+.nav i{font-size:17px}.nav .on{color:#fff}
+/* editor */
+.etop{display:flex;align-items:center;padding:6px 8px;background:linear-gradient(90deg,#06b6d4,#7c3aed)}
+.etop button{background:none;font-size:18px;padding:8px 11px}.etop b{flex:1}
+#stage{flex:1;min-height:0;display:flex;overflow:hidden}
+#wrap{margin:auto}
+#sheet{display:none;height:46%;background:var(--p);border-radius:16px 16px 0 0;overflow:auto;padding:14px;box-shadow:0 -6px 20px #0006}
+#sheet.on{display:block}
+.bar{display:flex;overflow-x:auto;border-top:1px solid #222;background:var(--bg)}
+.bar button{flex:none;min-width:70px;background:none;color:var(--m);font-size:10px;display:flex;flex-direction:column;gap:5px;align-items:center;border-radius:0;padding:10px 4px}
+.bar i{font-size:18px}.bar .on{color:#fff}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g3 .sq{display:flex;flex-direction:column;align-items:center;gap:4px;padding:14px 4px;font-size:26px}.sq small{font-size:10px;color:var(--m)}
+.tp{position:relative;aspect-ratio:4/5;border-radius:8px;overflow:hidden;container-type:inline-size;cursor:pointer}
+.tp div{position:absolute;transform:translate(-50%,-50%);white-space:pre;line-height:1.15}
+.th{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;cursor:pointer}
+.col{display:flex;flex-direction:column;gap:8px}.col button{text-align:left;padding:12px}
+.sws{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}.sws button{aspect-ratio:1;border-radius:50%;padding:0;border:1px solid #fff3}
+.mut{color:var(--m);font-size:12px;margin:10px 0}
+.si{width:100%;margin-bottom:12px;cursor:text}
+.r{display:flex;align-items:center;gap:6px;margin:8px 0;flex-wrap:wrap}
+.r label{font-size:12px;color:var(--m);min-width:66px}
+.r input[type=range]{flex:1;min-width:0;padding:0}
+.r input[type=color]{width:38px;height:30px;padding:2px}
+.r input[type=number]{width:70px}
+#sheet select{width:100%}
+.b3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.pop{position:absolute;right:8px;top:54px;background:var(--p);border-radius:12px;padding:6px;z-index:9;box-shadow:0 8px 24px #000a}
+.pop button{display:block;width:100%;text-align:left;background:none;padding:10px 14px}
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#fff;color:#111;padding:8px 16px;border-radius:20px;font-size:12px;opacity:0;transition:.3s;pointer-events:none;z-index:20}
+.canvas-container{box-shadow:0 4px 24px #000a}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HOME -->
+<section id="home" class="view on">
+  <div class="sc" id="hs"></div>
+  <button class="fab" onclick="pick('new')" title="Upload"><i class="fas fa-image"></i></button>
+  <nav class="nav">
+    <button class="on"><i class="fas fa-house"></i>Home</button>
+    <button onclick="document.getElementById('cd')&&document.getElementById('cd').scrollIntoView()"><i class="far fa-folder"></i>Your Designs</button>
+    <button onclick="newD(1080,1350,1)"><i class="fas fa-table-columns"></i>Templates</button>
+  </nav>
+</section>
+
+<!-- EDITOR -->
+<section id="ed" class="view">
+  <div class="etop">
+    <button onclick="goHome()"><i class="fas fa-house"></i></button><b></b>
+    <button onclick="undo()"><i class="fas fa-rotate-left"></i></button>
+    <button onclick="redo()"><i class="fas fa-rotate-right"></i></button>
+    <button onclick="$('menu').classList.toggle('hide')"><i class="fas fa-ellipsis"></i></button>
+    <button onclick="dl('png')"><i class="fas fa-download"></i></button>
+    <button onclick="share()"><i class="fas fa-share-nodes"></i></button>
+  </div>
+  <div id="menu" class="pop hide">
+    <button onclick="resize()">Resize page</button>
+    <button onclick="dl('jpg')">Download as JPG</button>
+    <button onclick="save();toast('Saved')">Save design</button>
+  </div>
+  <div id="stage"><div id="wrap"><canvas id="c"></canvas></div></div>
+
+  <div id="sheet">
+    <div id="pd"></div>
+    <div id="pt" class="hide">
+      <div id="gT">
+        <select id="ff"></select>
+        <div class="r"><input type="number" id="fs" min="8" max="600"><button id="bold"><b>B</b></button><button id="ital"><i>I</i></button><button id="und"><u>U</u></button>
+        <button data-ta="left"><i class="fas fa-align-left"></i></button><button data-ta="center"><i class="fas fa-align-center"></i></button><button data-ta="right"><i class="fas fa-align-right"></i></button></div>
+      </div>
+      <div id="gObj">
+        <div id="gC">
+          <div class="r"><label>Color</label><input type="color" id="fill"></div>
+          <div class="r"><label>Outline</label><input type="color" id="stroke"><input type="range" id="sw" min="0" max="40" value="0"></div>
+          <div class="r" id="gR"><label>Corners</label><input type="range" id="rad" min="0" max="150" value="0"></div>
+        </div>
+        <div id="gI">
+          <h5>Photo filters</h5>
+          <div class="r"><label>Brightness</label><input type="range" id="br" min="-100" max="100" value="0"></div>
+          <div class="r"><label>Contrast</label><input type="range" id="ct" min="-100" max="100" value="0"></div>
+          <div class="r"><label>Saturation</label><input type="range" id="sa" min="-100" max="100" value="0"></div>
+          <div class="r"><label>Blur</label><input type="range" id="bl" min="0" max="50" value="0"></div>
+          <select id="fx"><option value="">No effect</option><option>Grayscale</option><option>Sepia</option><option>BlackWhite</option><option>Invert</option><option>Vintage</option><option>Kodachrome</option><option>Polaroid</option></select>
+        </div>
+        <div class="r"><label>Opacity</label><input type="range" id="op" min="0" max="100" value="100"></div>
+        <div class="r"><label>Shadow</label><input type="range" id="shb" min="0" max="60" value="0"></div>
+        <h5>Align to page</h5>
+        <div class="b3"><button data-a="l">Left</button><button data-a="c">Center</button><button data-a="r">Right</button><button data-a="t">Top</button><button data-a="m">Middle</button><button data-a="b">Bottom</button></div>
+      </div>
+      <h5>Page &amp; brush</h5>
+      <div class="r"><label>Page color</label><input type="color" id="bg" value="#ffffff"></div>
+      <div class="r"><button id="dr"><i class="fas fa-pen"></i> Draw</button><input type="color" id="bc" value="#111827"><input type="range" id="bw" min="1" max="80" value="8"></div>
+    </div>
+  </div>
+
+  <div class="bar" id="bar">
+    <button data-s="tpl" onclick="openSheet('tpl')"><i class="fas fa-table-columns"></i>Templates</button>
+    <button data-s="el" onclick="sub='';openSheet('el')"><i class="fas fa-shapes"></i>Elements</button>
+    <button data-s="tx" onclick="openSheet('tx')"><i class="fas fa-font"></i>Text</button>
+    <button data-s="gal" onclick="openSheet('gal')"><i class="fas fa-camera"></i>Gallery</button>
+    <button data-s="br" onclick="openSheet('br')"><i class="fas fa-palette"></i>Brand</button>
+    <button data-s="up" onclick="openSheet('up')"><i class="fas fa-cloud-arrow-up"></i>Uploads</button>
+    <button data-s="tools" onclick="openSheet('tools')"><i class="fas fa-sliders"></i>Tools</button>
+    <button data-s="pr" onclick="openSheet('pr')"><i class="far fa-folder"></i>Projects</button>
+    <button data-s="ap" onclick="openSheet('ap')"><i class="fas fa-grip"></i>Apps</button>
+  </div>
+  <div class="bar hide" id="ctx">
+    <button data-a="edit"><i class="fas fa-sliders"></i>Edit</button>
+    <button data-a="dup"><i class="far fa-clone"></i>Duplicate</button>
+    <button data-a="front"><i class="fas fa-arrow-up"></i>To front</button>
+    <button data-a="back"><i class="fas fa-arrow-down"></i>To back</button>
+    <button data-a="fx"><i class="fas fa-left-right"></i>Flip</button>
+    <button data-a="del" style="color:#f87171"><i class="far fa-trash-can"></i>Delete</button>
+  </div>
+</section>
+
+<input type="file" id="file" accept="image/*" multiple hidden>
+<div id="toast"></div>
+</div>
+
+<script>
+const $=i=>document.getElementById(i),sh=(i,b)=>$(i).classList.toggle('hide',!b),v=(i,x)=>$(i).value=x;
+const hex=c=>typeof c=='string'&&/^#[0-9a-f]{6}$/i.test(c)?c:'#000000';
+const toast=m=>{const t=$('toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1600)};
+const FONTS=['Poppins','Roboto','Montserrat','Oswald','Anton','Bebas Neue','Playfair Display','Pacifico','Lobster','Dancing Script','Hind Siliguri','Arial','Georgia'];
+const PAL='#000000 #ffffff #6b7280 #ef4444 #f97316 #f59e0b #eab308 #84cc16 #22c55e #10b981 #14b8a6 #06b6d4 #3b82f6 #6366f1 #8b5cf6 #d946ef #ec4899 #f43f5e #111827 #1e3a8a #fde68a #fecaca #bbf7d0 #bfdbfe'.split(' ');
+const cv=new fabric.Canvas('c',{preserveObjectStacking:true,backgroundColor:'#ffffff'});
+cv.freeDrawingBrush=new fabric.PencilBrush(cv);
+let W=1080,H=1080,Z=1,hist=[],hi=-1,lock=false,cur=null,UP=[],REC=[],sheet='',sub='',imgMode='add',tm;
+const ao=()=>cv.getActiveObject();
+
+/* ---------- storage ---------- */
+const DB=()=>{try{return JSON.parse(localStorage.ms_designs||'[]')}catch(e){return[]}};
+function save(){
+  if(!cur)return;
+  const a=DB().filter(p=>p.id!=cur);
+  a.unshift({id:cur,w:W,h:H,json:cv.toJSON(),thumb:cv.toDataURL({format:'jpeg',quality:.5,multiplier:240/(W*Z)})});
+  try{localStorage.ms_designs=JSON.stringify(a.slice(0,20))}catch(e){toast('Storage full')}
+}
+
+/* ---------- home ---------- */
+const START=[['Doc','fa-file-lines','#14b8a6','soon'],['Whiteboard','fa-chalkboard','#22c55e','soon'],['Video','fa-video','#d946ef','soon'],['Custom size','fa-expand','#475569','resize(1)'],
+ ['Presentation','fa-display','#f97316','newD(1920,1080)'],['Social media','fa-heart','#ef4444','newD(1080,1920)'],['Upload','fa-cloud-arrow-up','#475569',"pick('new')"],['Sheet','fa-table','#3b82f6','soon']];
+const QUICK=[['Magic Layers','fa-layer-group','#8b5cf6','soon'],['Photo editor','fa-image','#64748b',"pick('new')"],['Remove background','fa-wand-magic-sparkles','#f59e0b','soon'],['Magic Eraser','fa-eraser','#3b82f6','soon']];
+const POP=[['Presentation','fa-display',1920,1080],['Instagram Post','fa-heart',1080,1080],['Document','fa-file-lines',794,1123],['Poster','fa-image',1080,1350]];
+const circ=a=>`<div class="it ${a[3]=='soon'?'soon':''}" data-k="${a[0]}" onclick="${a[3]=='soon'?"toast('Coming soon')":a[3]}"><div class="ci" style="background:${a[2]}"><i class="fas ${a[1]}"></i></div>${a[0]}</div>`;
+function renderHome(){
+  const d=DB();
+  $('hs').innerHTML=`<div class="hero"><h1>What will you design today?</h1><div class="se"><i class="fas fa-search"></i><input id="hq" placeholder="What would you like to create?" oninput="hf()"></div></div>
+  ${d.length?`<div id="cd"><h3>Continue designing</h3><div class="row">${d.map(p=>`<div class="it proj" onclick="openProj(${p.id})"><img src="${p.thumb}">Untitled Design</div>`).join('')}</div></div>`:''}
+  <h3>Choose how to start</h3><div class="g4">${START.map(circ).join('')}</div>
+  <h3>Popular — start from a template</h3><div class="row">${POP.map(p=>`<div class="it" data-k="${p[0]}" onclick="newD(${p[2]},${p[3]},1)"><div class="tl"><i class="fas ${p[1]}"></i></div>${p[0]}</div>`).join('')}</div>
+  <h3>Quick tools</h3><div class="g4">${QUICK.map(circ).join('')}</div>`;
+}
+function hf(){const q=$('hq').value.toLowerCase();document.querySelectorAll('#hs .it').forEach(e=>e.classList.toggle('hide',!!q&&!e.dataset.k.toLowerCase().includes(q)))}
+function show(x){$('home').classList.toggle('on',x=='home');$('ed').classList.toggle('on',x=='ed');if(x=='home')renderHome()}
+function goHome(){cv.discardActiveObject();save();show('home')}
+
+/* ---------- canvas basics ---------- */
+function fit(){
+  const s=$('stage');if(s.clientWidth<10)return;
+  Z=Math.max(.05,Math.min((s.clientWidth-40)/W,(s.clientHeight-40)/H,1));
+  cv.setZoom(Z);cv.setDimensions({width:W*Z,height:H*Z});
+}
+new ResizeObserver(fit).observe($('stage'));
+function snap(){
+  if(lock)return;
+  hist=hist.slice(0,hi+1);hist.push(JSON.stringify(cv.toJSON()));
+  if(hist.length>40)hist.shift();hi=hist.length-1;
+  clearTimeout(tm);tm=setTimeout(save,1500);
+}
+function load(i){lock=true;cv.loadFromJSON(hist[i],()=>{cv.renderAll();lock=false;sync()})}
+const undo=()=>{if(hi>0)load(--hi)},redo=()=>{if(hi<hist.length-1)load(++hi)};
+cv.on({'object:added':snap,'object:removed':snap,'object:modified':snap,'selection:created':sync,'selection:updated':sync,'selection:cleared':sync});
+function newD(w,h,tpl){
+  W=w;H=h;cur=Date.now();show('ed');
+  lock=true;cv.clear();cv.setBackgroundColor('#ffffff',()=>{});lock=false;
+  hist=[];hi=-1;closeSheet();fit();snap();sync();
+  if(tpl)openSheet('tpl');
+}
+function openProj(id){
+  const p=DB().find(x=>x.id==id);if(!p)return;
+  W=p.w;H=p.h;cur=p.id;show('ed');closeSheet();lock=true;
+  cv.loadFromJSON(p.json,()=>{lock=false;fit();hist=[];hi=-1;snap();cv.renderAll();sync()});
+}
+function resize(isNew){
+  const m=(prompt('Width x Height (px)','1080x1080')||'').match(/(\d+)\s*[x×]\s*(\d+)/i);if(!m)return;
+  const w=Math.min(+m[1],6000),h=Math.min(+m[2],6000);
+  if(isNew)newD(w,h);else{W=w;H=h;fit();$('menu').classList.add('hide')}
+}
+function add(o){
+  if(cv.isDrawingMode)$('dr').click();
+  o.set({left:W/2,top:H/2,originX:'center',originY:'center'});
+  cv.add(o).setActiveObject(o);cv.requestRenderAll();
+}
+
+/* ---------- templates ---------- */
+const TPL=[
+ {bg:'#111827',i:[{k:'t',x:.5,y:.5,s:.075,c:'#fff',f:'Playfair Display',v:'Keep going\neven when the path\nfeels quiet.'},{k:'c',x:.5,y:.14,w:.12,c:'#7c3aed'}]},
+ {bg:'#1e3a8a',i:[{k:'t',x:.5,y:.45,s:.22,c:'#fff',b:1,f:'Poppins',v:'Energy'},{k:'t',x:.5,y:.62,s:.05,c:'#bfdbfe',f:'Poppins',v:'Rise above the noise'}]},
+ {bg:'#fde68a',i:[{k:'c',x:.5,y:.5,w:.8,c:'#ef4444'},{k:'t',x:.5,y:.44,s:.2,c:'#fff',b:1,f:'Anton',v:'SALE'},{k:'t',x:.5,y:.62,s:.08,c:'#fff',f:'Poppins',v:'50% OFF'}]},
+ {bg:'#e5e7eb',i:[{k:'r',x:.5,y:.5,w:.8,h:.6,c:'#fff'},{k:'t',x:.5,y:.38,s:.1,c:'#111827',b:1,f:'Poppins',v:'Reminder'},{k:'t',x:.5,y:.55,s:.045,c:'#6b7280',f:'Poppins',v:'Be kind to yourself\ntoday and always.'}]},
+ {bg:'#7c3aed',i:[{k:'t',x:.5,y:.5,s:.16,c:'#fff',b:1,f:'Montserrat',v:'Hello\nWorld'}]},
+ {bg:'#ea580c',i:[{k:'r',x:.5,y:.3,w:.4,h:.1,c:'#111827'},{k:'t',x:.5,y:.3,s:.07,c:'#fff',f:'Poppins',v:'Pause.'},{k:'t',x:.5,y:.82,s:.045,c:'#fff',f:'Poppins',v:"There's still wonder\nall around you."}]}
+];
+function pv(t){
+  const p=`left:${t.x*100}%;top:${t.y*100}%;`;
+  if(t.k=='t')return `<div style="${p}font-size:${t.s*100}cqw;color:${t.c};font-weight:${t.b?700:400};font-family:'${t.f}',sans-serif;text-align:center">${t.v}</div>`;
+  if(t.k=='c')return `<div style="${p}width:${t.w*100}%;aspect-ratio:1;border-radius:50%;background:${t.c}"></div>`;
+  return `<div style="${p}width:${t.w*100}%;height:${t.h*100}%;background:${t.c}"></div>`;
+}
+function useTpl(n){
+  const t=TPL[n];lock=true;cv.clear();cv.setBackgroundColor(t.bg,()=>{});
+  t.i.forEach(e=>{
+    const o=e.k=='t'?new fabric.IText(e.v,{fontSize:e.s*W,fill:e.c,fontFamily:e.f,fontWeight:e.b?'bold':'normal',textAlign:'center'}):
+      e.k=='c'?new fabric.Circle({radius:e.w*W/2,fill:e.c}):new fabric.Rect({width:e.w*W,height:e.h*H,fill:e.c});
+    o.set({left:e.x*W,top:e.y*H,originX:'center',originY:'center'});cv.add(o);
+  });
+  lock=false;cv.discardActiveObject();cv.renderAll();snap();sync();
+}
+
+/* ---------- elements ---------- */
+const star=()=>{const p=[];for(let i=0;i<10;i++){const r=i%2?60:150,a=Math.PI*i/5-Math.PI/2;p.push({x:150+r*Math.cos(a),y:150+r*Math.sin(a)})}return new fabric.Polygon(p,{fill:'#f59e0b'})};
+const SH={
+ Square:[()=>new fabric.Rect({width:300,height:300,fill:'#3b82f6'}),'■'],
+ Rounded:[()=>new fabric.Rect({width:300,height:300,rx:50,ry:50,fill:'#8b5cf6'}),'▢'],
+ Circle:[()=>new fabric.Circle({radius:150,fill:'#ef4444'}),'●'],
+ Triangle:[()=>new fabric.Triangle({width:320,height:280,fill:'#10b981'}),'▲'],
+ Star:[star,'★'],
+ Heart:[()=>new fabric.Path('M 272.7 238.7 C 206.5 238.7 152.7 292.5 152.7 358.7 C 152.7 493.5 288.6 528.8 381.3 662 C 468.8 529.6 609.8 489.2 609.8 358.7 C 609.8 292.5 556.1 238.7 489.8 238.7 C 441.8 238.7 400.4 267.1 381.3 307.9 C 362.1 267.1 320.7 238.7 272.7 238.7 z',{fill:'#ec4899',scaleX:.6,scaleY:.6}),'♥'],
+ Diamond:[()=>new fabric.Polygon([{x:150,y:0},{x:300,y:150},{x:150,y:300},{x:0,y:150}],{fill:'#06b6d4'}),'◆'],
+ Line:[()=>new fabric.Rect({width:400,height:8,fill:'#111827'}),'━'],
+ Arrow:[()=>new fabric.Polygon([{x:0,y:40},{x:200,y:40},{x:200,y:0},{x:300,y:70},{x:200,y:140},{x:200,y:100},{x:0,y:100}],{fill:'#111827'}),'➤']
+};
+const CATS=[['Shapes','🔷','sub=\'sh\''],['Graphics','🌻','sub=\'gr\''],['Animations','😀'],['Photos','🖼️'],['Videos','🎬'],['Audio','🎵'],['Charts','📊','chart()'],['Forms','✅'],['Sheets','📑']];
+const EMO='😀 😂 😍 😎 🥳 😭 🔥 ⭐ ❤️ 👍 🎉 ✨ 🌈 🌸 🍕 ⚡ 💎 👑 🚀 🎵 ☀️ 🌙 🎁 💯'.split(' ');
+function addSh(k){REC=[k,...REC.filter(x=>x!=k)].slice(0,6);add(SH[k][0]());if(sheet=='el')renderSheet()}
+function chart(){
+  const s=prompt('Values (comma separated)','40,70,55,90');if(!s)return;
+  const a=s.split(',').map(Number).filter(n=>n>=0),m=Math.max(...a)||1,C=['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec4899'],o=[];
+  a.forEach((n,i)=>{const h=Math.max(n/m*300,2);
+    o.push(new fabric.Rect({left:i*90,top:300-h,width:70,height:h,fill:C[i%6]}),
+      new fabric.Text(String(n),{left:i*90+35,top:300-h-36,originX:'center',fontSize:26,fill:'#111827',fontFamily:'Poppins'}))});
+  if(o.length)add(new fabric.Group(o));
+}
+const shBtn=k=>`<button class="sq" onclick="addSh('${k}')">${SH[k][1]}<small>${k}</small></button>`;
+
+/* ---------- text ---------- */
+const loadF=f=>document.fonts.load('40px "'+f+'"');
+function addTx(s,b,f){add(new fabric.IText(s>100?'Heading':s>50?'Subheading':'Body text',{fontSize:s*W/1080,fontWeight:b?'bold':'normal',fontFamily:f||'Poppins',fill:'#111827'}))}
+function setFont(f){
+  const o=ao();
+  if(o&&o.type=='i-text')loadF(f).then(()=>{o.set('fontFamily',f);cv.requestRenderAll();snap()});
+  else loadF(f).then(()=>addTx(70,0,f));
+}
+
+/* ---------- uploads / brand / projects ---------- */
+function pick(m){imgMode=m;$('file').click()}
+$('file').onchange=e=>{[...e.target.files].forEach(f=>rd(f,imgMode));e.target.value=''};
+function rd(f,m){
+  const r=new FileReader();
+  r.onload=ev=>{
+    if(m!='new'){UP.push(ev.target.result);if(sheet=='up'||sheet=='gal')renderSheet();return}
+    fabric.Image.fromURL(ev.target.result,im=>{
+      const s=Math.min(1,2000/Math.max(im.width,im.height));
+      newD(Math.round(im.width*s),Math.round(im.height*s));im.scale(s);add(im);
+    });
+  };
+  r.readAsDataURL(f);
+}
+function addUp(i){fabric.Image.fromURL(UP[i],im=>{im.scale(Math.min(W*.8/im.width,H*.8/im.height));add(im)})}
+function applyC(c){
+  const o=ao();
+  if(o&&o.type!='image'){o.set('fill',c);cv.requestRenderAll();snap()}
+  else if(!o){cv.setBackgroundColor(c,()=>{cv.requestRenderAll();snap()})}
+}
+function delProj(id){try{localStorage.ms_designs=JSON.stringify(DB().filter(p=>p.id!=id))}catch(e){}renderSheet()}
+
+/* ---------- bottom sheet ---------- */
+const P={
+ tpl:()=>`<div class="g3">${TPL.map((t,i)=>`<div class="tp" style="background:${t.bg}" onclick="useTpl(${i})">${t.i.map(pv).join('')}</div>`).join('')}</div>`,
+ el:()=>{
+  if(sub)return `<button onclick="sub='';renderSheet()" style="margin-bottom:12px"><i class="fas fa-arrow-left"></i> Back</button>`+
+    (sub=='sh'?`<div class="g3">${Object.keys(SH).map(shBtn).join('')}</div>`:
+     `<div class="g3">${EMO.map(e=>`<button class="sq" onclick="add(new fabric.IText('${e}',{fontSize:170}))">${e}</button>`).join('')}</div>`);
+  return `<input class="si" id="es" placeholder="Search elements" oninput="es()">
+   ${REC.length?`<h5>Recently used</h5><div class="g3">${REC.map(shBtn).join('')}</div>`:''}
+   <h5>Browse categories</h5><div class="g3" id="cats">${CATS.map(c=>`<button class="sq" data-k="${c[0]}" style="${c[2]?'':'opacity:.5'}" onclick="${c[2]||"toast('Coming soon')"};renderSheet()">${c[1]}<small>${c[0]}</small></button>`).join('')}</div>`;
+ },
+ tx:()=>`<div class="col"><button style="font-size:22px;font-weight:700" onclick="addTx(120,1)">Add a heading</button><button style="font-size:16px;font-weight:700" onclick="addTx(70,1)">Add a subheading</button><button onclick="addTx(40,0)">Add a little bit of body text</button></div>
+   <h5>Fonts</h5><div class="col">${FONTS.map(f=>`<button style="font-family:'${f}'" onclick="setFont('${f}')">${f}</button>`).join('')}</div>`,
+ up:()=>`<button style="width:100%;background:#7c3aed;margin-bottom:12px;padding:12px" onclick="pick('add')"><i class="fas fa-cloud-arrow-up"></i> Upload files</button>
+   ${UP.length?`<div class="g3">${UP.map((u,i)=>`<img class="th" src="${u}" onclick="addUp(${i})">`).join('')}</div>`:'<p class="mut">Your uploaded photos will appear here. Tap one to add it to the page.</p>'}`,
+ br:()=>`<h5>Brand colors</h5><div class="sws">${PAL.map(c=>`<button style="background:${c}" onclick="applyC('${c}')"></button>`).join('')}</div><p class="mut">Tap a color to apply it to the selected element, or to the page when nothing is selected.</p>`,
+ pr:()=>{const d=DB();return d.length?`<div class="g3">${d.map(p=>`<div class="it" style="position:relative"><img class="th" style="object-fit:contain;background:var(--p2)" src="${p.thumb}" onclick="save();openProj(${p.id})"><span onclick="delProj(${p.id})" style="color:#f87171;cursor:pointer">Delete</span></div>`).join('')}</div>`:'<p class="mut">No saved designs yet. Designs save automatically.</p>'},
+ ap:()=>'<p class="mut">Apps are coming soon.</p>'
+};
+function renderSheet(){
+  if(sheet=='tools'){sync();return}
+  $('pd').innerHTML=P[sheet]?P[sheet]():'';
+}
+function openSheet(n){
+  if(sheet==n)return closeSheet();
+  sheet=n;$('sheet').classList.add('on');
+  document.querySelectorAll('#bar button').forEach(b=>b.classList.toggle('on',b.dataset.s==n));
+  sh('pt',n=='tools');sh('pd',n!='tools');renderSheet();sync();
+}
+function closeSheet(){sheet='';$('sheet').classList.remove('on');document.querySelectorAll('#bar button').forEach(b=>b.classList.remove('on'))}
+function es(){
+  const q=$('es').value.toLowerCase();
+  document.querySelectorAll('#cats button').forEach(b=>b.classList.toggle('hide',!!q&&!b.dataset.k.toLowerCase().includes(q)));
+}
+
+/* ---------- properties ---------- */
+FONTS.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;$('ff').appendChild(o)});
+function sync(){
+  const o=ao(),d=cv.isDrawingMode;
+  sh('bar',!o||d);sh('ctx',!!o&&!d);
+  v('bg',hex(cv.backgroundColor));
+  sh('gObj',!!o);if(!o)return sh('gT',0);
+  const t=o.type,im=t=='image',tx=t=='i-text',sel=t=='activeSelection';
+  sh('gT',tx);sh('gI',im);sh('gC',!im&&!sel);sh('gR',t=='rect');
+  v('fill',hex(o.fill));v('stroke',hex(o.stroke));v('sw',o.strokeWidth||0);v('rad',o.rx||0);
+  v('op',Math.round((o.opacity==null?1:o.opacity)*100));v('shb',o.shadow?o.shadow.blur:0);
+  if(tx){v('ff',o.fontFamily);v('fs',Math.round(o.fontSize*o.scaleY))}
+  if(im){const f=o._f||{};['br','ct','sa','bl'].forEach(k=>v(k,f[k]||0));v('fx',f.fx||'')}
+}
+function on(id,fn){
+  const e=$(id);
+  e.addEventListener('input',()=>{const o=ao();if(o){fn(o,e.value);cv.requestRenderAll()}});
+  e.addEventListener('change',snap);
+}
+on('fill',(o,x)=>o.set('fill',x));on('stroke',(o,x)=>o.set('stroke',x));on('sw',(o,x)=>o.set('strokeWidth',+x));
+on('rad',(o,x)=>o.set({rx:+x,ry:+x}));on('op',(o,x)=>o.set('opacity',x/100));
+on('fs',(o,x)=>o.set({fontSize:+x,scaleX:1,scaleY:1}));
+on('shb',(o,x)=>o.set('shadow',+x?new fabric.Shadow({color:'rgba(0,0,0,.5)',blur:+x,offsetX:x/3,offsetY:x/3}):null));
+$('ff').addEventListener('change',()=>setFont($('ff').value));
+$('bg').addEventListener('input',e=>cv.setBackgroundColor(e.target.value,()=>cv.requestRenderAll()));
+$('bg').addEventListener('change',snap);
+const tg=(p,a,b)=>{const o=ao();if(!o)return;o.set(p,o[p]==a?b:a);cv.requestRenderAll();snap()};
+$('bold').onclick=()=>tg('fontWeight','bold','normal');
+$('ital').onclick=()=>tg('fontStyle','italic','normal');
+$('und').onclick=()=>tg('underline',true,false);
+$('dr').onclick=()=>{
+  const d=cv.isDrawingMode=!cv.isDrawingMode;
+  if(d){cv.discardActiveObject();cv.freeDrawingBrush.color=$('bc').value;cv.freeDrawingBrush.width=+$('bw').value}
+  $('dr').style.background=d?'#7c3aed':'';cv.requestRenderAll();sync();
+};
+$('bc').oninput=e=>cv.freeDrawingBrush.color=e.target.value;
+$('bw').oninput=e=>cv.freeDrawingBrush.width=+e.target.value;
+
+const FK=['br','ct','sa','bl','fx'];
+function applyF(o){
+  const g=k=>+$(k).value,F=fabric.Image.filters,f=[];
+  if(g('br'))f.push(new F.Brightness({brightness:g('br')/100}));
+  if(g('ct'))f.push(new F.Contrast({contrast:g('ct')/100}));
+  if(g('sa'))f.push(new F.Saturation({saturation:g('sa')/100}));
+  if(g('bl'))f.push(new F.Blur({blur:g('bl')/100}));
+  if($('fx').value)f.push(new F[$('fx').value]());
+  o.filters=f;o.applyFilters();o._f={};FK.forEach(k=>o._f[k]=$(k).value);
+}
+FK.forEach(k=>{
+  $(k).addEventListener('input',()=>{const o=ao();if(o&&o.type=='image'){applyF(o);cv.requestRenderAll()}});
+  $(k).addEventListener('change',snap);
+});
+
+/* ---------- arrange / align / delete ---------- */
+function al(k){
+  const o=ao(),r=o.getBoundingRect(true,true);let dx=0,dy=0;
+  if(k=='l')dx=-r.left;if(k=='c')dx=W/2-(r.left+r.width/2);if(k=='r')dx=W-(r.left+r.width);
+  if(k=='t')dy=-r.top;if(k=='m')dy=H/2-(r.top+r.height/2);if(k=='b')dy=H-(r.top+r.height);
+  o.set({left:o.left+dx,top:o.top+dy}).setCoords();
+}
+function del(){cv.getActiveObjects().forEach(x=>cv.remove(x));cv.discardActiveObject();cv.requestRenderAll()}
+const A={
+  front:o=>cv.bringToFront(o),back:o=>cv.sendToBack(o),fx:o=>o.set('flipX',!o.flipX),
+  dup:o=>o.clone(c=>{c.set({left:o.left+30,top:o.top+30});cv.add(c).setActiveObject(c)}),
+  del:()=>del(),edit:()=>openSheet('tools')
+};
+$('sheet').addEventListener('click',e=>{
+  const b=e.target.closest('button'),o=ao();if(!b||!o)return;
+  if(b.dataset.ta)o.set('textAlign',b.dataset.ta);
+  else if(b.dataset.a)al(b.dataset.a);
+  else return;
+  cv.requestRenderAll();snap();
+});
+$('ctx').addEventListener('click',e=>{
+  const b=e.target.closest('button'),o=ao();if(!b||!o)return;
+  A[b.dataset.a](o);cv.requestRenderAll();snap();
+});
+
+/* ---------- export ---------- */
+function out(f){cv.discardActiveObject().renderAll();return cv.toDataURL({format:f=='jpg'?'jpeg':'png',quality:.95,multiplier:1/Z})}
+function dl(f){
+  const a=document.createElement('a');a.href=out(f);a.download='design.'+f;
+  document.body.appendChild(a);a.click();a.remove();$('menu').classList.add('hide');
+}
+async function share(){
+  try{
+    const b=await (await fetch(out('png'))).blob(),f=new File([b],'design.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]});
+    else{dl('png');toast('Downloaded')}
+  }catch(e){}
+}
+addEventListener('keydown',e=>{
+  const o=ao(),t=e.target.tagName;
+  if(!$('ed').classList.contains('on')||t=='INPUT'||t=='SELECT'||(o&&o.isEditing))return;
+  const k=e.key.toLowerCase(),c=e.ctrlKey||e.metaKey;
+  if(k=='delete'||k=='backspace'){e.preventDefault();del()}
+  else if(c&&k=='z'){e.preventDefault();e.shiftKey?redo():undo()}
+  else if(c&&k=='y'){e.preventDefault();redo()}
+  else if(c&&k=='d'&&o){e.preventDefault();A.dup(o)}
+});
+
+/* ---------- start ---------- */
+renderHome();
+Promise.all(FONTS.map(loadF)).then(()=>cv.requestRenderAll());
+</script>
+</body>
+</html>
