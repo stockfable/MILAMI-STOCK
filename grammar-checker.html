@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grammar Checker</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --text:#1c2430; --muted:#667085; --line:#dfe3ea;
+    --brand:#2457d6; --brand-d:#1b44a8;
+    --spell:#d92d20; --grammar:#b54708; --style:#6941c6;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#12161c; --card:#1b212a; --text:#e8ecf2; --muted:#9aa4b2; --line:#2c3541; --brand:#6d94ff; --brand-d:#8aa9ff; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:20px 14px 60px}
+  h1{font-size:1.5rem;margin:10px 0 4px}
+  p.sub{margin:0 0 16px;color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  select,button{font:inherit;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--text)}
+  button{cursor:pointer}
+  button.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+  button.primary:hover{background:var(--brand-d)}
+  button:disabled{opacity:.6;cursor:wait}
+  button:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+  textarea{width:100%;min-height:220px;resize:vertical;padding:12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit}
+  .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem;margin-top:6px}
+  #status{margin:14px 0 6px;font-weight:600}
+  .issue{border:1px solid var(--line);border-left-width:5px;border-radius:8px;padding:10px 12px;margin:8px 0;background:var(--card)}
+  .issue.spell{border-left-color:var(--spell)} .issue.grammar{border-left-color:var(--grammar)} .issue.style{border-left-color:var(--style)}
+  .issue .msg{margin:0 0 4px}
+  .issue .ctx{color:var(--muted);font-size:.92rem;margin:0 0 8px;word-break:break-word}
+  .issue mark{background:#ffe3e0;color:#7a1710;border-radius:3px;padding:0 2px}
+  @media (prefers-color-scheme: dark){.issue mark{background:#5a1f1a;color:#ffd7d3}}
+  .fixes{display:flex;flex-wrap:wrap;gap:6px}
+  .fixes button{padding:5px 10px;font-size:.92rem;border-color:var(--brand);color:var(--brand)}
+  .fixes button:hover{background:var(--brand);color:#fff}
+  .ok{color:#067647;font-weight:600}
+  .note{font-size:.82rem;color:var(--muted);margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Grammar Checker</h1>
+  <p class="sub">Paste your text, press Check, then tap a suggestion to fix it.</p>
+
+  <div class="card">
+    <div class="bar">
+      <label for="lang" class="sr" style="color:var(--muted)">Language</label>
+      <select id="lang">
+        <option value="en-US">English (US)</option>
+        <option value="en-GB">English (UK)</option>
+        <option value="auto">Auto detect</option>
+      </select>
+      <button id="check" class="primary">Check text</button>
+      <button id="fixall">Fix all</button>
+      <button id="copy">Copy</button>
+      <button id="clear">Clear</button>
+    </div>
+    <textarea id="text" placeholder="Type or paste your text here..." spellcheck="false"></textarea>
+    <div class="meta"><span id="count">0 words, 0 characters</span><span id="limit"></span></div>
+  </div>
+
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="results"></div>
+
+  <p class="note">Uses the free LanguageTool service (internet needed). Free limit is about 20,000 characters per check. Your text is sent to languagetool.org only when you press Check.</p>
+</div>
+
+<script>
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  var ta=$('text'), results=$('results'), statusEl=$('status'), btn=$('check');
+  var matches=[];
+  var MAX=20000;
+
+  function esc(s){return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+  function updateCount(){
+    var t=ta.value.trim();
+    var w=t?t.split(/\s+/).length:0;
+    $('count').textContent=w+' words, '+ta.value.length+' characters';
+    $('limit').textContent=ta.value.length>MAX?'Too long: max '+MAX+' characters':'';
+  }
+  ta.addEventListener('input',updateCount);
+
+  function kind(m){
+    var id=(m.rule&&m.rule.issueType)||'';
+    var cat=(m.rule&&m.rule.category&&m.rule.category.id)||'';
+    if(id==='misspelling'||cat==='TYPOS') return 'spell';
+    if(cat==='STYLE'||id==='style'||cat==='REDUNDANCY') return 'style';
+    return 'grammar';
+  }
+
+  function render(){
+    results.innerHTML='';
+    if(!matches.length){
+      statusEl.innerHTML='<span class="ok">No problems found. Looks good!</span>';
+      return;
+    }
+    statusEl.textContent=matches.length+' issue'+(matches.length>1?'s':'')+' found';
+    var text=ta.value;
+    matches.forEach(function(m,i){
+      var k=kind(m);
+      var div=document.createElement('div');
+      div.className='issue '+k;
+      var start=Math.max(0,m.offset-30), end=Math.min(text.length,m.offset+m.length+30);
+      var ctx=(start>0?'...':'')+esc(text.slice(start,m.offset))+
+        '<mark>'+esc(text.slice(m.offset,m.offset+m.length))+'</mark>'+
+        esc(text.slice(m.offset+m.length,end))+(end<text.length?'...':'');
+      var html='<p class="msg">'+esc(m.message)+'</p><p class="ctx">'+ctx+'</p><div class="fixes">';
+      (m.replacements||[]).slice(0,5).forEach(function(r,j){
+        html+='<button data-i="'+i+'" data-j="'+j+'">'+(r.value===''?'(remove)':esc(r.value))+'</button>';
+      });
+      html+='</div>';
+      div.innerHTML=html;
+      results.appendChild(div);
+    });
+  }
+
+  function applyFix(i,j){
+    var m=matches[i]; if(!m||!m.replacements[j]) return;
+    var rep=m.replacements[j].value;
+    var t=ta.value;
+    ta.value=t.slice(0,m.offset)+rep+t.slice(m.offset+m.length);
+    updateCount();
+    runCheck();
+  }
+
+  results.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-i]');
+    if(b) applyFix(+b.dataset.i,+b.dataset.j);
+  });
+
+  async function runCheck(){
+    var text=ta.value;
+    if(!text.trim()){statusEl.textContent='Write something first.';results.innerHTML='';return;}
+    if(text.length>MAX){statusEl.textContent='Text is too long. Check it in parts of '+MAX+' characters.';return;}
+    btn.disabled=true; statusEl.textContent='Checking...';
+    try{
+      var body=new URLSearchParams();
+      body.set('text',text);
+      body.set('language',$('lang').value);
+      var res=await fetch('https://api.languagetool.org/v2/check',{
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded','Accept':'application/json'},
+        body:body.toString()
+      });
+      if(!res.ok) throw new Error('Server error '+res.status);
+      var data=await res.json();
+      matches=data.matches||[];
+      render();
+    }catch(err){
+      statusEl.textContent='Could not check. Check your internet and try again. ('+err.message+')';
+      results.innerHTML='';
+    }finally{
+      btn.disabled=false;
+    }
+  }
+
+  btn.addEventListener('click',runCheck);
+
+  $('fixall').addEventListener('click',function(){
+    if(!matches.length){statusEl.textContent='Press Check text first.';return;}
+    var t=ta.value;
+    matches.slice().sort(function(a,b){return b.offset-a.offset}).forEach(function(m){
+      if(m.replacements&&m.replacements.length){
+        t=t.slice(0,m.offset)+m.replacements[0].value+t.slice(m.offset+m.length);
+      }
+    });
+    ta.value=t; updateCount(); runCheck();
+  });
+
+  $('copy').addEventListener('click',function(){
+    ta.select();
+    try{
+      (navigator.clipboard?navigator.clipboard.writeText(ta.value):Promise.reject()).then(function(){statusEl.textContent='Copied.'}).catch(function(){document.execCommand('copy');statusEl.textContent='Copied.'});
+    }catch(e){document.execCommand('copy');statusEl.textContent='Copied.'}
+  });
+
+  $('clear').addEventListener('click',function(){
+    ta.value='';matches=[];results.innerHTML='';statusEl.textContent='';updateCount();ta.focus();
+  });
+
+  updateCount();
+})();
+</script>
+</body>
+</html>

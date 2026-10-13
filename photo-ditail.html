@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Photo Detail - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:16px}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.back-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--line);border-radius:20px;font-weight:600;font-size:14px;background:var(--bg)}
+.back-btn:hover{background:var(--soft)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.btn{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn.fill{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.fill:hover{background:var(--blue-d)}
+
+main{max-width:1400px;margin:auto;padding:24px 20px}
+.layout{display:grid;grid-template-columns:1fr 400px;gap:30px;margin-bottom:50px}
+
+/* Big image area */
+.big-img-wrap{background:#0a0a0a;border-radius:12px;padding:20px;display:flex;align-items:center;justify-content:center;min-height:500px;position:relative}
+.big-img-wrap img{max-width:100%;max-height:75vh;object-fit:contain;border-radius:4px;cursor:zoom-in;transition:transform .25s}
+.big-img-wrap img.zoomed{cursor:zoom-out;transform:scale(1.5)}
+
+/* Sidebar detail */
+.side h1{font-size:22px;line-height:1.35;margin-bottom:12px;font-weight:600}
+.author-line{font-size:14px;color:var(--mute);margin-bottom:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.author-line b{color:var(--ink);font-weight:600}
+.src-pill{background:var(--soft);padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase}
+
+.quick-actions{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.qa-btn{border:1px solid var(--line);background:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.qa-btn:hover{background:var(--soft);border-color:var(--ink)}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;margin-bottom:22px;padding:16px;background:var(--soft);border-radius:10px}
+.info-grid > div{display:flex;flex-direction:column;min-width:0}
+.info-grid label{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;font-weight:700}
+.info-grid span{font-size:13px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.lic-pick{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.lic-opt{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;transition:.15s}
+.lic-opt:hover{border-color:var(--mute)}
+.lic-opt.active{border-color:var(--blue);background:#f0f7ff}
+.lic-opt input{margin:0;accent-color:var(--blue)}
+.lic-opt > div{flex:1;min-width:0}
+.lic-opt b{display:block;font-size:14px;margin-bottom:3px}
+.lic-opt small{color:var(--mute);font-size:12px;line-height:1.4}
+.lic-price{font-weight:700;font-size:14px;color:var(--blue);white-space:nowrap}
+
+.download-btn{width:100%;padding:14px;font-size:16px;text-align:center;margin-bottom:10px;border-radius:10px;display:block;text-decoration:none;font-weight:700}
+.save-btn{width:100%;padding:13px;font-size:15px;border-radius:10px;margin-bottom:24px}
+
+.kw-section{margin-bottom:20px}
+.kw-label{display:block;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:700}
+.kw{display:flex;flex-wrap:wrap;gap:8px}
+.kw span{background:var(--soft);padding:6px 14px;border-radius:16px;font-size:13px;cursor:pointer;transition:.15s}
+.kw span:hover{background:var(--ink);color:var(--bg)}
+
+.meta{font-size:12px;color:var(--mute);line-height:1.8;padding-top:16px;border-top:1px solid var(--line)}
+
+/* Sections below */
+.section-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.section-title small{font-size:12px;font-weight:400;color:var(--mute)}
+.section{margin-bottom:50px}
+.grid-small{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.card{position:relative;border-radius:8px;overflow:hidden;background:var(--soft);cursor:pointer;aspect-ratio:4/3}
+.card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+.card:hover img{transform:scale(1.05)}
+.card .ov{position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.75));display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;opacity:0;transition:opacity .15s}
+.card:hover .ov{opacity:1}
+.card .ov b{font-size:13px;line-height:1.3}
+.card .ov small{opacity:.85;font-size:11px;margin-top:2px}
+.badge-free{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;text-transform:uppercase;z-index:2}
+
+.state{padding:60px 10px;text-align:center;color:var(--mute)}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;gap:20px}
+  .big-img-wrap{min-height:auto;padding:10px}
+  .big-img-wrap img{max-height:60vh}
+  .info-grid{grid-template-columns:1fr}
+  .top-nav .in{padding:0 12px;gap:8px}
+  .logo-container span{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top-nav"><div class="in">
+  <button class="back-btn" id="backBtn">
+    <i class="fas fa-arrow-left"></i> Back
+  </button>
+  <a href="index.html" class="logo-container">
+    <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+    <span>MINAMI STOCK</span>
+  </a>
+  <div class="nav-right">
+    <a href="stock-photo.html" class="btn">Browse all</a>
+    <a href="login.html" class="btn fill" id="signBtn">Sign In</a>
+  </div>
+</div></header>
+
+<main>
+  <div class="state" id="state">Loading photo details…</div>
+
+  <div class="layout" id="layout" hidden>
+    <div class="big-img-wrap">
+      <img id="bigImg" alt="">
+    </div>
+
+    <div class="side">
+      <h1 id="pTitle"></h1>
+
+      <div class="author-line">
+        <span>By <b id="pAuthor"></b></span>
+        <span>·</span>
+        <span class="src-pill" id="pSource"></span>
+      </div>
+
+      <div class="quick-actions">
+        <button class="qa-btn" id="qaCopy">🔗 Copy link</button>
+        <button class="qa-btn" id="qaOpen">↗ Open original</button>
+      </div>
+
+      <div class="info-grid">
+        <div><label>Dimensions</label><span id="pDim">—</span></div>
+        <div><label>File type</label><span id="pType">JPEG</span></div>
+        <div><label>Category</label><span id="pCat">—</span></div>
+        <div><label>Type</label><span id="pSub">—</span></div>
+      </div>
+
+      <div class="lic-pick">
+        <label class="lic-opt active">
+          <input type="radio" name="lic" value="standard" checked>
+          <div>
+            <b>Standard license</b>
+            <small>Websites, social media, print & ads</small>
+          </div>
+          <span class="lic-price">Free</span>
+        </label>
+        <label class="lic-opt">
+          <input type="radio" name="lic" value="extended">
+          <div>
+            <b>Extended license</b>
+            <small>Resale products, unlimited print</small>
+          </div>
+          <span class="lic-price">$9.99</span>
+        </label>
+      </div>
+
+      <a class="btn fill download-btn" id="pDl" download target="_blank" rel="noopener">⬇ Download</a>
+      <button class="btn save-btn" id="pSave">♡ Save to collection</button>
+
+      <div class="kw-section">
+        <label class="kw-label">Similar keywords</label>
+        <div class="kw" id="pKw"></div>
+      </div>
+
+      <div class="meta" id="pMeta"></div>
+    </div>
+  </div>
+
+  <!-- Similar photos section -->
+  <section class="section" id="similarSection" hidden>
+    <div class="section-title">
+      Similar photos <small id="similarCount"></small>
+    </div>
+    <div class="grid-small" id="similarGrid"></div>
+  </section>
+
+  <!-- More from Pixabay section -->
+  <section class="section" id="moreSection" hidden>
+    <div class="section-title">
+      More photos <small id="moreCount"></small>
+    </div>
+    <div class="grid-small" id="moreGrid"></div>
+  </section>
+</main>
+
+<div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+  authDomain: "creoverse-stock.firebaseapp.com",
+  databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "creoverse-stock",
+  storageBucket: "creoverse-stock.firebasestorage.app",
+  messagingSenderId: "128072247505",
+  appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
+};
+
+/* 🔑 আপনার Pixabay key এখানে বসান */
+const PIXABAY_KEY = "YOUR_PIXABAY_KEY_HERE";
+
+const PHOTO_COLLECTION = "stockphoto";
+const DATA_COLLECTION = "photoData";
+
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const $ = id => document.getElementById(id);
+let user = null, saved = new Set(), photo = null;
+
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),2200)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function kwList(p){return Array.isArray(p.keywords)?p.keywords:String(p.keywords||"").split(",").map(s=>s.trim()).filter(Boolean)}
+
+/* Back button */
+$("backBtn").onclick = () => {
+  if (history.length > 1) history.back();
+  else location.href = "stock-photo.html";
+};
+
+/* Auth */
+auth.onAuthStateChanged(async u => {
+  user = u;
+  if (u) {
+    $("signBtn").textContent = "My account";
+    $("signBtn").href = "account.html";
+    try {
+      const s = await db.collection("users").doc(u.uid).collection("saved").get();
+      saved = new Set(s.docs.map(d => d.id));
+    } catch(e){ saved = new Set(); }
+    if (photo) updateSaveBtn();
+  } else {
+    saved = new Set();
+    $("signBtn").textContent = "Sign In";
+    $("signBtn").href = "login.html";
+  }
+});
+
+/* Load photo from URL: ?id=pixabay_xxx  OR  ?id=firebaseDocId */
+async function loadPhoto(){
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+
+  if (!id) {
+    $("state").innerHTML = '<h2 style="color:#222">Photo not found</h2><p style="margin-top:8px">No photo ID in URL.</p><p style="margin-top:16px"><a class="btn fill" href="stock-photo.html">Back to Stock Photos</a></p>';
+    return;
+  }
+
+  // Pixabay photo?
+  if (id.startsWith("pixabay_")) {
+    const pixId = id.replace("pixabay_", "");
+    try {
+      const url = `https://pixabay.com/api/?key=${encodeURIComponent(PIXABAY_KEY)}&id=${pixId}`;
+      const r = await fetch(url);
+      const d = await r.json();
+      if (d.hits && d.hits[0]) {
+        const p = d.hits[0];
+        photo = {
+          id: id,
+          title: (p.tags || "").split(",")[0].trim() || "Photo",
+          url: p.webformatURL,
+          fullUrl: p.largeImageURL,
+          author: p.user,
+          category: "Pixabay",
+          subCategory: (p.tags || "").split(",")[0].trim(),
+          keywords: (p.tags || "").split(",").map(s => s.trim()).filter(Boolean),
+          source: "Pixabay",
+          license: "Pixabay License (free, commercial OK, no attribution)",
+          free: true,
+          width: p.imageWidth,
+          height: p.imageHeight
+        };
+      }
+    } catch(e) { console.error(e); }
+  } else {
+    // Firebase photo
+    try {
+      const doc = await db.collection(PHOTO_COLLECTION).doc(id).get();
+      if (doc.exists) {
+        photo = { id: doc.id, ...doc.data() };
+        if (!photo.url && photo.imageId) {
+          const dataDoc = await db.collection(DATA_COLLECTION).doc(photo.imageId).get();
+          if (dataDoc.exists) photo.url = dataDoc.data().data;
+        }
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  if (!photo) {
+    $("state").innerHTML = '<h2 style="color:#222">Photo not found</h2><p style="margin-top:8px">This photo may have been removed or the link is broken.</p><p style="margin-top:16px"><a class="btn fill" href="stock-photo.html">Back to Stock Photos</a></p>';
+    return;
+  }
+
+  renderPhoto();
+  loadSimilar();
+}
+
+function renderPhoto(){
+  document.title = photo.title + " - MINAMI STOCK";
+  $("state").hidden = true;
+  $("layout").hidden = false;
+
+  $("bigImg").src = photo.url || "";
+  $("bigImg").alt = photo.title || "";
+  $("pTitle").textContent = photo.title || "Untitled";
+  $("pAuthor").textContent = photo.author || "Unknown";
+  $("pSource").textContent = photo.source || (photo.free ? "Free" : "MINAMI");
+
+  $("pDim").textContent = (photo.width && photo.height) ? (photo.width + " × " + photo.height + " px") : "—";
+  $("pType").textContent = (photo.fileType || "JPEG").replace("image/", "").toUpperCase();
+  $("pCat").textContent = photo.category || "—";
+  $("pSub").textContent = photo.subCategory || photo.tag || photo.ctype || "Photo";
+
+  $("pDl").href = photo.fullUrl || photo.url || "#";
+  $("pDl").setAttribute("download", (photo.title || "minami-stock").replace(/\s+/g, "-") + ".jpg");
+
+  const kws = kwList(photo).slice(0, 30);
+  $("pKw").innerHTML = kws.length
+    ? kws.map(k => '<span data-kw="' + esc(k) + '">' + esc(k) + '</span>').join("")
+    : '<span style="opacity:.5">No keywords</span>';
+  $("pKw").querySelectorAll("span[data-kw]").forEach(s => {
+    s.onclick = () => location.href = "stock-photo.html?q=" + encodeURIComponent(s.dataset.kw);
+  });
+
+  const when = photo.createdAt && photo.createdAt.toDate ? photo.createdAt.toDate().toLocaleDateString() : "";
+  $("pMeta").innerHTML =
+      (photo.license ? '📄 ' + esc(photo.license) + '<br>' : '')
+    + (when ? '📅 Added ' + esc(when) + '<br>' : '')
+    + '🆔 ' + esc(photo.id);
+
+  updateSaveBtn();
+
+  // Quick actions
+  $("qaCopy").onclick = () => {
+    navigator.clipboard.writeText(location.href).then(() => toast("Link copied"));
+  };
+  $("qaOpen").onclick = () => {
+    const link = photo.fullUrl || photo.url;
+    if (link) window.open(link, "_blank", "noopener");
+  };
+
+  // Zoom toggle
+  $("bigImg").onclick = () => $("bigImg").classList.toggle("zoomed");
+
+  // License radio
+  document.querySelectorAll(".lic-opt").forEach(opt => {
+    opt.onclick = () => {
+      document.querySelectorAll(".lic-opt").forEach(o => o.classList.remove("active"));
+      opt.classList.add("active");
+      opt.querySelector("input").checked = true;
+    };
+  });
+
+  // Save button
+  $("pSave").onclick = toggleSave;
+}
+
+function updateSaveBtn(){
+  if (!photo) return;
+  $("pSave").textContent = saved.has(photo.id) ? "♥ Saved — Remove" : "♡ Save to collection";
+}
+
+async function toggleSave(){
+  if (!user){ toast("Sign in to save photos"); setTimeout(()=>location.href="login.html",900); return; }
+  const ref = db.collection("users").doc(user.uid).collection("saved").doc(photo.id);
+  try {
+    if (saved.has(photo.id)) {
+      await ref.delete();
+      saved.delete(photo.id);
+      toast("Removed from collection");
+    } else {
+      await ref.set({
+        title: photo.title || "",
+        url: (photo.url && photo.url.length < 2000) ? photo.url : "",
+        imageId: photo.imageId || "",
+        source: photo.source || "",
+        free: !!photo.free,
+        savedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      saved.add(photo.id);
+      toast("Saved to collection");
+    }
+    updateSaveBtn();
+  } catch(e){ console.error(e); toast("Could not save"); }
+}
+
+/* ========= Similar photos (same keyword) ========= */
+async function loadSimilar(){
+  const kw = (photo.keywords && photo.keywords[0]) || photo.subCategory || photo.category;
+  if (!kw) return;
+
+  $("similarSection").hidden = false;
+  $("similarGrid").innerHTML = '<div class="state">Loading similar photos…</div>';
+
+  try {
+    const r = await fetch(`https://pixabay.com/api/?key=${encodeURIComponent(PIXABAY_KEY)}&q=${encodeURIComponent(kw)}&per_page=20&image_type=photo&safesearch=true`);
+    const d = await r.json();
+    const results = (d.hits || []).filter(p => "pixabay_" + p.id !== photo.id).slice(0, 12);
+    renderSimilar(results, $("similarGrid"), kw);
+    $("similarCount").textContent = results.length + " results for \"" + kw + "\"";
+  } catch(e) {
+    console.warn(e);
+    $("similarGrid").innerHTML = '<div class="state">Could not load similar photos.</div>';
+  }
+}
+
+function renderSimilar(items, container, query){
+  container.innerHTML = "";
+  if (!items.length) {
+    container.innerHTML = '<div class="state">No similar photos found.</div>';
+    return;
+  }
+  items.forEach(p => {
+    const id = "pixabay_" + p.id;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<span class="badge-free">PIXABAY</span>'
+      + '<img src="' + esc(p.webformatURL) + '" alt="' + esc((p.tags||"").split(",")[0]) + '" loading="lazy">'
+      + '<div class="ov"><b>' + esc((p.tags||"").split(",")[0].trim() || query) + '</b><small>by ' + esc(p.user) + '</small></div>';
+    card.onclick = () => { location.href = "photo-detail.html?id=" + encodeURIComponent(id); };
+    container.appendChild(card);
+  });
+}
+
+/* ========= More from Pixabay (random category) ========= */
+async function loadMore(){
+  const cats = ["nature","food","wildlife","city","travel"];
+  const q = cats[Math.floor(Math.random()*cats.length)];
+
+  $("moreSection").hidden = false;
+  $("moreGrid").innerHTML = '<div class="state">Loading more photos…</div>';
+
+  try {
+    const r = await fetch(`https://pixabay.com/api/?key=${encodeURIComponent(PIXABAY_KEY)}&q=${q}&per_page=12&image_type=photo&safesearch=true`);
+    const d = await r.json();
+    const results = (d.hits || []).filter(p => "pixabay_" + p.id !== photo.id);
+    renderSimilar(results, $("moreGrid"), q);
+    $("moreCount").textContent = "Topic: " + q;
+  } catch(e) {
+    $("moreGrid").innerHTML = '<div class="state">Could not load.</div>';
+  }
+}
+
+loadPhoto();
+setTimeout(loadMore, 1500);
+</script>
+</body>
+</html>

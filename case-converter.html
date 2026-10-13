@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Converter | MINAMI STOCK</title>
+<style>
+  :root{
+    --bg:#ffffff; --soft:#f4f6fb; --card:#ffffff; --text:#14213d; --muted:#5f6b85; --line:#e2e7f1;
+    --brand:#3a4bd8; --brand-d:#2b39b3; --accent:#ff6b4a;
+    --spell:#d92d20; --grammar:#b54708; --style:#6941c6;
+    --foot:#0f1730; --foot-t:#c5cce0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+  a{color:inherit;text-decoration:none}
+
+  /* header */
+  .top{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:5}
+  .top img{width:34px;height:34px;object-fit:contain}
+  .top b{font-size:1.05rem;letter-spacing:.3px}
+  .top a.home{margin-left:auto;padding:7px 14px;border:1px solid var(--line);border-radius:999px;font-size:.9rem}
+  .top a.home:hover{background:var(--soft)}
+
+  /* hero */
+  .hero{background:linear-gradient(135deg,#eef1ff 0%,#fff3ef 100%);padding:34px 18px 26px;text-align:center}
+  .hero h1{margin:0 0 6px;font-size:clamp(1.6rem,5vw,2.4rem);line-height:1.2}
+  .hero p{margin:0 auto;max-width:560px;color:var(--muted)}
+  .tabs{display:inline-flex;margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px}
+  .tabs a{padding:8px 18px;border-radius:999px;font-weight:600;font-size:.93rem;color:var(--muted)}
+  .tabs a:hover{color:var(--brand)}
+
+  .wrap{max-width:900px;width:100%;margin:0 auto;padding:26px 14px 10px;flex:1 0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 8px 28px rgba(30,40,100,.07);margin-bottom:30px}
+  .card h2{margin:0 0 4px;font-size:1.25rem}
+  .card .lead{margin:0 0 14px;color:var(--muted);font-size:.95rem}
+
+  select,button{font:inherit;padding:9px 13px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--text);cursor:pointer}
+  button:hover{border-color:var(--brand);color:var(--brand)}
+  button.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+  button.primary:hover{background:var(--brand-d);color:#fff}
+  button:disabled{opacity:.6;cursor:wait}
+  :focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+  textarea{width:100%;min-height:200px;resize:vertical;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--soft);color:var(--text);font:inherit}
+  textarea:focus{background:#fff;border-color:var(--brand)}
+  .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem;margin-top:6px;gap:8px;flex-wrap:wrap}
+  #status{margin:14px 0 6px;font-weight:600}
+  .issue{border:1px solid var(--line);border-left-width:5px;border-radius:10px;padding:10px 12px;margin:8px 0;background:#fff}
+  .issue.spell{border-left-color:var(--spell)} .issue.grammar{border-left-color:var(--grammar)} .issue.style{border-left-color:var(--style)}
+  .issue .msg{margin:0 0 4px}
+  .issue .ctx{color:var(--muted);font-size:.92rem;margin:0 0 8px;word-break:break-word}
+  .issue mark{background:#ffe3e0;color:#7a1710;border-radius:3px;padding:0 2px}
+  .fixes{display:flex;flex-wrap:wrap;gap:6px}
+  .fixes button{padding:5px 11px;font-size:.92rem;border-color:var(--brand);color:var(--brand)}
+  .fixes button:hover{background:var(--brand);color:#fff}
+  .ok{color:#067647}
+
+  /* case converter */
+  .cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:12px 0}
+  .cases button{font-weight:600;padding:11px 8px;background:var(--soft)}
+  .cases button:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .note{font-size:.82rem;color:var(--muted);margin:0}
+  #cstatus{font-size:.95rem;font-weight:600;min-height:1.5em;color:#067647}
+  #cstatus.err{color:#d92d20}
+  .cases button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+
+  /* footer */
+  footer{background:var(--foot);color:var(--foot-t);margin-top:auto;flex-shrink:0}
+  .fwrap{max-width:1050px;margin:0 auto;padding:40px 18px 18px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}
+  .fbrand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:700;font-size:1.1rem;margin-bottom:10px}
+  .fbrand img{width:34px;height:34px;object-fit:contain;background:#fff;border-radius:8px;padding:3px}
+  footer p{margin:0;font-size:.92rem;line-height:1.6}
+  footer h3{margin:0 0 12px;color:#fff;font-size:.98rem;padding-bottom:8px;border-bottom:2px solid var(--accent);display:inline-block}
+  footer ul{list-style:none;margin:0;padding:0}
+  footer li{margin:7px 0}
+  footer li a{font-size:.93rem;transition:color .15s,padding-left .15s}
+  footer li a:hover{color:#fff;padding-left:5px}
+  .fbottom{max-width:1050px;margin:0 auto;padding:16px 18px 26px;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:.86rem}
+  .fbottom a{margin-left:16px}
+  .fbottom a:hover{color:#fff}
+  @media(max-width:760px){.fwrap{grid-template-columns:1fr 1fr}.fwrap>div:first-child{grid-column:1/-1}}
+  @media(max-width:420px){.fwrap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <img src="https://i.ibb.co.com/xK8nP7KD/1000031217-removebg-preview.png" alt="MINAMI STOCK logo">
+  <b>MINAMI STOCK</b>
+  <a class="home" href="index.html">Home</a>
+</header>
+
+<section class="hero">
+  <h1>Case Converter</h1>
+  <p>Change your text to uppercase, lowercase, title case, camelCase and more in one tap.</p>
+</section>
+
+<main class="wrap">
+
+  <!-- CASE CONVERTER -->
+  <section class="card" id="case">
+    <h2>Case converter</h2>
+    <p class="lead">Type or paste text, then choose a case. Works offline.</p>
+    <textarea id="ctext" placeholder="Type or paste your text here..." spellcheck="false"></textarea>
+    <div class="meta"><span id="ccount">0 words, 0 characters</span></div>
+    <div class="cases" id="cases">
+      <button data-c="upper">UPPERCASE</button>
+      <button data-c="lower">lowercase</button>
+      <button data-c="title">Title Case</button>
+      <button data-c="sentence">Sentence case</button>
+      <button data-c="capital">Capitalize Words</button>
+      <button data-c="alt">aLtErNaTiNg</button>
+      <button data-c="inverse">iNVERSE cASE</button>
+      <button data-c="camel">camelCase</button>
+      <button data-c="pascal">PascalCase</button>
+      <button data-c="snake">snake_case</button>
+      <button data-c="kebab">kebab-case</button>
+      <button data-c="const">CONSTANT_CASE</button>
+    </div>
+    <div class="bar">
+      <button id="cundo">Undo</button>
+      <button id="ccopy" class="primary">Copy</button>
+      <button id="cdl">Download .txt</button>
+      <button id="cclear">Clear</button>
+    </div>
+    <div id="cstatus" class="note" role="status" aria-live="polite"></div>
+  </section>
+
+</main>
+
+<!-- ABOUT / COMPANY FOOTER -->
+<footer>
+  <div class="fwrap">
+    <div>
+      <div class="fbrand"><img src="https://i.ibb.co.com/xK8nP7KD/1000031217-removebg-preview.png" alt=""><span>MINAMI STOCK</span></div>
+      <p>Stock photos, creative assets and free online tools, built from a small village in Bangladesh for creators everywhere.</p>
+    </div>
+    <div>
+      <h3>Company</h3>
+      <ul>
+        <li><a href="about.html">About us</a></li>
+        <li><a href="privacy.html">Privacy policy</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="login.html">Log in</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Explore</h3>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="stock-photo.html">Stock photos</a></li>
+        <li><a href="upload.html">Upload</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Tools</h3>
+      <ul>
+        <li><a href="grammar-checker.html">Grammar checker</a></li>
+        <li><a href="word-counter.html">Word counter</a></li>
+        <li><a href="text-to-pdf.html">Text to PDF</a></li>
+        <li><a href="converter.html">Converter</a></li>
+        <li><a href="qr-code.html">QR code</a></li>
+        <li><a href="upscaler.html">Upscaler</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fbottom">
+    <span>&copy; 2026 MINAMI STOCK. All rights reserved.</span>
+    <span><a href="about.html">About</a><a href="privacy.html">Privacy</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  function words(t){t=t.trim();return t?t.split(/\s+/).length:0}
+
+  function copyFrom(el,out){
+    el.select();
+    var done=function(){out.textContent='Copied.'};
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(el.value).then(done).catch(function(){document.execCommand('copy');done()})}
+    else{document.execCommand('copy');done()}
+  }
+
+  /* ---------- Case converter ---------- */
+  var ct=$('ctext'),cs=$('cstatus'),history=[];
+  function cc(){$('ccount').textContent=words(ct.value)+' words, '+ct.value.length+' characters'}
+  ct.addEventListener('input',cc);
+  function splitWords(s){
+    return s.replace(/([a-z0-9])([A-Z])/g,'$1 $2').split(/[^A-Za-z0-9]+/).filter(Boolean).map(function(w){return w.toLowerCase()});
+  }
+  var small=/^(a|an|the|and|but|or|nor|for|so|yet|as|at|by|in|of|on|per|to|up|via|vs)$/i;
+  var conv={
+    upper:function(s){return s.toUpperCase()},
+    lower:function(s){return s.toLowerCase()},
+    capital:function(s){return s.toLowerCase().replace(/(^|[\s\-"(\[{])([a-z\u00e0-\u024f])/g,function(m,a,b){return a+b.toUpperCase()})},
+    title:function(s){
+      var i=0;
+      return s.toLowerCase().replace(/[A-Za-z\u00e0-\u024f][A-Za-z\u00e0-\u024f']*/g,function(w,off){
+        var first=(off===0)||/[.!?:]\s*$/.test(s.slice(0,off).toLowerCase());
+        if(!first&&small.test(w))return w;
+        return w.charAt(0).toUpperCase()+w.slice(1);
+      });
+    },
+    sentence:function(s){
+      var t=s.toLowerCase();
+      t=t.replace(/(^\s*|[.!?]\s+|\n\s*)([a-z])/g,function(m,a,b){return a+b.toUpperCase()});
+      return t.replace(/\bi\b/g,'I');
+    },
+    alt:function(s){var n=0;return s.replace(/[A-Za-z]/g,function(c){return (n++%2===0)?c.toLowerCase():c.toUpperCase()})},
+    inverse:function(s){return s.replace(/[A-Za-z]/g,function(c){return c===c.toUpperCase()?c.toLowerCase():c.toUpperCase()})},
+    camel:function(s){return splitWords(s).map(function(w,i){return i?w.charAt(0).toUpperCase()+w.slice(1):w}).join('')},
+    pascal:function(s){return splitWords(s).map(function(w){return w.charAt(0).toUpperCase()+w.slice(1)}).join('')},
+    snake:function(s){return splitWords(s).join('_')},
+    kebab:function(s){return splitWords(s).join('-')},
+    const:function(s){return splitWords(s).join('_').toUpperCase()}
+  };
+  function say(t,err){cs.textContent=t;cs.className=err?'err':''}
+  var caseBtns=document.querySelectorAll('#cases button');
+  function applyCase(btn){
+    var key=btn.getAttribute('data-c');
+    if(!ct.value.trim()){say('Type some text in the box above first, then choose a case.',true);ct.focus();return}
+    history.push(ct.value);if(history.length>30)history.shift();
+    ct.value=conv[key](ct.value);cc();
+    for(var i=0;i<caseBtns.length;i++)caseBtns[i].classList.remove('on');
+    btn.classList.add('on');
+    say('Done: '+btn.textContent);
+  }
+  Array.prototype.forEach.call(caseBtns,function(btn){
+    btn.addEventListener('click',function(){applyCase(btn)});
+  });
+  $('cundo').addEventListener('click',function(){
+    if(!history.length){say('Nothing to undo.',true);return}
+    ct.value=history.pop();cc();say('Undone.');
+  });
+  $('ccopy').addEventListener('click',function(){
+    if(!ct.value){say('Nothing to copy.',true);return}
+    copyFrom(ct,cs);cs.className='';
+  });
+  $('cdl').addEventListener('click',function(){
+    if(!ct.value){say('Nothing to download.',true);return}
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([ct.value],{type:'text/plain'}));
+    a.download='converted-text.txt';document.body.appendChild(a);a.click();a.remove();
+  });
+  $('cclear').addEventListener('click',function(){
+    if(ct.value)history.push(ct.value);
+    ct.value='';cc();say('');ct.focus();
+    for(var i=0;i<caseBtns.length;i++)caseBtns[i].classList.remove('on');
+  });
+  cc();
+})();
+</script>
+</body>
+</html>

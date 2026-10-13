@@ -711,6 +711,26 @@
             overflow: hidden;
         }
 
+        .home-shop-card .desc-preview-text.expanded {
+            display: block;
+            -webkit-line-clamp: unset;
+            overflow: visible;
+        }
+        .home-shop-card .desc-toggle {
+            display: none;
+            background: none;
+            border: 0;
+            padding: 0;
+            margin-top: 6px;
+            color: #fbbf24;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .home-shop-card .desc-toggle.visible { display: inline-block; }
+        .home-shop-card .desc-toggle:hover { text-decoration: underline; }
+
         .home-shop-card .buy-btn {
             display: flex;
             align-items: center;
@@ -733,6 +753,43 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
         }
+
+        /* ★★★ STOCK PHOTOS (above Featured Products) ★★★ */
+        .home-photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+        }
+        .home-photo-card {
+            position: relative;
+            display: block;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #1e293b;
+            aspect-ratio: 4 / 3;
+            text-decoration: none;
+        }
+        .home-photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s;
+        }
+        .home-photo-card:hover img { transform: scale(1.06); }
+        .home-photo-card .hp-info {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            padding: 22px 12px 10px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.75));
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+        .home-photo-card:hover .hp-info,
+        .home-photo-card:focus-visible .hp-info { opacity: 1; }
+        .home-photo-card .hp-info b { display: block; font-size: 13px; line-height: 1.3; }
+        .home-photo-card .hp-info small { font-size: 11px; opacity: 0.8; }
 
         .home-shop-empty {
             grid-column: 1 / -1;
@@ -817,6 +874,11 @@
 
             .center-content .home-shop-section { padding: 0 !important; margin: 30px 0 15px !important; }
             .home-shop-header h2 { font-size: 18px; }
+            .home-photo-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .home-photo-card { border-radius: 8px; }
+            .home-photo-card .hp-info { opacity: 1; padding: 16px 8px 6px; }
+            .home-photo-card .hp-info b { font-size: 10px; }
+            .home-photo-card .hp-info small { display: none; }
             .home-shop-header .view-all-link { font-size: 12px; }
             .home-shop-grid {
                 grid-template-columns: repeat(3, 1fr);
@@ -834,6 +896,7 @@
             .home-shop-card .hot-badge { font-size: 8px; padding: 3px 5px; top: 6px; right: 6px; }
             .home-shop-card .desc-preview { padding: 6px 8px; margin-bottom: 6px; }
             .home-shop-card .desc-preview-text { font-size: 9.5px; }
+            .home-shop-card .desc-toggle { font-size: 10px; }
 
             .auth-buttons { gap: 5px; }
             .btn-signin, .btn-signup { padding: 6px 10px; font-size: 11px; }
@@ -996,6 +1059,18 @@
                 </div>
             </div>
 
+            <!-- ★★★ STOCK PHOTOS (from Firestore "photos") ★★★ -->
+            <section class="home-shop-section home-photo-section">
+                <div class="home-shop-header">
+                    <h2><i class="fas fa-images"></i> Stock Photos</h2>
+                    <a href="stock-photo.html" class="view-all-link">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="home-photo-grid" id="homePhotoGrid">
+                    <p class="home-shop-empty">Loading photos...</p>
+                </div>
+            </section>
+            <!-- ★★★ END STOCK PHOTOS ★★★ -->
+
             <!-- ★★★ FEATURED PRODUCTS ★★★ -->
             <section class="home-shop-section">
                 <div class="home-shop-header">
@@ -1099,6 +1174,7 @@
                         <a href="dashboard.html"><i class="fas fa-gauge"></i> Dashboard</a>
                         <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i> Upload</a>
                         <a href="portfolio.html"><i class="fas fa-briefcase"></i> Portfolio</a>
+                        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
                         <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
                         <a href="tools.html"><i class="fas fa-th-large"></i> Tools</a>
                         <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
@@ -1121,51 +1197,9 @@
         </main>
     </div>
 
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-col">
-                <h4>MINAMI STOCK</h4>
-                <p class="footer-desc">Your one-stop destination for premium stock photos, AI tools, and the latest AI news.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Company</h4>
-                <a href="about.html">About Us</a>
-                <a href="tools.html">Tools</a>
-                <a href="shop.html">Shop</a>
-                <a href="login.html">Login</a>
-            </div>
-            <div class="footer-col">
-                <h4>Tools &amp; Resources</h4>
-                <a href="upscaler.html">Image Upscaler</a>
-                <a href="image-inhancer.html">Image Enhancer</a>
-                <a href="text-to-pdf.html">Text to PDF</a>
-                <a href="word-counter.html">Word Counter</a>
-            </div>
-            <div class="footer-col">
-                <h4>Legal &amp; Support</h4>
-                <a href="privacy.html">Privacy Policy</a>
-                <a href="about.html">About Us</a>
-                <a href="shop.html">Shop</a>
-                <a href="tools.html">All Tools</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="footer-bottom-left">
-                <span>🌐 Change region</span>
-                <span>🌙 Dark Theme</span>
-                <span>⚖️ License Terms</span>
-            </div>
-            <div class="footer-bottom-right">
-                <span>© 2026 MINAMI STOCK. All rights reserved.</span>
-            </div>
-        </div>
-    </footer>
+    <div id="ms-footer"></div>
 
+    <script src="footer.js"></script>
     <script src="script.js"></script>
 
     <script>
@@ -1231,7 +1265,9 @@
             collection, 
             getDocs, 
             query, 
-            limit 
+            limit,
+            doc,
+            getDoc
         } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -1321,6 +1357,50 @@
             }
         });
 
+        // ===== HOME STOCK PHOTOS =====
+        function escHtml(t) {
+            return String(t == null ? '' : t).replace(/[&<>"']/g, function(c) {
+                return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+            });
+        }
+        async function loadHomePhotos() {
+            const grid = document.getElementById('homePhotoGrid');
+            if (!grid) return;
+            try {
+                const snap = await getDocs(query(collection(db, "stockphoto"), limit(40)));
+                const list = [];
+                snap.forEach(function(d) {
+                    const p = d.data();
+                    p.id = d.id;
+                    if (p.url || p.imageId) list.push(p);
+                });
+                if (!list.length) {
+                    grid.innerHTML = '<p class="home-shop-empty">📷 No photos yet. <a href="upload.html" style="color:#fbbf24;">Upload the first one!</a></p>';
+                    return;
+                }
+                const ms = function(p) { return p.createdAt && p.createdAt.toMillis ? p.createdAt.toMillis() : 0; };
+                list.sort(function(a, b) { return ms(b) - ms(a); });
+                const top = list.slice(0, 8);
+                // image code lives in the "photoData" collection (photos without a direct url)
+                await Promise.all(top.map(async function(p) {
+                    if (p.url) return;
+                    try {
+                        const dd = await getDoc(doc(db, "photoData", p.imageId));
+                        p.url = dd.exists() ? dd.data().data : '';
+                    } catch (e) { p.url = ''; }
+                }));
+                grid.innerHTML = top.filter(function(p) { return p.url; }).map(function(p) {
+                    return '<a class="home-photo-card" href="stock-photo.html" title="' + escHtml(p.title || 'Photo') + '">' +
+                        '<img loading="lazy" src="' + escHtml(p.url) + '" alt="' + escHtml(p.title || 'Stock photo') + '">' +
+                        '<div class="hp-info"><b>' + escHtml(p.title || 'Untitled') + '</b><small>' + escHtml(p.author || '') + '</small></div>' +
+                        '</a>';
+                }).join('');
+            } catch (error) {
+                console.error("❌ Home Photos error: ", error);
+                grid.innerHTML = '<p class="home-shop-empty">⚠️ Failed to load photos. Please try again later.</p>';
+            }
+        }
+
         // ===== HOME FEATURED PRODUCTS =====
         async function loadHomeShop() {
             const grid = document.getElementById('homeShopGrid');
@@ -1364,6 +1444,7 @@
                                 </div>
                                 <div class="desc-preview">
                                     <div class="desc-preview-text">${p.description || 'No description.'}</div>
+                                    <button type="button" class="desc-toggle">Show more</button>
                                 </div>
                                 <a href="${p.link || '#'}" target="_blank" rel="noopener sponsored" class="buy-btn">
                                     <i class="fas fa-shopping-cart"></i> Buy Now
@@ -1371,6 +1452,15 @@
                             </div>
                         </div>
                     `;
+                });
+
+                // Show more / Show less: only for descriptions that are actually cut off
+                grid.querySelectorAll('.desc-preview').forEach(box => {
+                    const text = box.querySelector('.desc-preview-text');
+                    const btn = box.querySelector('.desc-toggle');
+                    if (text && btn && text.scrollHeight > text.clientHeight + 1) {
+                        btn.classList.add('visible');
+                    }
                 });
 
                 console.log("✅ Home Featured Products loaded!");
@@ -1381,6 +1471,16 @@
             }
         }
 
+        // Show more / Show less click
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.desc-toggle');
+            if (!btn) return;
+            const text = btn.parentElement.querySelector('.desc-preview-text');
+            const open = text.classList.toggle('expanded');
+            btn.textContent = open ? 'Show less' : 'Show more';
+        });
+
+        window.addEventListener('load', loadHomePhotos);
         window.addEventListener('load', loadHomeShop);
     </script>
 
