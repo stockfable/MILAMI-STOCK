@@ -1,6 +1,6 @@
 /* ================================================================
    top-bar.js — MINAMI STOCK Universal Top Navigation
-   Includes: Image Tools dropdown + mobile friendly
+   সব page এ auto inject হবে। শুধু <div id="site-topbar"></div> রাখুন
    ================================================================ */
 (function () {
   if (window.__msTopbarLoaded) return;
@@ -10,7 +10,6 @@
   const current = (location.pathname.split("/").pop() || "index.html");
   const isActive = (p) => current === p ? "active" : "";
 
-  /* ---------- dropdown state for mobile tap ---------- */
   const html = `
 <header class="top-nav">
   <div class="in">
@@ -18,17 +17,18 @@
     <!-- LEFT -->
     <div class="nav-left">
       <div class="sidebar-bottom-menu" id="sidebarMenu">
-        <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps">
+        <button class="sidebar-trigger" id="appsBtn" title="Menu" aria-label="Menu">
           <i class="fas fa-th"></i>
         </button>
         <div class="sidebar-dropdown" id="appsDrop">
           <a href="index.html" class="${isActive("index.html")}"><i class="fas fa-home"></i> Home</a>
           <a href="stock-photo.html" class="${isActive("stock-photo.html")}"><i class="fas fa-images"></i> Stock Photos</a>
-          <a href="tools.html" class="${isActive("tools.html")}"><i class="fas fa-th-large"></i> Tools</a>
+          <a href="tools.html" class="${isActive("tools.html")}"><i class="fas fa-th-large"></i> All Tools</a>
+          <a href="portfolio.html" class="${isActive("portfolio.html")}"><i class="fas fa-briefcase"></i> Portfolio</a>
           <a href="about.html" class="${isActive("about.html")}"><i class="fas fa-folder"></i> About</a>
           <a href="shop.html" class="${isActive("shop.html")}"><i class="fas fa-shopping-bag"></i> Shop</a>
-          <a href="login.html" class="${isActive("login.html")}"><i class="fas fa-plus-circle"></i> Login</a>
-          <a href="privacy.html" class="${isActive("privacy.html")}"><i class="fas fa-question-circle"></i> Privacy</a>
+          <a href="login.html" class="${isActive("login.html")}"><i class="fas fa-sign-in-alt"></i> Login</a>
+          <a href="privacy.html" class="${isActive("privacy.html")}"><i class="fas fa-shield-alt"></i> Privacy</a>
         </div>
       </div>
 
@@ -38,79 +38,44 @@
         <span class="logo-text">MINAMI STOCK</span>
       </a>
 
-      <!-- TOP NAV LINKS -->
       <div class="nav-links-top">
-
         <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
         <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
         <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
 
         <!-- IMAGE TOOLS DROPDOWN -->
         <div class="nav-drop" id="imgToolsMenu">
-          <button class="nav-drop-btn" id="imgToolsBtn" type="button">
+          <button class="nav-drop-btn" type="button">
             <i class="fas fa-image"></i> Image Tools <i class="fas fa-chevron-down caret"></i>
           </button>
-          <div class="nav-drop-panel" id="imgToolsPanel">
-            <a href="image-resizer.html" class="${isActive("image-resizer.html")}">
-              <i class="fas fa-expand"></i> Image Resizer
-            </a>
-            <a href="cropper.html" class="${isActive("cropper.html")}">
-              <i class="fas fa-crop-simple"></i> Image Cropper
-            </a>
-            <a href="compressor.html" class="${isActive("compressor.html")}">
-              <i class="fas fa-compress"></i> Compressor
-            </a>
-            <a href="converter.html" class="${isActive("converter.html")}">
-              <i class="fas fa-right-left"></i> Converter
-            </a>
-            <a href="bg-remover.html" class="${isActive("bg-remover.html")}">
-              <i class="fas fa-eraser"></i> BG Remover
-            </a>
-            <a href="watermark.html" class="${isActive("watermark.html")}">
-              <i class="fas fa-droplet"></i> Watermark
-            </a>
-            <a href="filters.html" class="${isActive("filters.html")}">
-              <i class="fas fa-wand-magic-sparkles"></i> Filters
-            </a>
-            <a href="color-palette.html" class="${isActive("color-palette.html")}">
-              <i class="fas fa-palette"></i> Color Palette
-            </a>
+          <div class="nav-drop-panel">
+            <a href="image-resizer.html" class="${isActive("image-resizer.html")}"><i class="fas fa-expand"></i> Image Resizer</a>
+            <a href="image.cropper.html" class="${isActive("image.cropper.html")}"><i class="fas fa-crop"></i> Image Cropper</a>
+            <a href="image-compressor.html" class="${isActive("image-compressor.html")}"><i class="fas fa-compress"></i> Compressor</a>
+            <a href="bg-remove.html" class="${isActive("bg-remove.html")}"><i class="fas fa-magic"></i> BG Remover</a>
+            <a href="image-inhancer.html" class="${isActive("image-inhancer.html")}"><i class="fas fa-wand-magic-sparkles"></i> Image Enhancer</a>
+            <a href="upscaler.html" class="${isActive("upscaler.html")}"><i class="fas fa-arrow-up"></i> Upscaler</a>
+            <a href="image-to-pdf.html" class="${isActive("image-to-pdf.html")}"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+            <a href="color-pallete.html" class="${isActive("color-pallete.html")}"><i class="fas fa-eye-dropper"></i> Color Palette</a>
           </div>
         </div>
 
-        <!-- ALL TOOLS -->
-        <div class="nav-drop" id="allToolsMenu">
-          <button class="nav-drop-btn" id="allToolsBtn" type="button">
-            <i class="fas fa-th-large"></i> All Tools <i class="fas fa-chevron-down caret"></i>
+        <!-- TEXT TOOLS DROPDOWN -->
+        <div class="nav-drop" id="textToolsMenu">
+          <button class="nav-drop-btn" type="button">
+            <i class="fas fa-font"></i> Text Tools <i class="fas fa-chevron-down caret"></i>
           </button>
-          <div class="nav-drop-panel" id="allToolsPanel">
-            <a href="tools.html" class="${isActive("tools.html")}">
-              <i class="fas fa-list"></i> All Tools
-            </a>
-            <a href="calculator.html" class="${isActive("calculator.html")}">
-              <i class="fas fa-calculator"></i> Calculator
-            </a>
-            <a href="image-enhancer.html" class="${isActive("image-enhancer.html")}">
-              <i class="fas fa-wand-sparkles"></i> Image Enhancer
-            </a>
-            <a href="upscaler.html" class="${isActive("upscaler.html")}">
-              <i class="fas fa-up-right-and-down-left-from-center"></i> Upscaler
-            </a>
-            <a href="image-to-pdf.html" class="${isActive("image-to-pdf.html")}">
-              <i class="fas fa-file-image"></i> Image to PDF
-            </a>
-            <a href="text-to-pdf.html" class="${isActive("text-to-pdf.html")}">
-              <i class="fas fa-file-pdf"></i> Text to PDF
-            </a>
-            <a href="qr-code.html" class="${isActive("qr-code.html")}">
-              <i class="fas fa-qrcode"></i> QR Code
-            </a>
-            <a href="word-counter.html" class="${isActive("word-counter.html")}">
-              <i class="fas fa-font"></i> Word Counter
-            </a>
+          <div class="nav-drop-panel">
+            <a href="word-counter.html" class="${isActive("word-counter.html")}"><i class="fas fa-font"></i> Word Counter</a>
+            <a href="case-converter.html" class="${isActive("case-converter.html")}"><i class="fas fa-text-height"></i> Case Converter</a>
+            <a href="grammar-checker.html" class="${isActive("grammar-checker.html")}"><i class="fas fa-spell-check"></i> Grammar Checker</a>
+            <a href="password-generator.html" class="${isActive("password-generator.html")}"><i class="fas fa-key"></i> Password Generator</a>
+            <a href="password.strength.html" class="${isActive("password.strength.html")}"><i class="fas fa-shield-halved"></i> Password Strength</a>
+            <a href="text-to-pdf.html" class="${isActive("text-to-pdf.html")}"><i class="fas fa-file-pdf"></i> Text to PDF</a>
+            <a href="qr-code.html" class="${isActive("qr-code.html")}"><i class="fas fa-qrcode"></i> QR Code</a>
+            <a href="converter.html" class="${isActive("converter.html")}"><i class="fas fa-right-left"></i> Unit Converter</a>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -227,7 +192,7 @@ header.top-nav{
 .nav-links-top > a:hover{background:var(--soft,#f5f5f5)}
 .nav-links-top > a i{margin-right:6px;font-size:12px}
 
-/* DROPDOWN BUTTONS */
+/* DROPDOWN */
 .nav-drop{position:relative}
 .nav-drop-btn{
   display:flex;align-items:center;gap:7px;
@@ -237,7 +202,6 @@ header.top-nav{
   white-space:nowrap;
 }
 .nav-drop-btn:hover{background:var(--soft,#f5f5f5)}
-.nav-drop-btn i:first-child{font-size:12px}
 .nav-drop-btn .caret{font-size:10px;opacity:.6;transition:transform .2s}
 .nav-drop.open .nav-drop-btn .caret{transform:rotate(180deg)}
 
@@ -274,10 +238,7 @@ header.top-nav{
 .shop-logo-btn:hover{background:var(--soft,#f5f5f5)}
 
 .auth-buttons{display:flex;align-items:center;gap:6px}
-.btn-account{
-  font-size:24px;color:var(--mute,#6e6e6e);
-  display:grid;place-items:center;color:inherit;text-decoration:none;
-}
+.btn-account{font-size:24px;color:inherit;display:grid;place-items:center;text-decoration:none}
 .btn-signin,.btn-signup{
   border:1px solid var(--ink,#222);background:var(--bg,#fff);
   padding:7px 16px;border-radius:20px;font-weight:700;font-size:13.5px;
@@ -330,16 +291,16 @@ header.top-nav{
 .account-menu-item i{width:18px;text-align:center;color:var(--mute,#6e6e6e)}
 
 /* RESPONSIVE */
-@media (max-width: 1100px){
+@media (max-width:1100px){
   .nav-links-top > a{font-size:13px;padding:7px 9px}
   .nav-drop-btn{font-size:13px;padding:7px 9px}
 }
-@media (max-width: 900px){
+@media (max-width:900px){
   .nav-links-top{display:none}
   .shop-logo-btn span{display:none}
   .shop-logo-btn{padding:8px 11px}
 }
-@media (max-width: 640px){
+@media (max-width:640px){
   .top-nav .in{padding:0 10px;height:54px;gap:8px}
   .logo-text{font-size:14px;max-width:120px}
   .site-logo{width:28px;height:28px}
@@ -347,7 +308,7 @@ header.top-nav{
   .btn-signup{padding:7px 12px;font-size:13px}
   .sidebar-trigger{width:36px;height:36px}
 }
-@media (max-width: 420px){
+@media (max-width:420px){
   .logo-text{display:none}
   .btn-account{font-size:22px}
   .account-avatar{width:34px;height:34px}
@@ -357,65 +318,65 @@ header.top-nav{
   }
 
   function wireEvents() {
-    /* ---- sidebar (hamburger) ---- */
+    // Sidebar toggle
     const appsBtn = document.getElementById("appsBtn");
     const appsDrop = document.getElementById("appsDrop");
     const sidebarMenu = document.getElementById("sidebarMenu");
     if (appsBtn && appsDrop && sidebarMenu) {
       appsBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        closeAllDrops();
+        closeAll();
         appsDrop.classList.toggle("show");
       });
     }
 
-    /* ---- nav dropdowns ---- */
-    const navMenus = ["imgToolsMenu", "allToolsMenu"].map(id => document.getElementById(id)).filter(Boolean);
+    // Nav dropdowns
+    const navMenus = ["imgToolsMenu", "textToolsMenu"]
+      .map(id => document.getElementById(id)).filter(Boolean);
     navMenus.forEach(menu => {
       const btn = menu.querySelector(".nav-drop-btn");
+      if (!btn) return;
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
-        const isOpen = menu.classList.contains("open");
-        closeAllDrops();
-        if (!isOpen) menu.classList.add("open");
+        const wasOpen = menu.classList.contains("open");
+        closeAll();
+        if (!wasOpen) menu.classList.add("open");
       });
     });
 
-    /* ---- account dropdown ---- */
+    // Account
     const avatarBtn = document.getElementById("avatarBtn");
     const acctDrop = document.getElementById("acctDrop");
     const userBox = document.getElementById("userBox");
     if (avatarBtn && acctDrop && userBox) {
       avatarBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        closeAllDrops();
+        closeAll();
         acctDrop.classList.toggle("show");
       });
     }
 
-    /* ---- close on outside click ---- */
-    function closeAllDrops() {
-      const a = document.getElementById("appsDrop");
-      if (a) a.classList.remove("show");
+    function closeAll() {
+      if (appsDrop) appsDrop.classList.remove("show");
       navMenus.forEach(m => m.classList.remove("open"));
-      const ad = document.getElementById("acctDrop");
-      if (ad) ad.classList.remove("show");
+      if (acctDrop) acctDrop.classList.remove("show");
     }
+
+    // Outside click
     document.addEventListener("click", (e) => {
       if (e.target.closest(".sidebar-bottom-menu")) return;
       if (e.target.closest(".nav-drop")) return;
       if (e.target.closest("#userBox")) return;
-      closeAllDrops();
+      closeAll();
     });
 
-    /* ---- logout ---- */
+    // Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", () => {
         if (window.firebase && firebase.auth) {
-          firebase.auth().signOut()
-            .then(() => { location.href = "index.html"; })
-            .catch(() => { location.href = "index.html"; });
+          firebase.auth().signOut().then(() => location.href = "index.html")
+            .catch(() => location.href = "index.html");
         } else {
           location.href = "index.html";
         }
@@ -454,7 +415,7 @@ header.top-nav{
         }
       });
     } catch (e) {
-      console.warn("[top-bar] Firebase auth error:", e);
+      console.warn("[top-bar] Firebase error:", e);
     }
   }
 
@@ -469,6 +430,6 @@ header.top-nav{
 
     injectStyles();
     wireEvents();
-    setTimeout(loadFirebaseAuth, 150);
+    setTimeout(loadFirebaseAuth, 200);
   });
 })();

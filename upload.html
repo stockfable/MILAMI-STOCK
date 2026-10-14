@@ -1,435 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Upload | MINAMI STOCK</title>
-<style>
-:root{--bg:#fff;--ink:#1a1a1a;--mute:#6b6b6b;--line:#dcdcdc;--soft:#f5f5f5;--brand:#1473e6;--ok:#12805c;--bad:#d7373f;--warn:#b25e00}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
-.logo{font-weight:800;font-size:18px;letter-spacing:.3px;color:var(--ink);text-decoration:none}
-main{max-width:1100px;margin:0 auto;padding:16px}
-h1{font-size:22px;margin:4px 0 12px}
-.drop{border:2px dashed var(--line);border-radius:10px;padding:28px 16px;text-align:center;background:var(--soft);cursor:pointer}
-.drop.over{border-color:var(--brand);background:#eaf2fd}
-.drop b{display:block;font-size:16px}.drop span{color:var(--mute);font-size:13px}
-.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 8px}
-.bar .grow{flex:1;color:var(--mute);font-size:13px}
-button,.btn{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:6px;cursor:pointer}
-button.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
-button:disabled{opacity:.5;cursor:not-allowed}
-#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-.card{position:relative;border:2px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;background:#fff}
-.card.sel{border-color:var(--brand)}
-.card .th{height:100px;background:#eee center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:12px}
-.card .th video{width:100%;height:100%;object-fit:cover}
-.card .meta{padding:6px 8px;font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card .st{position:absolute;top:6px;left:6px;font-size:11px;padding:2px 6px;border-radius:10px;background:#fff;border:1px solid var(--line)}
-.st.ready{color:var(--ok)}.st.need{color:var(--warn)}.st.done{background:var(--ok);color:#fff;border-color:var(--ok)}.st.err{color:var(--bad)}
-.card .x{position:absolute;top:4px;right:4px;width:22px;height:22px;padding:0;border-radius:50%;line-height:1;font-size:14px}
-.card .pg{height:4px;background:var(--brand);width:0}
-form{margin-top:16px;border:1px solid var(--line);border-radius:10px;padding:16px}
-form[hidden]{display:none}
-.row{margin-bottom:16px}
-label.l{display:block;font-weight:600;margin-bottom:4px}
-.hint{color:var(--mute);font-size:12px;margin-top:3px}
-input[type=text],input[type=date],select,textarea{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
-input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.chk{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
-.chk input{margin-top:4px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;border:1px solid var(--line);border-radius:6px;padding:6px}
-.chip{display:inline-flex;align-items:center;gap:4px;background:#e8f0fb;border-radius:14px;padding:2px 4px 2px 10px;font-size:13px}
-.chip button{border:0;background:none;padding:0 6px;font-size:14px;color:var(--mute)}
-.chips input{border:0;outline:0;flex:1;min-width:140px;font:inherit;padding:4px}
-.cnt{float:right;font-weight:400;color:var(--mute);font-size:12px}.cnt.bad{color:var(--bad)}
-.sub{border-left:3px solid var(--line);padding-left:12px;margin:8px 0}
-.sub[hidden]{display:none}
-.note{font-size:13px;padding:8px 10px;border-radius:6px;background:var(--soft);margin-top:8px}
-.msg{margin-top:10px;font-size:13px}.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
-footer{max-width:1100px;margin:0 auto;padding:8px 16px 32px}
-@media(max-width:600px){.two{grid-template-columns:1fr}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minami Stock - Upload</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK (v8) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <style>
+        /* ================= Base Styles ================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+        body { background-color: #f4f4f4; color: #333; font-size: 13px; display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* Main Layout */
+        .main-container { display: flex; flex: 1; overflow: hidden; background-color: #fff; }
+        
+        /* Left Side: Image Grid */
+        .grid-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #f4f4f4; position: relative; }
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        
+        /* Image Card Selection Styling */
+        .image-card { background-color: #fff; border: 2px solid #ddd; border-radius: 4px; overflow: hidden; position: relative; transition: all 0.2s; cursor: pointer; }
+        .image-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .image-card.selected { border-color: #1473e6; box-shadow: 0 0 0 2px rgba(20,115,230,0.3); }
+        .image-card .checkmark { position: absolute; top: 5px; right: 5px; background: #1473e6; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 12px; z-index: 2; }
+        .image-card.selected .checkmark { display: flex; }
+        
+        .image-thumbnail { width: 100%; height: 100px; background-color: #e0e0e0; background-size: cover; background-position: center; }
+        .image-info { padding: 6px; display: flex; justify-content: space-between; font-size: 11px; color: #777; background-color: #fafafa; border-top: 1px solid #eee; }
+
+        /* Right Side: Sidebar Form */
+        .sidebar { width: 380px; background-color: #fff; border-left: 1px solid #ddd; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
+        .form-group label { font-weight: 700; font-size: 11px; color: #444; text-transform: uppercase; }
+        .form-group select, .form-group input[type="text"], .form-group textarea { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline: none; width: 100%; background-color: #fff; }
+        .form-group select:focus, .form-group input:focus, .form-group textarea:focus { border-color: #1473e6; }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+
+        /* Keyword Suggestion Dropdown */
+        .suggestion-box { position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-height: 150px; overflow-y: auto; display: none; z-index: 100; }
+        .suggestion-item { padding: 8px 10px; cursor: pointer; font-size: 13px; }
+        .suggestion-item:hover { background: #f0f7ff; color: #1473e6; }
+
+        .sidebar-actions { display: flex; gap: 10px; margin-top: 10px; padding-top: 15px; border-top: 1px solid #eee; flex-wrap: wrap; }
+        .btn-clear { padding: 10px; border: 1px solid #ccc; background-color: #fff; border-radius: 4px; cursor: pointer; flex: 1; font-weight: 600; }
+        .btn-save-work { padding: 10px; border: 1px solid #1473e6; background-color: #fff; color: #1473e6; border-radius: 4px; cursor: pointer; flex: 1; font-weight: 600; }
+        .btn-submit { padding: 10px; border: none; background-color: #1473e6; color: white; border-radius: 4px; cursor: pointer; flex: 2; font-weight: 600; }
+        
+        .btn-release { padding: 8px; border: 1px solid #fbbf24; background-color: #fffbeb; color: #b45309; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 5px; }
+
+        /* Loading Spinner */
+        .loader-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 10; justify-content: center; align-items: center; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1473e6; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Release Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-box { background: #fff; padding: 25px; border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-box h3 { margin-bottom: 15px; font-size: 18px; }
+        .modal-box .form-group { margin-bottom: 15px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .modal-actions button { padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .modal-actions .btn-cancel { border: 1px solid #ccc; background: #fff; }
+        .modal-actions .btn-confirm { border: none; background: #1473e6; color: #fff; }
+    </style>
 </head>
 <body>
-<header>
-  <a class="logo" href="index.html">MINAMI STOCK</a>
-  <span id="who" style="color:var(--mute);font-size:13px"></span>
-</header>
 
-<main>
-  <h1>Upload content</h1>
-  <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose files">
-    <b>Drag and drop files here, or tap to choose</b>
-    <span>Photos (JPEG), illustrations, vectors (SVG/EPS/AI), videos (MP4/MOV) and 3D files</span>
-    <input type="file" id="pick" multiple hidden accept="image/*,video/*,.svg,.eps,.ai,.obj,.fbx,.glb,.blend,.zip">
-  </div>
+    <div id="site-topbar"></div>
 
-  <div class="bar">
-    <button id="selAll">Select all</button>
-    <button id="selNone">Clear selection</button>
-    <span class="grow" id="count">No files yet</span>
-    <button class="primary" id="submit" disabled>Submit for review</button>
-  </div>
-  <div class="msg" id="msg"></div>
-  <div id="grid"></div>
-
-  <form id="form" hidden onsubmit="return false">
-    <div class="note" id="selInfo"></div>
-
-    <div class="row" style="margin-top:14px">
-      <label class="l" for="ctype">Content type</label>
-      <select id="ctype">
-        <option value="photo">Photo</option>
-        <option value="illustration">Illustration</option>
-        <option value="vector">Vector</option>
-        <option value="video">Video</option>
-        <option value="3d">3D</option>
-        <option value="template">Template</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <label class="l" for="title">Title <span class="cnt" id="tcnt">0 / 200</span></label>
-      <input type="text" id="title" maxlength="200" placeholder="Describe what is visible, e.g. Young woman drinking coffee in a cozy cafe">
-      <div class="hint">Plain description, about 70 to 100 characters. No brand names, artist names or words like "best".</div>
-    </div>
-
-    <div class="row">
-      <label class="l">Keywords <span class="cnt" id="kcnt">0 / 49</span></label>
-      <div class="chips" id="chips"><input type="text" id="kin" placeholder="Type a keyword and press Enter or comma"></div>
-      <div class="hint">Minimum 7, maximum 49. Put the most important ones first. Paste a comma-separated list to add many at once.</div>
-      <div style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap">
-        <button type="button" id="sugg">Suggest from title</button>
-        <button type="button" id="kclear">Clear keywords</button>
-      </div>
-    </div>
-
-    <div class="two">
-      <div class="row">
-        <label class="l" for="cat">Category</label>
-        <select id="cat">
-          <option value="">Select a category</option>
-          <option>Animals</option><option>Buildings and Architecture</option><option>Business</option>
-          <option>Drinks</option><option>The Environment</option><option>States of Mind</option>
-          <option>Food</option><option>Graphic Resources</option><option>Hobbies and Leisure</option>
-          <option>Industry</option><option>Landscapes</option><option>Lifestyle</option>
-          <option>People</option><option>Plants and Flowers</option><option>Culture and Religion</option>
-          <option>Science</option><option>Social Issues</option><option>Sports</option>
-          <option>Technology</option><option>Transport</option><option>Travel</option>
-        </select>
-      </div>
-      <div class="row">
-        <label class="l" for="desc">Notes for reviewer (optional)</label>
-        <input type="text" id="desc" maxlength="300" placeholder="Anything the reviewer should know">
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="chk"><input type="checkbox" id="ai"><label for="ai"><b>Created using generative AI tools</b><div class="hint">Required if AI made any part of this file. Do not use real people, real places, brand names, artist names or copyrighted characters in AI content.</div></label></div>
-      <div class="chk"><input type="checkbox" id="people"><label for="people"><b>People are recognizable</b><div class="hint">A real person's face or body can be identified.</div></label></div>
-      <div class="sub" id="mrBox" hidden>
-        <label class="l" for="mr">Model release</label>
-        <input type="file" id="mr" accept=".pdf,.jpg,.jpeg,.png">
-        <div class="hint" id="mrName"></div>
-      </div>
-      <div class="chk"><input type="checkbox" id="prop"><label for="prop"><b>Property is recognizable</b><div class="hint">Private property, artwork, or a visible brand or trademark.</div></label></div>
-      <div class="sub" id="prBox" hidden>
-        <label class="l" for="pr">Property release</label>
-        <input type="file" id="pr" accept=".pdf,.jpg,.jpeg,.png">
-        <div class="hint" id="prName"></div>
-      </div>
-      <div class="chk"><input type="checkbox" id="edit"><label for="edit"><b>Editorial use only</b><div class="hint">News or documentary content that needs no release. Add the place and date.</div></label></div>
-      <div class="sub" id="edBox" hidden>
-        <div class="two">
-          <div><label class="l" for="edCity">City</label><input type="text" id="edCity"></div>
-          <div><label class="l" for="edCountry">Country</label><input type="text" id="edCountry"></div>
+    <div class="main-container">
+        <!-- Left Side: Image Grid -->
+        <div class="grid-area">
+            <div class="loader-overlay" id="loaderOverlay">
+                <div class="spinner"></div>
+            </div>
+            
+            <div class="image-grid" id="imageGrid">
+                <p style="color: #777; grid-column: 1 / -1; text-align: center; margin-top: 50px;" id="noFilesMsg">No files yet. Upload your first file to get started.</p>
+            </div>
         </div>
-        <div style="margin-top:10px"><label class="l" for="edDate">Date taken</label><input type="date" id="edDate"></div>
-      </div>
+
+        <!-- Right Side: Sidebar Form -->
+        <div class="sidebar">
+            
+            <div class="preview-box" id="previewBox" onclick="document.getElementById('fileInput').click()" style="border: 2px dashed #ccc; padding: 20px; text-align: center; cursor: pointer; border-radius: 4px;">
+                <div class="placeholder-text">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #1473e6;"></i>
+                    <p style="margin-top: 5px;">Click to select images (Multiple allowed)</p>
+                </div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+
+            <div class="form-group">
+                <label>FILE TYPE</label>
+                <select id="fileType">
+                    <option value="Photo">Photo</option>
+                    <option value="Illustration">Illustration</option>
+                    <option value="Vector">Vector</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>CATEGORY *</label>
+                <select id="category">
+                    <option value="">Select category</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Nature">Nature</option>
+                    <option value="Business">Business</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Food">Food</option>
+                </select>
+            </div>
+
+            <!-- Title with Suggestion -->
+            <div class="form-group">
+                <label>TITLE *</label>
+                <input type="text" id="title" placeholder="Enter title" autocomplete="off">
+                <div class="suggestion-box" id="titleSuggestions"></div>
+            </div>
+
+            <div class="form-group">
+                <label>DESCRIPTION</label>
+                <textarea id="description" placeholder="Short description..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>KEYWORDS (COMMA SEPARATED)</label>
+                <input type="text" id="keywords" placeholder="e.g. road, sky, travel, nature">
+            </div>
+
+            <button class="btn-release" id="releaseBtn" onclick="openReleaseModal()">
+                <i class="fas fa-file-signature"></i> Add Release Document
+            </button>
+
+            <div class="sidebar-actions">
+                <button class="btn-clear" onclick="clearForm()">Clear</button>
+                <button class="btn-save-work" id="saveWorkBtn">Save Work</button>
+                <button class="btn-submit" id="submitBtn">Submit File</button>
+            </div>
+        </div>
     </div>
 
-    <div class="chk"><input type="checkbox" id="own"><label for="own"><b>I own all rights to this content</b><div class="hint">I took or made it, and it has no logos, watermarks or copyrighted music.</div></label></div>
-  </form>
-</main>
+    <div id="ms-footer"></div>
 
-<footer><button id="back" type="button">Back</button></footer>
+    <!-- Release Modal -->
+    <div class="modal-overlay" id="releaseModal">
+        <div class="modal-box">
+            <h3>Add Release Document</h3>
+            <p style="margin-bottom: 15px; color: #666;">If your image contains a recognizable person or property, please attach a signed release form.</p>
+            
+            <div class="form-group">
+                <label>Release Type</label>
+                <select id="releaseType">
+                    <option value="Model">Model Release</option>
+                    <option value="Property">Property Release</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Document Name / ID</label>
+                <input type="text" id="releaseName" placeholder="e.g. John Doe - Signed 2026">
+            </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+            <div class="form-group">
+                <label>Upload Release File (PDF/Image)</label>
+                <input type="file" id="releaseFile" accept=".pdf,image/*">
+            </div>
 
-/* =========================================================
-   ⚠️ Paste your real Firebase config here.
-   ========================================================= */
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-/* ========================================================= */
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeReleaseModal()">Cancel</button>
+                <button class="btn-confirm" onclick="saveReleaseLocally()">Attach</button>
+            </div>
+        </div>
+    </div>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app), storage = getStorage(app);
-const $ = id => document.getElementById(id);
-let files = [], selected = new Set(), nextId = 1;
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-/* ---------- Firestore collection names ---------- */
-/* Photo গুলো নতুন store (photoUploads) এ যাবে, বাকি সব uploads এ যাবে */
-const COLLECTION_PHOTOS = "photoUploads";   // নতুন store
-const COLLECTION_OTHERS = "uploads";        // পুরনো store
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const storage = firebase.storage();
+        const db = firebase.firestore();
+    </script>
 
-function collectionFor(contentType) {
-  return contentType === "photo" ? COLLECTION_PHOTOS : COLLECTION_OTHERS;
-}
-function storageFolderFor(contentType) {
-  return contentType === "photo" ? "photoUploads" : "uploads";
-}
-/* ------------------------------------------------ */
+    <script src="top-bar.js"></script>
+    <script src="site-footer.js"></script>
 
-/* Guest identity — stored in localStorage so uploads are grouped per browser */
-let guestId = localStorage.getItem("guestId");
-if (!guestId) {
-  guestId = "guest_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-  localStorage.setItem("guestId", guestId);
-}
-const uploader = { uid: guestId, name: "Guest" };
-$("who").textContent = "Guest (not logged in)";
+    <!-- Custom Upload Logic -->
+    <script>
+        let selectedFiles = []; 
+        let activeImageIndex = -1; // কোন ছবিটি সিলেক্ট করা আছে
+        let releaseData = null;
 
-$("back").onclick = () => history.length > 1 ? history.back() : (location.href = "index.html");
+        // ১. ফাইল সিলেক্ট করলে বাম দিকে থাম্বনেইল দেখানো
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
 
-/* ---------- adding files ---------- */
-const drop = $("drop"), pick = $("pick");
-drop.onclick = () => pick.click();
-drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick.click(); } };
-["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
-["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
-drop.addEventListener("drop", e => addFiles(e.dataTransfer.files));
-pick.onchange = () => { addFiles(pick.files); pick.value = ""; };
+            selectedFiles = selectedFiles.concat(files); 
+            renderGrid(); 
+            document.getElementById('fileInput').value = ''; 
+            
+            // যদি কোনো ছবি সিলেক্ট করা না থাকে, তবে প্রথম ছবিটি অটো সিলেক্ট হবে
+            if (activeImageIndex === -1 && selectedFiles.length > 0) {
+                selectImage(0);
+            }
+        });
 
-function guessType(f) {
-  const n = f.name.toLowerCase();
-  if (f.type.startsWith("video/")) return "video";
-  if (/\.(svg|eps|ai)$/.test(n)) return "vector";
-  if (/\.(obj|fbx|glb|blend)$/.test(n)) return "3d";
-  return "photo";
-}
+        // গ্রিড রেন্ডার করার ফাংশন
+        function renderGrid() {
+            const grid = document.getElementById('imageGrid');
+            const noFilesMsg = document.getElementById('noFilesMsg');
+            
+            if (selectedFiles.length > 0 && noFilesMsg) noFilesMsg.style.display = 'none';
 
-function addFiles(list) {
-  for (const f of list) {
-    const o = { id: nextId++, file: f, ctype: guessType(f), title: "", keywords: [], cat: "", desc: "",
-      ai: false, people: false, prop: false, edit: false, edCity: "", edCountry: "", edDate: "",
-      mr: null, pr: null, own: false, status: "", warn: "", pct: 0, url: null };
-    if (f.type.startsWith("image/") || f.type.startsWith("video/")) o.url = URL.createObjectURL(f);
-    files.push(o); checkMedia(o);
-  }
-  if (files.length && !selected.size) selected.add(files[0].id);
-  render();
-}
+            grid.innerHTML = '';
+            if(noFilesMsg) grid.appendChild(noFilesMsg);
 
-function checkMedia(o) {
-  if (o.ctype === "photo" && o.file.type.startsWith("image/")) {
-    const im = new Image();
-    im.onload = () => {
-      const mp = im.naturalWidth * im.naturalHeight / 1e6;
-      if (!/jpe?g/.test(o.file.type)) o.warn = "Photos should be JPEG.";
-      else if (mp < 4) o.warn = "Under 4 MP (" + mp.toFixed(1) + " MP). Adobe may reject it.";
-      render();
-    };
-    im.src = o.url;
-  } else if (o.ctype === "video" && o.url) {
-    const v = document.createElement("video");
-    v.preload = "metadata";
-    v.onloadedmetadata = () => {
-      const d = v.duration;
-      if (d < 5 || d > 60) o.warn = "Clip is " + d.toFixed(1) + " s. Keep it between 5 and 60 s.";
-      else if (v.videoWidth < 1920) o.warn = "Under Full HD (1920 wide).";
-      render();
-    };
-    v.src = o.url;
-  }
-}
+            selectedFiles.forEach((file, index) => {
+                const objectUrl = URL.createObjectURL(file);
+                const card = document.createElement('div');
+                card.className = `image-card ${index === activeImageIndex ? 'selected' : ''}`;
+                card.setAttribute('data-index', index);
+                card.onclick = () => selectImage(index); // ক্লিক করলে সিলেক্ট হবে
+                
+                card.innerHTML = `
+                    <div class="checkmark"><i class="fas fa-check"></i></div>
+                    <div class="image-thumbnail" style="background-image: url('${objectUrl}');"></div>
+                    <div class="image-info">
+                        <span>${file.name.substring(0, 10)}...</span>
+                        <span>📷 Photo</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-/* ---------- validation ---------- */
-function problems(o) {
-  const p = [];
-  if (o.title.trim().length < 5) p.push("title");
-  if (o.keywords.length < 7) p.push("at least 7 keywords");
-  if (!o.cat) p.push("category");
-  if (o.people && !o.edit && !o.mr) p.push("model release");
-  if (o.prop && !o.edit && !o.pr) p.push("property release");
-  if (o.edit && (!o.edCity || !o.edDate)) p.push("editorial place and date");
-  if (!o.own) p.push("rights confirmation");
-  return p;
-}
+        // ২. ছবিতে ক্লিক করলে অটো টাইটেল এবং ক্যাটাগরি বসানো (Mock AI Scan)
+        function selectImage(index) {
+            activeImageIndex = index;
+            renderGrid(); // আবার রেন্ডার করে সিলেক্টেড বর্ডার দেখানো
 
-/* ---------- grid ---------- */
-function render() {
-  const g = $("grid"); g.textContent = "";
-  for (const o of files) {
-    const c = document.createElement("div");
-    c.className = "card" + (selected.has(o.id) ? " sel" : "");
-    const th = document.createElement("div"); th.className = "th";
-    if (o.url && o.ctype === "video") { const v = document.createElement("video"); v.src = o.url; v.muted = true; th.appendChild(v); }
-    else if (o.url) th.style.backgroundImage = "url('" + o.url + "')";
-    else th.textContent = o.file.name.split(".").pop().toUpperCase();
-    const st = document.createElement("span");
-    const pr = problems(o);
-    const state = o.status === "done" ? ["done","Sent"] : o.status === "err" ? ["err","Error"] : o.status === "up" ? ["ready","Uploading"] : pr.length ? ["need","Needs info"] : ["ready","Ready"];
-    st.className = "st " + state[0]; st.textContent = state[1];
-    const x = document.createElement("button"); x.className = "x"; x.textContent = "×"; x.title = "Remove";
-    x.onclick = e => { e.stopPropagation(); files = files.filter(f => f !== o); selected.delete(o.id); render(); };
-    const m = document.createElement("div"); m.className = "meta"; m.textContent = o.file.name; m.title = o.warn || o.file.name;
-    const pg = document.createElement("div"); pg.className = "pg"; pg.style.width = o.pct + "%";
-    c.append(th, st, x, m, pg);
-    c.onclick = () => { selected.has(o.id) ? selected.delete(o.id) : selected.add(o.id); render(); };
-    g.appendChild(c);
-  }
-  const ready = files.filter(f => f.status !== "done" && !problems(f).length).length;
-  $("count").textContent = files.length ? files.length + " file(s), " + ready + " ready, " + selected.size + " selected" : "No files yet";
-  $("submit").disabled = !ready;
-  loadForm();
-}
+            const file = selectedFiles[index];
+            const fileName = file.name.split('.').slice(0, -1).join('.'); // এক্সটেনশন বাদ দেওয়া
 
-$("selAll").onclick = () => { files.forEach(f => selected.add(f.id)); render(); };
-$("selNone").onclick = () => { selected.clear(); render(); };
+            // অটো টাইটেল সেট করা
+            const titleInput = document.getElementById('title');
+            titleInput.value = fileName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-/* ---------- form <-> selected files ---------- */
-const sel = () => files.filter(f => selected.has(f.id));
+            // মক AI স্ক্যান (ফাইলের নামের উপর ভিত্তি করে ক্যাটাগরি সিলেক্ট করা)
+            simulateAIScan(fileName);
+        }
 
-function loadForm() {
-  const s = sel(), f = $("form");
-  f.hidden = !s.length;
-  if (!s.length) return;
-  const o = s[0];
-  $("selInfo").textContent = s.length === 1 ? "Editing: " + o.file.name + (o.warn ? "  |  " + o.warn : "")
-    : "Editing " + s.length + " files at once. Changes apply to every selected file.";
-  $("ctype").value = o.ctype; $("title").value = o.title; $("cat").value = o.cat; $("desc").value = o.desc;
-  $("ai").checked = o.ai; $("people").checked = o.people; $("prop").checked = o.prop; $("edit").checked = o.edit;
-  $("edCity").value = o.edCity; $("edCountry").value = o.edCountry; $("edDate").value = o.edDate; $("own").checked = o.own;
-  $("mrBox").hidden = !o.people; $("prBox").hidden = !o.prop; $("edBox").hidden = !o.edit;
-  $("mrName").textContent = o.mr ? o.mr.name : ""; $("prName").textContent = o.pr ? o.pr.name : "";
-  $("tcnt").textContent = o.title.length + " / 200";
-  drawChips(o);
-}
+        function simulateAIScan(fileName) {
+            const lowerName = fileName.toLowerCase();
+            const categorySelect = document.getElementById('category');
+            
+            // সাধারণ কী-ওয়ার্ড ম্যাচিং (আসল AI-এর জন্য API লাগবে)
+            if (lowerName.includes('nature') || lowerName.includes('tree') || lowerName.includes('sky') || lowerName.includes('mountain')) {
+                categorySelect.value = 'Nature';
+            } else if (lowerName.includes('business') || lowerName.includes('office') || lowerName.includes('meeting')) {
+                categorySelect.value = 'Business';
+            } else if (lowerName.includes('food') || lowerName.includes('fruit') || lowerName.includes('cook')) {
+                categorySelect.value = 'Food';
+            } else if (lowerName.includes('tech') || lowerName.includes('computer') || lowerName.includes('code')) {
+                categorySelect.value = 'Technology';
+            } else {
+                // যদি কিছু না মেলে, র‍্যান্ডম একটি সিলেক্ট করে দেবে
+                const options = ['Travel', 'Nature', 'Business', 'Technology', 'Food'];
+                categorySelect.value = options[Math.floor(Math.random() * options.length)];
+            }
 
-function set(k, v) { sel().forEach(o => o[k] = v); }
-const bind = (id, k, ev = "input", get = e => e.target.value) =>
-  $(id).addEventListener(ev, e => { set(k, get(e)); if (k === "title") $("tcnt").textContent = get(e).length + " / 200"; refreshState(); });
-const chk = e => e.target.checked;
-bind("ctype","ctype","change"); bind("title","title"); bind("cat","cat","change"); bind("desc","desc");
-bind("edCity","edCity"); bind("edCountry","edCountry"); bind("edDate","edDate","change");
-bind("ai","ai","change",chk); bind("own","own","change",chk);
-bind("people","people","change",chk); bind("prop","prop","change",chk); bind("edit","edit","change",chk);
-$("people").addEventListener("change", () => $("mrBox").hidden = !$("people").checked);
-$("prop").addEventListener("change", () => $("prBox").hidden = !$("prop").checked);
-$("edit").addEventListener("change", () => $("edBox").hidden = !$("edit").checked);
-$("mr").addEventListener("change", e => { set("mr", e.target.files[0] || null); $("mrName").textContent = e.target.files[0]?.name || ""; refreshState(); });
-$("pr").addEventListener("change", e => { set("pr", e.target.files[0] || null); $("prName").textContent = e.target.files[0]?.name || ""; refreshState(); });
+            // কীওয়ার্ড সাজেশনও এখানে ট্রিগার করা যেতে পারে
+            suggestKeywords(titleInput.value);
+        }
 
-function refreshState() {
-  const keep = document.activeElement;
-  render();
-  if (keep && keep.id && $(keep.id)) { $(keep.id).focus?.(); }
-}
+        // ৩. টাইটেল ইনপুটে টাইপ করলে কীওয়ার্ড সাজেশন দেখানো
+        const titleInput = document.getElementById('title');
+        const suggestionBox = document.getElementById('titleSuggestions');
+        
+        const keywordDatabase = {
+            'road': ['highway', 'asphalt', 'travel', 'landscape', 'sky'],
+            'nature': ['green', 'tree', 'forest', 'outdoor', 'environment'],
+            'business': ['office', 'meeting', 'corporate', 'work', 'professional'],
+            'technology': ['computer', 'digital', 'code', 'innovation', 'future'],
+            'food': ['delicious', 'meal', 'cooking', 'fresh', 'restaurant'],
+            'travel': ['vacation', 'journey', 'destination', 'tourism', 'adventure']
+        };
 
-/* ---------- keywords ---------- */
-function drawChips(o) {
-  const box = $("chips");
-  [...box.querySelectorAll(".chip")].forEach(n => n.remove());
-  o.keywords.forEach((w, i) => {
-    const c = document.createElement("span"); c.className = "chip"; c.append(w);
-    const b = document.createElement("button"); b.type = "button"; b.textContent = "×"; b.title = "Remove";
-    b.onclick = () => { sel().forEach(s => s.keywords = s.keywords.filter(x => x !== w)); render(); };
-    c.appendChild(b); box.insertBefore(c, $("kin"));
-  });
-  const n = o.keywords.length; $("kcnt").textContent = n + " / 49"; $("kcnt").className = "cnt" + (n > 49 ? " bad" : "");
-}
+        titleInput.addEventListener('input', function() {
+            suggestKeywords(this.value);
+        });
 
-function addKeywords(text) {
-  const words = text.split(/[,\n]/).map(w => w.trim().toLowerCase()).filter(Boolean);
-  sel().forEach(o => words.forEach(w => { if (!o.keywords.includes(w) && o.keywords.length < 49) o.keywords.push(w); }));
-  render();
-}
+        function suggestKeywords(text) {
+            const words = text.toLowerCase().split(' ');
+            let suggestions = new Set();
+            
+            words.forEach(word => {
+                if (keywordDatabase[word]) {
+                    keywordDatabase[word].forEach(k => suggestions.add(k));
+                }
+            });
 
-$("kin").addEventListener("keydown", e => {
-  if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addKeywords(e.target.value); e.target.value = ""; $("kin").focus(); }
-  else if (e.key === "Backspace" && !e.target.value) { sel().forEach(o => o.keywords.pop()); render(); $("kin").focus(); }
-});
-$("kin").addEventListener("paste", e => { e.preventDefault(); addKeywords((e.clipboardData || window.clipboardData).getData("text")); $("kin").focus(); });
-$("kin").addEventListener("blur", e => { if (e.target.value.trim()) { addKeywords(e.target.value); e.target.value = ""; } });
-$("kclear").onclick = () => { sel().forEach(o => o.keywords = []); render(); };
+            if (suggestions.size > 0) {
+                suggestionBox.innerHTML = '';
+                suggestions.forEach(k => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item';
+                    div.textContent = k;
+                    div.onclick = () => {
+                        const keywordInput = document.getElementById('keywords');
+                        const currentKeywords = keywordInput.value ? keywordInput.value.split(',').map(k => k.trim()) : [];
+                        if (!currentKeywords.includes(k)) {
+                            currentKeywords.push(k);
+                            keywordInput.value = currentKeywords.join(', ');
+                        }
+                        suggestionBox.style.display = 'none';
+                    };
+                    suggestionBox.appendChild(div);
+                });
+                suggestionBox.style.display = 'block';
+            } else {
+                suggestionBox.style.display = 'none';
+            }
+        }
 
-const STOP = new Set("a an the in on at of for with and or to from by near is are was this that his her its into over under".split(" "));
-$("sugg").onclick = () => {
-  const t = $("title").value.toLowerCase().replace(/[^a-z0-9\s-]/g, " ");
-  const w = [...new Set(t.split(/\s+/).filter(x => x.length > 2 && !STOP.has(x)))];
-  if (!w.length) { flash("Write a title first.", "bad"); return; }
-  addKeywords(w.join(","));
-};
+        // ক্লিক আউট করলে সাজেশন বক্স লুকানো
+        document.addEventListener('click', function(e) {
+            if (!titleInput.contains(e.target) && !suggestionBox.contains(e.target)) {
+                suggestionBox.style.display = 'none';
+            }
+        });
 
-/* ---------- submit ---------- */
-function flash(t, cls) { const m = $("msg"); m.textContent = t; m.className = "msg " + (cls || ""); }
+        // ৪. আপলোড করার মূল ফাংশন
+        async function uploadFiles(isDraft) {
+            if (selectedFiles.length === 0) {
+                alert("Please select at least one image!");
+                return;
+            }
+            
+            const title = document.getElementById('title').value.trim();
+            const category = document.getElementById('category').value;
+            const fileType = document.getElementById('fileType').value;
+            const description = document.getElementById('description').value.trim();
+            const keywordsStr = document.getElementById('keywords').value.trim();
+            
+            if (!title || !category) {
+                alert("Title and Category are required!");
+                return;
+            }
 
-function upload(path, blob, onPct) {
-  return new Promise((res, rej) => {
-    const task = uploadBytesResumable(ref(storage, path), blob);
-    task.on("state_changed", s => onPct && onPct(Math.round(s.bytesTransferred / s.totalBytes * 100)), rej,
-      async () => res(await getDownloadURL(task.snapshot.ref)));
-  });
-}
-const safe = n => n.replace(/[^\w.\-]+/g, "_");
+            const keywordsArray = keywordsStr ? keywordsStr.split(',').map(k => k.trim()) : [];
+            const status = isDraft ? 'draft' : 'published';
 
-$("submit").onclick = async () => {
-  const todo = files.filter(f => f.status !== "done" && !problems(f).length);
-  if (!todo.length) return;
-  $("submit").disabled = true; let ok = 0, bad = 0;
-  for (const o of todo) {
-    o.status = "up"; o.pct = 0; render();
-    try {
-      const stamp = Date.now() + "_" + o.id;
+            const loader = document.getElementById('loaderOverlay');
+            loader.style.display = 'flex';
 
-      // ── decide which store this file goes to ──
-      const folder = storageFolderFor(o.ctype);      // "photoUploads" or "uploads"
-      const collName = collectionFor(o.ctype);        // "photoUploads" or "uploads"
+            try {
+                // এখানে শুধু সিলেক্টেড ছবিটি আপলোড হবে (অথবা চাইলে সবগুলো লুপ করে করা যাবে)
+                // আমরা আপাতত সবগুলো আপলোড করছি
+                const uploadPromises = selectedFiles.map(async (file) => {
+                    const storageRef = storage.ref(`stock_photos/${Date.now()}_${file.name}`);
+                    const snapshot = await storageRef.put(file);
+                    const downloadURL = await snapshot.ref.getDownloadURL();
 
-      const fileUrl = await upload(folder + "/" + uploader.uid + "/" + stamp + "_" + safe(o.file.name), o.file, p => {
-        o.pct = p;
-        const bars = document.querySelectorAll(".pg");
-        const i = files.indexOf(o);
-        if (bars[i]) bars[i].style.width = p + "%";
-      });
+                    return db.collection('photos').add({
+                        title: title,
+                        category: category,
+                        fileType: fileType,
+                        description: description,
+                        keywords: keywordsArray,
+                        imageUrl: downloadURL,
+                        status: status,
+                        releaseAttached: releaseData ? true : false,
+                        releaseInfo: releaseData,
+                        uploadedBy: firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'anonymous',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                });
 
-      const mrUrl = o.mr && o.people ? await upload("releases/" + uploader.uid + "/" + stamp + "_model_" + safe(o.mr.name), o.mr) : null;
-      const prUrl = o.pr && o.prop ? await upload("releases/" + uploader.uid + "/" + stamp + "_property_" + safe(o.pr.name), o.pr) : null;
+                await Promise.all(uploadPromises);
+                alert(isDraft ? "✅ সফলভাবে ড্রাফট হিসেবে সেভ হয়েছে!" : "✅ সফলভাবে পাবলিশ হয়েছে!");
+                clearForm();
 
-      // ── save to the correct Firestore collection ──
-      await addDoc(collection(db, collName), {
-        uid: uploader.uid, sellerName: uploader.name,
-        fileName: o.file.name, fileType: o.file.type, fileSize: o.file.size, fileUrl,
-        contentType: o.ctype, title: o.title.trim(), keywords: o.keywords, category: o.cat, notes: o.desc.trim(),
-        aiGenerated: o.ai, peopleRecognizable: o.people, propertyRecognizable: o.prop,
-        modelReleaseUrl: mrUrl, propertyReleaseUrl: prUrl,
-        editorial: o.edit, editorialCity: o.edit ? o.edCity : "", editorialCountry: o.edit ? o.edCountry : "", editorialDate: o.edit ? o.edDate : "",
-        ownsRights: o.own, status: "pending", createdAt: serverTimestamp()
-      });
+            } catch (error) {
+                console.error("Error uploading: ", error);
+                alert("❌ আপলোড ব্যর্থ: " + error.message);
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
 
-      o.status = "done"; o.pct = 100; ok++;
-    } catch (err) {
-      console.error(err); o.status = "err"; bad++;
-    }
-    render();
-  }
-  flash(ok + " file(s) sent for review." + (bad ? " " + bad + " failed. Check Firebase rules and try again." : ""), bad ? "bad" : "ok");
-};
+        document.getElementById('saveWorkBtn').addEventListener('click', () => uploadFiles(true));
+        document.getElementById('submitBtn').addEventListener('click', () => uploadFiles(false));
 
-window.addEventListener("beforeunload", e => { if (files.some(f => f.status !== "done")) { e.preventDefault(); e.returnValue = ""; } });
-</script>
+        function clearForm() {
+            selectedFiles = [];
+            activeImageIndex = -1;
+            releaseData = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('category').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('keywords').value = '';
+            
+            const grid = document.getElementById('imageGrid');
+            grid.innerHTML = '<p style="color: #777; grid-column: 1 / -1; text-align: center; margin-top: 50px;" id="noFilesMsg">No files yet. Upload your first file to get started.</p>';
+        }
+
+        // Release Modal Functions
+        function openReleaseModal() { document.getElementById('releaseModal').style.display = 'flex'; }
+        function closeReleaseModal() { document.getElementById('releaseModal').style.display = 'none'; }
+        function saveReleaseLocally() {
+            const type = document.getElementById('releaseType').value;
+            const name = document.getElementById('releaseName').value.trim();
+            if (!name) { alert("Please enter a name or ID for the release."); return; }
+            releaseData = { type: type, name: name };
+            alert(`✅ Release Attached: ${type} - ${name}`);
+            closeReleaseModal();
+        }
+    </script>
 </body>
 </html>

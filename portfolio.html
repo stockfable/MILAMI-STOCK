@@ -2,411 +2,573 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>My Portfolio — MINAMI STOCK</title>
-<meta name="color-scheme" content="light only">
+<meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-  :root{
-    --ink:#111827; --mute:#6b7280; --line:#e5e7eb; --bg:#fff; --soft:#f7f7f7;
-    --blue:#1473e6; --blue-d:#0d66d0; --ok:#16a34a; --bad:#dc2626; --warn:#f59e0b;
-    --purple:#7c3aed; --pink:#ec4899;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{background:#fff}
-  body{
-    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
-    background:#fff;color:#111827;line-height:1.55;
-    min-height:100vh;display:flex;flex-direction:column;
-  }
-  main{flex:1;max-width:1200px;width:100%;margin:0 auto;padding:32px 20px 44px}
-  #ms-footer{width:100%}
-  a{color:inherit;text-decoration:none}
-  button{font:inherit;cursor:pointer;color:inherit}
+:root{
+  --bg:#0a0f1a;--card:#0f172a;--line:#1e293b;
+  --ink:#e5e7eb;--mute:#94a3b8;--blue:#1473e6;--ok:#10b981;--bad:#ef4444;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#0a0f1a;color-scheme:dark}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+  background:#0a0f1a;color:#e5e7eb;line-height:1.55;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+main{flex:1;max-width:1300px;width:100%;margin:0 auto;padding:22px 16px 44px}
+#ms-footer{width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
 
-  /* ============ PAGE HEADER ============ */
-  .page-head{
-    background:linear-gradient(135deg,#1473e6 0%,#7c3aed 100%);
-    border-radius:20px;padding:32px 28px;color:#fff;
-    margin-bottom:24px;position:relative;overflow:hidden;
-    box-shadow:0 10px 30px rgba(20,115,230,.25);
-  }
-  .page-head::before{
-    content:'';position:absolute;top:-40%;right:-10%;
-    width:280px;height:280px;border-radius:50%;
-    background:rgba(255,255,255,.08);
-  }
-  .page-head::after{
-    content:'';position:absolute;bottom:-50%;right:20%;
-    width:180px;height:180px;border-radius:50%;
-    background:rgba(255,255,255,.06);
-  }
-  .page-head .content{position:relative;z-index:1;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-  .page-head .avatar-box{
-    width:80px;height:80px;border-radius:50%;
-    background:rgba(255,255,255,.2);backdrop-filter:blur(10px);
-    border:3px solid rgba(255,255,255,.4);
-    display:grid;place-items:center;overflow:hidden;
-    font-size:32px;font-weight:800;flex:none;
-  }
-  .page-head .avatar-box img{width:100%;height:100%;object-fit:cover}
-  .page-head .info{flex:1;min-width:200px}
-  .page-head h1{font-size:26px;font-weight:800;margin-bottom:4px}
-  .page-head p{opacity:.9;font-size:14px}
-  .page-head .stats{
-    display:flex;gap:24px;margin-top:12px;
-  }
-  .page-head .stats div{text-align:center}
-  .page-head .stats b{display:block;font-size:22px;font-weight:800}
-  .page-head .stats span{font-size:11px;opacity:.85;text-transform:uppercase;letter-spacing:.5px}
+/* Force dark top-bar */
+header.top-nav{background:#0a0f1a !important;border-bottom-color:#1e293b !important;color:#e5e7eb !important}
+.sidebar-trigger,.shop-logo-btn,.btn-signin,.account-avatar{background:#0a0f1a !important;color:#e5e7eb !important;border-color:#1e293b !important}
+.sidebar-dropdown,.nav-drop-panel,.account-dropdown{background:#0f172a !important;border-color:#1e293b !important;color:#e5e7eb !important}
+.sidebar-dropdown a,.nav-drop-panel a,.account-menu-item{color:#e5e7eb !important}
+.sidebar-dropdown a:hover,.nav-drop-panel a:hover,.account-menu-item:hover{background:#111827 !important}
 
-  /* ============ TABS ============ */
-  .tabs{
-    display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;
-    border-bottom:1px solid var(--line);padding-bottom:0;
-  }
-  .tab{
-    background:none;border:0;padding:12px 20px;
-    font-size:14px;font-weight:700;color:var(--mute);
-    border-bottom:3px solid transparent;cursor:pointer;
-    transition:.15s;display:flex;align-items:center;gap:8px;
-    margin-bottom:-1px;
-  }
-  .tab:hover{color:var(--ink)}
-  .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
-  .tab i{font-size:13px}
+/* ============ PROFILE HEADER (like Adobe) ============ */
+.profile-hero{
+  position:relative;
+  border-radius:16px;
+  overflow:hidden;
+  margin-bottom:22px;
+  background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+  border:1px solid #1e293b;
+}
+.profile-cover{
+  height:160px;
+  background:linear-gradient(135deg,#0891b2 0%,#0e7490 40%,#155e75 100%);
+  position:relative;
+}
+.profile-cover::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 70% 30%, rgba(255,255,255,.15) 0%, transparent 60%);
+}
+.profile-info{
+  padding:0 24px 22px;
+  display:flex;align-items:flex-end;gap:16px;
+  margin-top:-50px;position:relative;z-index:2;
+  flex-wrap:wrap;
+}
+.profile-avatar{
+  width:100px;height:100px;border-radius:50%;
+  background:#0a0f1a;
+  border:4px solid #0a0f1a;
+  display:grid;place-items:center;
+  font-size:36px;font-weight:800;color:#e5e7eb;
+  overflow:hidden;flex:none;
+  box-shadow:0 6px 20px rgba(0,0,0,.5);
+}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-details{flex:1;min-width:200px;padding-bottom:6px}
+.profile-details h1{
+  font-size:22px;font-weight:800;color:#fff;
+  margin-bottom:2px;
+}
+.profile-details .email{font-size:13px;color:#94a3b8;margin-bottom:6px}
+.profile-details .stats{display:flex;gap:20px;flex-wrap:wrap}
+.profile-details .stats div{font-size:12px;color:#cbd5e1}
+.profile-details .stats b{color:#fff;font-weight:800;margin-right:4px}
+.profile-actions{display:flex;gap:10px;flex-wrap:wrap;padding-bottom:6px}
 
-  /* ============ PANELS ============ */
-  .panel{display:none;animation:fade .25s ease}
-  .panel.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* ============ BUTTONS ============ */
+.btn{
+  padding:10px 20px;border-radius:10px;
+  font-weight:700;font-size:13.5px;
+  border:1px solid #1e293b;background:#0f172a;color:#e5e7eb;
+  display:inline-flex;align-items:center;gap:8px;
+  cursor:pointer;transition:.15s;
+}
+.btn:hover{background:#1e293b;border-color:#334155}
+.btn.primary{background:#1473e6;border-color:#1473e6;color:#fff}
+.btn.primary:hover{background:#0d66d0}
+.btn.success{background:#10b981;border-color:#10b981;color:#fff}
+.btn.success:hover{background:#059669}
+.btn.danger{border-color:#ef4444;color:#ef4444}
+.btn.danger:hover{background:#ef4444;color:#fff}
 
-  /* ============ AUTH GATE ============ */
-  .auth-gate{
-    background:var(--soft);border:2px dashed var(--line);
-    border-radius:20px;padding:60px 24px;text-align:center;
-  }
-  .auth-gate i.big{
-    font-size:56px;color:var(--blue);margin-bottom:18px;display:block;
-  }
-  .auth-gate h2{font-size:22px;font-weight:800;margin-bottom:8px}
-  .auth-gate p{color:var(--mute);font-size:14.5px;margin-bottom:24px;max-width:420px;margin-left:auto;margin-right:auto}
-  .auth-gate .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  .btn{
-    border:1px solid var(--line);background:#fff;color:var(--ink);
-    padding:11px 22px;border-radius:24px;font-weight:700;font-size:14px;
-    display:inline-flex;align-items:center;gap:8px;cursor:pointer;
-    transition:.15s;
-  }
-  .btn:hover{background:var(--soft)}
-  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
-  .btn.primary:hover{background:var(--blue-d)}
-  .btn.success{background:var(--ok);border-color:var(--ok);color:#fff}
-  .btn.success:hover{background:#15803d}
-  .btn.danger{border-color:var(--bad);color:var(--bad)}
-  .btn.danger:hover{background:var(--bad);color:#fff}
-  .btn:disabled{opacity:.5;cursor:not-allowed}
+/* ============ TABS ============ */
+.tabs{
+  display:flex;gap:4px;border-bottom:1px solid #1e293b;
+  margin-bottom:22px;overflow-x:auto;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  padding:12px 20px;border:0;background:none;
+  font-size:13.5px;font-weight:600;color:#94a3b8;
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:.15s;display:flex;align-items:center;gap:8px;
+  white-space:nowrap;
+}
+.tab:hover{color:#e5e7eb}
+.tab.on{color:#1473e6;border-bottom-color:#1473e6}
+.tab i{font-size:12px}
 
-  /* ============ UPLOAD AREA ============ */
-  .upload-box{
-    background:var(--soft);border:2px dashed var(--line);
-    border-radius:16px;padding:32px 20px;text-align:center;
-    cursor:pointer;transition:.2s;margin-bottom:20px;
-  }
-  .upload-box:hover,.upload-box.over{
-    border-color:var(--blue);background:#eaf2fd;
-  }
-  .upload-box i{font-size:40px;color:var(--blue);margin-bottom:12px;display:block}
-  .upload-box b{display:block;font-size:16px;margin-bottom:6px}
-  .upload-box span{color:var(--mute);font-size:13px}
+.panel{display:none;animation:fade .25s ease}
+.panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  /* ============ FORM ============ */
-  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-  .form-row.three{grid-template-columns:1fr 1fr 1fr}
-  .form-row .full{grid-column:1/-1}
-  .field label{
-    display:block;font-size:12px;font-weight:700;
-    text-transform:uppercase;letter-spacing:.4px;
-    color:var(--mute);margin-bottom:6px;
-  }
-  .field input,.field textarea,.field select{
-    width:100%;padding:11px 13px;border:1px solid var(--line);
-    border-radius:10px;font:inherit;font-size:14px;
-    background:#fff;color:var(--ink);transition:.15s;
-  }
-  .field textarea{min-height:80px;resize:vertical}
-  .field input:focus,.field textarea:focus,.field select:focus{
-    outline:none;border-color:var(--blue);
-    box-shadow:0 0 0 3px rgba(20,115,230,.12);
-  }
+/* ============ UPLOAD AREA ============ */
+.upload-zone{
+  border:2px dashed #1e293b;border-radius:14px;
+  padding:34px 20px;text-align:center;
+  background:#0f172a;cursor:pointer;
+  transition:.2s;margin-bottom:18px;
+}
+.upload-zone:hover,.upload-zone.over{
+  border-color:#1473e6;background:#0d1f3a;
+}
+.upload-zone i.big{
+  font-size:44px;color:#1473e6;
+  margin-bottom:12px;display:block;
+}
+.upload-zone b{display:block;font-size:16px;color:#fff;margin-bottom:6px}
+.upload-zone span{color:#94a3b8;font-size:13px}
 
-  .preview-img{
-    max-width:200px;border-radius:12px;margin-top:12px;
-    box-shadow:0 4px 16px rgba(0,0,0,.1);display:none;
-  }
-  .preview-img.show{display:block}
+/* ============ UPLOAD FORM ============ */
+.form-card{
+  background:#0f172a;border:1px solid #1e293b;
+  border-radius:14px;padding:22px;margin-bottom:18px;
+  display:none;
+}
+.form-card.show{display:block}
+.form-card h3{
+  font-size:16px;font-weight:800;color:#fff;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.form-card h3 i{color:#1473e6}
 
-  /* ============ PORTFOLIO GRID ============ */
-  .grid{
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-    gap:18px;
-  }
-  .item{
-    background:#fff;border:1px solid var(--line);border-radius:16px;
-    overflow:hidden;transition:.2s;position:relative;
-  }
-  .item:hover{
-    transform:translateY(-4px);box-shadow:0 14px 32px rgba(0,0,0,.1);
-    border-color:var(--blue);
-  }
-  .item .thumb{
-    width:100%;aspect-ratio:4/3;object-fit:cover;
-    background:var(--soft);display:block;
-  }
-  .item .body{padding:14px}
-  .item .body h3{
-    font-size:15px;font-weight:800;margin-bottom:6px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  }
-  .item .body p{
-    font-size:13px;color:var(--mute);line-height:1.5;
-    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
-    overflow:hidden;margin-bottom:10px;
-  }
-  .item .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-  .item .tag{
-    font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;
-    background:#eaf2fd;color:var(--blue);text-transform:uppercase;letter-spacing:.3px;
-  }
-  .item .actions{
-    display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--line);
-  }
-  .item .actions button{
-    flex:1;padding:8px;border-radius:8px;border:1px solid var(--line);
-    background:#fff;font-size:12px;font-weight:700;
-    display:inline-flex;align-items:center;justify-content:center;gap:6px;
-    transition:.15s;
-  }
-  .item .actions button:hover{background:var(--soft)}
-  .item .actions button.del{color:var(--bad);border-color:#fecaca}
-  .item .actions button.del:hover{background:var(--bad);color:#fff;border-color:var(--bad)}
+.preview-box{
+  width:100%;max-width:320px;margin:0 auto 18px;
+  border-radius:12px;overflow:hidden;
+  background:#0a0f1a;border:1px solid #1e293b;
+  aspect-ratio:4/3;
+  display:flex;align-items:center;justify-content:center;
+}
+.preview-box img{width:100%;height:100%;object-fit:contain;display:none}
+.preview-box.show img{display:block}
+.preview-box .ph{color:#475569;font-size:32px}
 
-  .empty{
-    text-align:center;padding:60px 20px;color:var(--mute);
-  }
-  .empty i{font-size:52px;color:var(--line);margin-bottom:14px;display:block}
-  .empty h3{font-size:18px;color:var(--ink);font-weight:700;margin-bottom:6px}
+.field{margin-bottom:14px}
+.field label{
+  display:block;font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.4px;
+  color:#94a3b8;margin-bottom:6px;
+}
+.field input,.field textarea,.field select{
+  width:100%;padding:11px 13px;
+  border:1px solid #1e293b;border-radius:10px;
+  font:inherit;font-size:14px;
+  background:#0a0f1a;color:#e5e7eb;
+  transition:.15s;
+}
+.field textarea{min-height:80px;resize:vertical;font-family:inherit}
+.field input:focus,.field textarea:focus,.field select:focus{
+  outline:none;border-color:#1473e6;
+  box-shadow:0 0 0 3px rgba(20,115,230,.15);
+}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-  /* ============ TOAST ============ */
-  #toast{
-    position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
-    background:#111827;color:#fff;padding:12px 22px;border-radius:10px;
-    font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99999;
-    box-shadow:0 10px 30px rgba(0,0,0,.25);
-  }
-  #toast.show{opacity:1;transform:translateX(-50%)}
-  #toast.ok{background:var(--ok)}
-  #toast.err{background:var(--bad)}
+.form-actions{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin-top:18px;padding-top:18px;
+  border-top:1px solid #1e293b;
+}
 
-  /* ============ LOADER ============ */
-  .loader{
-    display:none;text-align:center;padding:40px;
-    color:var(--mute);font-size:14px;
-  }
-  .loader.show{display:block}
-  .loader i{
-    font-size:28px;color:var(--blue);margin-bottom:10px;display:block;
-    animation:spin 1s linear infinite;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
+/* ============ GRID (Adobe Stock style) ============ */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  margin-bottom:20px;
+}
+.tile{
+  position:relative;
+  aspect-ratio:3/4;
+  overflow:hidden;
+  background:#0f172a;
+  border-radius:4px;
+  cursor:pointer;
+  transition:.2s;
+}
+.tile:hover{transform:scale(1.02);z-index:2}
+.tile img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:.3s;
+}
+.tile:hover img{filter:brightness(1.08)}
+.tile .overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 50%);
+  opacity:0;transition:.2s;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:12px;color:#fff;
+}
+.tile:hover .overlay{opacity:1}
+.tile .overlay h4{
+  font-size:13px;font-weight:700;
+  margin-bottom:4px;
+  overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.tile .overlay .meta{
+  font-size:11px;opacity:.85;
+  display:flex;gap:10px;flex-wrap:wrap;
+}
+.tile .overlay .actions{
+  display:flex;gap:6px;margin-top:8px;
+}
+.tile .overlay .actions button{
+  width:32px;height:32px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.3);
+  background:rgba(0,0,0,.5);color:#fff;
+  display:grid;place-items:center;font-size:12px;
+  backdrop-filter:blur(4px);
+  transition:.15s;
+}
+.tile .overlay .actions button:hover{background:#1473e6;border-color:#1473e6}
+.tile .overlay .actions button.del:hover{background:#ef4444;border-color:#ef4444}
 
-  @media(max-width:640px){
-    .page-head{padding:24px 20px}
-    .page-head .avatar-box{width:64px;height:64px;font-size:26px}
-    .page-head h1{font-size:20px}
-    .page-head .stats{gap:16px}
-    .page-head .stats b{font-size:18px}
-    .form-row,.form-row.three{grid-template-columns:1fr}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
-    .tab{padding:10px 14px;font-size:13px}
-  }
+/* status badges */
+.tile .badge{
+  position:absolute;top:8px;left:8px;
+  font-size:9px;font-weight:800;
+  padding:3px 8px;border-radius:6px;
+  text-transform:uppercase;letter-spacing:.4px;
+  color:#fff;z-index:2;
+}
+.tile .badge.public{background:rgba(16,185,129,.9)}
+.tile .badge.private{background:rgba(100,116,139,.9)}
+.tile .badge.draft{background:rgba(245,158,11,.9)}
+
+/* ============ EMPTY / LOADER ============ */
+.empty{
+  text-align:center;padding:60px 20px;
+  color:#94a3b8;background:#0f172a;
+  border:2px dashed #1e293b;border-radius:14px;
+}
+.empty i{font-size:52px;color:#334155;margin-bottom:16px;display:block}
+.empty h3{color:#fff;font-size:17px;margin-bottom:6px}
+.empty p{font-size:13.5px}
+
+.loader{text-align:center;padding:40px;color:#94a3b8}
+.loader i{
+  font-size:28px;color:#1473e6;margin-bottom:12px;display:block;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============ AUTH GATE ============ */
+.auth-gate{
+  text-align:center;padding:70px 24px;
+  background:#0f172a;border:1px solid #1e293b;
+  border-radius:18px;max-width:500px;margin:0 auto;
+}
+.auth-gate i.big{
+  font-size:56px;color:#1473e6;
+  margin-bottom:18px;display:block;
+}
+.auth-gate h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:10px}
+.auth-gate p{color:#94a3b8;font-size:14px;line-height:1.7;margin-bottom:24px}
+.auth-gate .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ============ MODAL ============ */
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  z-index:9999;display:none;align-items:center;justify-content:center;
+  padding:20px;backdrop-filter:blur(4px);
+}
+.modal.show{display:flex}
+.modal-box{
+  background:#0f172a;border:1px solid #1e293b;
+  border-radius:16px;max-width:800px;width:100%;
+  max-height:90vh;overflow:auto;padding:0;
+  position:relative;
+}
+.modal-box img{
+  width:100%;max-height:60vh;object-fit:contain;
+  background:#000;display:block;
+  border-radius:16px 16px 0 0;
+}
+.modal-box .info{padding:20px}
+.modal-box .info h2{
+  font-size:20px;font-weight:800;color:#fff;margin-bottom:6px;
+}
+.modal-box .info .row{
+  font-size:13px;color:#94a3b8;
+  padding:6px 0;border-bottom:1px solid #1e293b;
+  display:flex;gap:10px;
+}
+.modal-box .info .row:last-child{border-bottom:0}
+.modal-box .info .row b{
+  color:#cbd5e1;min-width:100px;
+  text-transform:uppercase;font-size:11px;
+  letter-spacing:.4px;font-weight:700;
+}
+.modal-box .info .row span{color:#e5e7eb;flex:1;word-break:break-word}
+.modal-box .close{
+  position:absolute;top:12px;right:12px;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);
+  color:#fff;display:grid;place-items:center;
+  font-size:14px;cursor:pointer;z-index:2;
+}
+.modal-box .close:hover{background:#ef4444;border-color:#ef4444}
+.modal-actions{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin-top:16px;padding-top:16px;
+  border-top:1px solid #1e293b;
+}
+
+/* ============ TOAST ============ */
+#toast{
+  position:fixed;left:50%;bottom:26px;
+  transform:translateX(-50%) translateY(20px);
+  background:#111827;color:#fff;padding:12px 22px;
+  border-radius:10px;font-size:14px;opacity:0;
+  pointer-events:none;transition:.25s;z-index:99999;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.ok{background:#10b981}
+#toast.err{background:#ef4444}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:700px){
+  .grid{grid-template-columns:repeat(3,1fr);gap:4px}
+  .profile-cover{height:120px}
+  .profile-avatar{width:80px;height:80px;font-size:28px}
+  .profile-details h1{font-size:18px}
+  .field-row{grid-template-columns:1fr}
+  .tab{padding:10px 14px;font-size:12.5px}
+}
+@media(max-width:420px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* force footer dark */
+.msf.msf-light{
+  background:#0f172a !important;color:#e5e7eb !important;
+  border-top-color:#1e293b !important;
+  --msf-mute:#94a3b8 !important;--msf-line:#1e293b !important;
+  --msf-btn:#0a0f1a !important;
+}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR (auto inject) -->
+<!-- TOP BAR -->
 <div id="site-topbar"></div>
 
 <main>
 
-  <!-- ============ HEADER ============ -->
-  <div class="page-head">
-    <div class="content">
-      <div class="avatar-box" id="avatarBox">
-        <i class="fas fa-user"></i>
-      </div>
-      <div class="info">
-        <h1 id="userName">My Portfolio</h1>
-        <p id="userEmail">Sign in to see your work</p>
-        <div class="stats">
-          <div><b id="statItems">0</b><span>Items</span></div>
-          <div><b id="statViews">0</b><span>Views</span></div>
-          <div><b id="statLikes">0</b><span>Likes</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============ AUTH GATE ============ -->
-  <div id="authGate" class="auth-gate">
+  <!-- AUTH GATE -->
+  <div class="auth-gate" id="authGate" style="display:none">
     <i class="fas fa-lock big"></i>
     <h2>Sign in to view your portfolio</h2>
-    <p>Your portfolio is private. Sign in with your account to manage your uploads, and share your creative work.</p>
+    <p>Your portfolio is private. Sign in to upload and manage your creative work.</p>
     <div class="btns">
       <a href="login.html" class="btn primary"><i class="fas fa-sign-in-alt"></i> Sign In</a>
       <a href="register.html" class="btn"><i class="fas fa-user-plus"></i> Create Account</a>
     </div>
   </div>
 
-  <!-- ============ MAIN CONTENT (shown when signed in) ============ -->
+  <!-- MAIN CONTENT -->
   <div id="mainContent" style="display:none">
 
-    <!-- TABS -->
-    <div class="tabs" id="tabs">
-      <button class="tab active" data-tab="view"><i class="fas fa-images"></i> My Work</button>
-      <button class="tab" data-tab="add"><i class="fas fa-plus-circle"></i> Add New</button>
+    <!-- PROFILE HERO -->
+    <div class="profile-hero">
+      <div class="profile-cover"></div>
+      <div class="profile-info">
+        <div class="profile-avatar" id="avatarBox">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-details">
+          <h1 id="userName">Loading...</h1>
+          <div class="email" id="userEmail">—</div>
+          <div class="stats">
+            <div><b id="statItems">0</b> Items</div>
+            <div><b id="statViews">0</b> Views</div>
+            <div><b id="statLikes">0</b> Likes</div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn primary" id="uploadBtn">
+            <i class="fas fa-cloud-arrow-up"></i> Upload
+          </button>
+          <button class="btn" id="signOutBtn">
+            <i class="fas fa-sign-out-alt"></i> Sign out
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- VIEW TAB -->
-    <section class="panel active" id="view">
-      <div class="loader" id="loader">
-        <i class="fas fa-circle-notch"></i>
-        Loading your portfolio...
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab on" data-tab="all"><i class="fas fa-images"></i> All Work</button>
+      <button class="tab" data-tab="public"><i class="fas fa-globe"></i> Public</button>
+      <button class="tab" data-tab="private"><i class="fas fa-lock"></i> Private</button>
+      <button class="tab" data-tab="draft"><i class="fas fa-pen"></i> Drafts</button>
+    </div>
+
+    <!-- UPLOAD FORM -->
+    <div class="form-card" id="formCard">
+      <h3><i class="fas fa-cloud-arrow-up"></i> Add new item</h3>
+
+      <div class="upload-zone" id="uploadZone">
+        <i class="fas fa-cloud-arrow-up big"></i>
+        <b>Drop image here, or click to choose</b>
+        <span>JPG, PNG, WebP · Max 5 MB</span>
+        <input type="file" id="fileInput" accept="image/*" hidden>
       </div>
-      <div class="grid" id="grid"></div>
-      <div class="empty" id="empty" style="display:none">
-        <i class="fas fa-folder-open"></i>
-        <h3>No items yet</h3>
-        <p>Start building your portfolio by adding your first project.</p>
+
+      <div class="preview-box" id="previewBox">
+        <i class="fas fa-image ph" id="previewPh"></i>
+        <img id="previewImg" alt="">
       </div>
-    </section>
 
-    <!-- ADD TAB -->
-    <section class="panel" id="add">
-      <div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;max-width:720px;margin:0 auto">
+      <div class="field">
+        <label>Title *</label>
+        <input type="text" id="fTitle" placeholder="e.g. Sunset at Cox's Bazar" maxlength="80">
+      </div>
 
-        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Add New Item</h2>
-        <p style="color:var(--mute);font-size:13.5px;margin-bottom:22px">Fill in the details and upload an image for your portfolio.</p>
-
-        <!-- Image upload -->
-        <div class="upload-box" id="uploadBox">
-          <i class="fas fa-cloud-arrow-up"></i>
-          <b>Click to upload image</b>
-          <span>JPG, PNG, WebP · Max 5 MB</span>
-          <input type="file" id="fileInput" accept="image/*" hidden>
-          <img id="previewImg" class="preview-img" alt="Preview">
+      <div class="field-row">
+        <div class="field">
+          <label>Category</label>
+          <select id="fCategory">
+            <option value="photography">Photography</option>
+            <option value="design">Design</option>
+            <option value="illustration">Illustration</option>
+            <option value="3d">3D Art</option>
+            <option value="ai">AI Generated</option>
+            <option value="other">Other</option>
+          </select>
         </div>
-
-        <div class="form-row">
-          <div class="field">
-            <label>Title *</label>
-            <input type="text" id="title" placeholder="e.g. Sunset Photography" maxlength="80">
-          </div>
-          <div class="field">
-            <label>Category</label>
-            <select id="category">
-              <option value="photography">Photography</option>
-              <option value="design">Design</option>
-              <option value="illustration">Illustration</option>
-              <option value="video">Video</option>
-              <option value="3d">3D Art</option>
-              <option value="ai">AI Generated</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field" style="margin-bottom:14px">
-          <label>Description</label>
-          <textarea id="description" placeholder="Short description of your work..." maxlength="300"></textarea>
-        </div>
-
-        <div class="form-row three">
-          <div class="field">
-            <label>Tags</label>
-            <input type="text" id="tags" placeholder="nature, sunset, warm">
-          </div>
-          <div class="field">
-            <label>Project URL</label>
-            <input type="url" id="projectUrl" placeholder="https://...">
-          </div>
-          <div class="field">
-            <label>Status</label>
-            <select id="status">
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-              <option value="draft">Draft</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
-          <button class="btn primary" id="saveBtn">
-            <i class="fas fa-save"></i> Save Item
-          </button>
-          <button class="btn" id="cancelBtn">
-            <i class="fas fa-times"></i> Cancel
-          </button>
+        <div class="field">
+          <label>Status</label>
+          <select id="fStatus">
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+            <option value="draft">Draft</option>
+          </select>
         </div>
       </div>
-    </section>
+
+      <div class="field">
+        <label>Description</label>
+        <textarea id="fDesc" placeholder="Short description..." maxlength="300"></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Tags (comma separated)</label>
+          <input type="text" id="fTags" placeholder="nature, sunset, warm">
+        </div>
+        <div class="field">
+          <label>External URL (optional)</label>
+          <input type="url" id="fUrl" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn success" id="saveBtn">
+          <i class="fas fa-save"></i> Save item
+        </button>
+        <button class="btn" id="cancelBtn">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- LOADER -->
+    <div class="loader" id="loader" style="display:none">
+      <i class="fas fa-circle-notch"></i>
+      Loading your portfolio...
+    </div>
+
+    <!-- GRID -->
+    <div class="grid" id="grid"></div>
+
+    <!-- EMPTY -->
+    <div class="empty" id="empty" style="display:none">
+      <i class="fas fa-folder-open"></i>
+      <h3>No items yet</h3>
+      <p>Click "Upload" to add your first piece of work.</p>
+    </div>
 
   </div>
+
 </main>
 
-<!-- FOOTER (auto inject) -->
+<!-- FOOTER -->
 <div id="ms-footer"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="close" id="modalClose"><i class="fas fa-times"></i></button>
+    <img id="modalImg" alt="">
+    <div class="info">
+      <h2 id="modalTitle">Untitled</h2>
+      <div class="row"><b>Category</b><span id="modalCategory">—</span></div>
+      <div class="row"><b>Description</b><span id="modalDesc">—</span></div>
+      <div class="row"><b>Tags</b><span id="modalTags">—</span></div>
+      <div class="row"><b>Status</b><span id="modalStatus">—</span></div>
+      <div class="row"><b>Uploaded</b><span id="modalDate">—</span></div>
+      <div class="modal-actions">
+        <button class="btn primary" id="modalDownload">
+          <i class="fas fa-download"></i> Download
+        </button>
+        <button class="btn danger" id="modalDelete">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="toast"></div>
 
-<!-- ============ FIREBASE SDK ============ -->
+<!-- ============ FIREBASE ============ -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-<!-- ============ SHARED SCRIPTS ============ -->
+<!-- SHARED -->
 <script src="top-bar.js"></script>
 <script src="site-footer.js"></script>
 
-<!-- ============ PAGE LOGIC ============ -->
+<!-- PAGE LOGIC -->
 <script>
-/* ============================================================
-   ⚙️ FIREBASE CONFIG — এখানে আপনার নিজের config বসান
-   Firebase Console → Project Settings → Your apps → Web
-   ============================================================ */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+  authDomain: "creoverse-stock.firebaseapp.com",
+  databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "creoverse-stock",
+  storageBucket: "creoverse-stock.firebasestorage.app",
+  messagingSenderId: "128072247505",
+  appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
 };
 
-// Init Firebase
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-/* ============================================================ */
+const PORTFOLIO_COLLECTION = "portfolios";
+
 const $ = id => document.getElementById(id);
 let currentUser = null;
-let editingId = null;
+let allItems = [];
+let currentTab = "all";
+let selectedFile = null;
+let modalItemId = null;
 
-/* Toast */
 function toast(msg, type = "") {
   const t = $("toast");
   t.textContent = msg;
@@ -414,19 +576,19 @@ function toast(msg, type = "") {
   clearTimeout(toast._t);
   toast._t = setTimeout(() => t.className = "", 2400);
 }
-
-/* Tabs */
-document.querySelectorAll(".tab").forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
-    btn.classList.add("active");
-    $(btn.dataset.tab).classList.add("active");
-  };
-});
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+function fmtDate(ts) {
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString();
+}
 
 /* ============================================================
-   AUTH STATE
+   AUTH
    ============================================================ */
 auth.onAuthStateChanged(user => {
   currentUser = user;
@@ -434,12 +596,9 @@ auth.onAuthStateChanged(user => {
   if (!user) {
     $("authGate").style.display = "block";
     $("mainContent").style.display = "none";
-    $("userName").textContent = "My Portfolio";
-    $("userEmail").textContent = "Sign in to see your work";
     return;
   }
 
-  // User signed in
   $("authGate").style.display = "none";
   $("mainContent").style.display = "block";
 
@@ -447,9 +606,8 @@ auth.onAuthStateChanged(user => {
   $("userName").textContent = name + "'s Portfolio";
   $("userEmail").textContent = user.email || "";
 
-  // Avatar
   if (user.photoURL) {
-    $("avatarBox").innerHTML = `<img src="${user.photoURL}" alt="">`;
+    $("avatarBox").innerHTML = `<img src="${esc(user.photoURL)}" alt="">`;
   } else {
     $("avatarBox").innerHTML = name[0].toUpperCase();
   }
@@ -457,142 +615,158 @@ auth.onAuthStateChanged(user => {
   loadPortfolio();
 });
 
+$("signOutBtn").onclick = () => auth.signOut().then(() => location.href = "index.html");
+
 /* ============================================================
-   LOAD PORTFOLIO FROM FIRESTORE
+   LOAD PORTFOLIO
    ============================================================ */
 async function loadPortfolio() {
-  $("loader").classList.add("show");
+  $("loader").style.display = "block";
   $("empty").style.display = "none";
   $("grid").innerHTML = "";
 
   try {
-    const snap = await db.collection("portfolios")
+    const snap = await db.collection(PORTFOLIO_COLLECTION)
       .where("userId", "==", currentUser.uid)
-      .orderBy("createdAt", "desc")
+      .limit(200)
       .get();
 
-    $("loader").classList.remove("show");
+    allItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    if (snap.empty) {
-      $("empty").style.display = "block";
-      $("statItems").textContent = "0";
-      $("statViews").textContent = "0";
-      $("statLikes").textContent = "0";
-      return;
-    }
-
-    let totalViews = 0, totalLikes = 0;
-    snap.forEach(doc => {
-      const d = doc.data();
-      totalViews += d.views || 0;
-      totalLikes += d.likes || 0;
-      renderItem(doc.id, d);
+    // Sort newest first
+    allItems.sort((a, b) => {
+      const am = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+      const bm = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+      return bm - am;
     });
 
-    $("statItems").textContent = snap.size;
-    $("statViews").textContent = totalViews;
-    $("statLikes").textContent = totalLikes;
+    $("loader").style.display = "none";
+    updateStats();
+    renderGrid();
 
   } catch (e) {
     console.error(e);
-    $("loader").classList.remove("show");
-    $("empty").style.display = "block";
-    $("empty").querySelector("h3").textContent = "Could not load";
-    $("empty").querySelector("p").textContent = e.message;
+    $("loader").style.display = "none";
+    toast("Load error: " + e.message, "err");
   }
 }
 
+function updateStats() {
+  const views = allItems.reduce((s, i) => s + (i.views || 0), 0);
+  const likes = allItems.reduce((s, i) => s + (i.likes || 0), 0);
+  $("statItems").textContent = allItems.length;
+  $("statViews").textContent = views;
+  $("statLikes").textContent = likes;
+}
+
 /* ============================================================
-   RENDER ITEM CARD
+   RENDER GRID
    ============================================================ */
-function renderItem(id, d) {
-  const card = document.createElement("div");
-  card.className = "item";
+function renderGrid() {
+  let items = allItems.slice();
+  if (currentTab !== "all") {
+    items = items.filter(i => (i.status || "public") === currentTab);
+  }
 
-  const imgSrc = d.imageUrl || "https://via.placeholder.com/400x300/e5e7eb/6b7280?text=No+Image";
-  const tagsHtml = (d.tags || []).slice(0, 3).map(t =>
-    `<span class="tag">${escapeHtml(t)}</span>`
-  ).join("");
+  const grid = $("grid");
+  grid.innerHTML = "";
 
-  card.innerHTML = `
-    <img class="thumb" src="${imgSrc}" alt="${escapeHtml(d.title || "")}" loading="lazy">
-    <div class="body">
-      <h3 title="${escapeHtml(d.title || "")}">${escapeHtml(d.title || "Untitled")}</h3>
-      <p>${escapeHtml(d.description || "No description")}</p>
-      <div class="tags">${tagsHtml}</div>
+  if (!items.length) {
+    $("empty").style.display = "block";
+    return;
+  }
+  $("empty").style.display = "none";
+
+  items.forEach(item => grid.appendChild(buildTile(item)));
+}
+
+function buildTile(item) {
+  const tile = document.createElement("div");
+  tile.className = "tile";
+
+  const status = item.status || "public";
+  const imgSrc = item.imageUrl || "https://via.placeholder.com/400x533/0f172a/94a3b8?text=No+Image";
+  const title = item.title || "Untitled";
+
+  tile.innerHTML = `
+    <span class="badge ${status}">${status}</span>
+    <img src="${esc(imgSrc)}" alt="${esc(title)}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x533/0f172a/94a3b8?text=No+Image'">
+    <div class="overlay">
+      <h4>${esc(title)}</h4>
+      <div class="meta">
+        <span><i class="fas fa-tag"></i> ${esc(item.category || "—")}</span>
+      </div>
       <div class="actions">
-        <button data-edit="${id}"><i class="fas fa-eye"></i> View</button>
-        <button class="del" data-del="${id}"><i class="fas fa-trash"></i> Delete</button>
+        <button data-act="view" data-id="${item.id}" title="View">
+          <i class="fas fa-eye"></i>
+        </button>
+        <button data-act="download" data-id="${item.id}" title="Download">
+          <i class="fas fa-download"></i>
+        </button>
+        <button class="del" data-act="delete" data-id="${item.id}" title="Delete">
+          <i class="fas fa-trash"></i>
+        </button>
       </div>
     </div>
   `;
 
-  // Wire buttons
-  card.querySelector("[data-del]").onclick = (e) => {
-    e.stopPropagation();
-    if (confirm("Delete this item?")) deleteItem(id);
-  };
-  card.querySelector("[data-edit]").onclick = (e) => {
-    e.stopPropagation();
-    if (d.projectUrl) window.open(d.projectUrl, "_blank");
-  };
+  tile.querySelectorAll("button[data-act]").forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const act = btn.dataset.act;
+      const id = btn.dataset.id;
+      if (act === "view") openModal(id);
+      else if (act === "download") downloadItem(id);
+      else if (act === "delete") deleteItem(id);
+    };
+  });
 
-  $("grid").appendChild(card);
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[c]));
+  tile.onclick = () => openModal(item.id);
+  return tile;
 }
 
 /* ============================================================
-   DELETE ITEM
+   TABS
    ============================================================ */
-async function deleteItem(id) {
-  try {
-    const doc = await db.collection("portfolios").doc(id).get();
-    const data = doc.data();
+document.querySelectorAll(".tab").forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
+    t.classList.add("on");
+    currentTab = t.dataset.tab;
+    renderGrid();
+  };
+});
 
-    // Delete image from storage if exists
-    if (data && data.storagePath) {
-      try { await storage.ref(data.storagePath).delete(); } catch (e) {}
-    }
-
-    await db.collection("portfolios").doc(id).delete();
-    toast("Item deleted", "ok");
-    loadPortfolio();
-  } catch (e) {
-    toast("Delete failed: " + e.message, "err");
+/* ============================================================
+   UPLOAD
+   ============================================================ */
+$("uploadBtn").onclick = () => {
+  $("formCard").classList.toggle("show");
+  if ($("formCard").classList.contains("show")) {
+    $("formCard").scrollIntoView({ behavior: "smooth", block: "start" });
   }
-}
+};
 
-/* ============================================================
-   UPLOAD IMAGE PREVIEW
-   ============================================================ */
-const uploadBox = $("uploadBox");
+const uploadZone = $("uploadZone");
 const fileInput = $("fileInput");
-const previewImg = $("previewImg");
-let selectedFile = null;
 
-uploadBox.onclick = () => fileInput.click();
+uploadZone.onclick = () => fileInput.click();
 
 ["dragenter", "dragover"].forEach(ev =>
-  uploadBox.addEventListener(ev, e => {
+  uploadZone.addEventListener(ev, e => {
     e.preventDefault();
-    uploadBox.classList.add("over");
+    uploadZone.classList.add("over");
   })
 );
 ["dragleave", "drop"].forEach(ev =>
-  uploadBox.addEventListener(ev, e => {
+  uploadZone.addEventListener(ev, e => {
     e.preventDefault();
-    uploadBox.classList.remove("over");
+    uploadZone.classList.remove("over");
   })
 );
-uploadBox.addEventListener("drop", e => {
+uploadZone.addEventListener("drop", e => {
   if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
 });
-
 fileInput.onchange = () => {
   if (fileInput.files[0]) handleFile(fileInput.files[0]);
   fileInput.value = "";
@@ -600,114 +774,162 @@ fileInput.onchange = () => {
 
 function handleFile(file) {
   if (!file.type.startsWith("image/")) {
-    toast("Only images allowed", "err");
-    return;
+    toast("Only images allowed", "err"); return;
   }
   if (file.size > 5 * 1024 * 1024) {
-    toast("Max 5 MB", "err");
-    return;
+    toast("Max 5 MB", "err"); return;
   }
   selectedFile = file;
   const url = URL.createObjectURL(file);
-  previewImg.src = url;
-  previewImg.classList.add("show");
-  uploadBox.querySelector("b").textContent = file.name;
+  $("previewImg").src = url;
+  $("previewBox").classList.add("show");
+  $("previewPh").style.display = "none";
+  toast("Image ready", "ok");
 }
 
 /* ============================================================
    SAVE ITEM
    ============================================================ */
 $("saveBtn").onclick = async () => {
-  if (!currentUser) { toast("Please sign in", "err"); return; }
+  if (!currentUser) { toast("Sign in required", "err"); return; }
 
-  const title = $("title").value.trim();
-  if (!title) { toast("Title is required", "err"); return; }
+  const title = $("fTitle").value.trim();
+  if (!title) { toast("Title is required", "err"); $("fTitle").focus(); return; }
+  if (!selectedFile) { toast("Please upload an image", "err"); return; }
 
-  const saveBtn = $("saveBtn");
-  saveBtn.disabled = true;
-  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+  const btn = $("saveBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
 
   try {
-    let imageUrl = "";
-    let storagePath = "";
+    // Upload to Firebase Storage
+    const ext = selectedFile.name.split(".").pop();
+    const path = `portfolios/${currentUser.uid}/${Date.now()}.${ext}`;
+    const ref = storage.ref(path);
+    await ref.put(selectedFile);
+    const imageUrl = await ref.getDownloadURL();
 
-    // Upload image if selected
-    if (selectedFile) {
-      const ext = selectedFile.name.split(".").pop();
-      const path = `portfolios/${currentUser.uid}/${Date.now()}.${ext}`;
-      const ref = storage.ref(path);
-      await ref.put(selectedFile);
-      imageUrl = await ref.getDownloadURL();
-      storagePath = path;
-    }
-
-    // Parse tags
-    const tagsRaw = $("tags").value.trim();
+    // Tags
+    const tagsRaw = $("fTags").value.trim();
     const tags = tagsRaw
       ? tagsRaw.split(",").map(t => t.trim()).filter(Boolean).slice(0, 8)
       : [];
 
     // Save to Firestore
-    const data = {
+    await db.collection(PORTFOLIO_COLLECTION).add({
       userId: currentUser.uid,
       userEmail: currentUser.email || "",
+      userName: currentUser.displayName || "",
       title,
-      category: $("category").value,
-      description: $("description").value.trim(),
+      category: $("fCategory").value,
+      description: $("fDesc").value.trim(),
       tags,
-      projectUrl: $("projectUrl").value.trim(),
-      status: $("status").value,
+      projectUrl: $("fUrl").value.trim(),
+      status: $("fStatus").value,
       imageUrl,
-      storagePath,
+      storagePath: path,
       views: 0,
       likes: 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
 
-    if (editingId) {
-      await db.collection("portfolios").doc(editingId).update(data);
-      toast("Item updated", "ok");
-    } else {
-      await db.collection("portfolios").add(data);
-      toast("Item added to portfolio", "ok");
-    }
-
+    toast("✅ Item added", "ok");
     resetForm();
-    // Switch to view tab
-    document.querySelector('.tab[data-tab="view"]').click();
     loadPortfolio();
 
   } catch (e) {
     console.error(e);
-    toast("Save failed: " + e.message, "err");
+    toast("Error: " + e.message, "err");
   } finally {
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Item';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save"></i> Save item';
   }
 };
 
-/* ============================================================
-   RESET FORM
-   ============================================================ */
 function resetForm() {
-  $("title").value = "";
-  $("category").value = "photography";
-  $("description").value = "";
-  $("tags").value = "";
-  $("projectUrl").value = "";
-  $("status").value = "public";
+  $("fTitle").value = "";
+  $("fCategory").value = "photography";
+  $("fDesc").value = "";
+  $("fTags").value = "";
+  $("fUrl").value = "";
+  $("fStatus").value = "public";
   selectedFile = null;
-  editingId = null;
-  previewImg.classList.remove("show");
-  previewImg.src = "";
-  uploadBox.querySelector("b").textContent = "Click to upload image";
+  $("previewImg").src = "";
+  $("previewBox").classList.remove("show");
+  $("previewPh").style.display = "block";
+  $("formCard").classList.remove("show");
 }
 
-$("cancelBtn").onclick = () => {
-  resetForm();
-  document.querySelector('.tab[data-tab="view"]').click();
-};
+$("cancelBtn").onclick = resetForm;
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openModal(id) {
+  const item = allItems.find(i => i.id === id);
+  if (!item) return;
+  modalItemId = id;
+
+  $("modalImg").src = item.imageUrl || "";
+  $("modalTitle").textContent = item.title || "Untitled";
+  $("modalCategory").textContent = item.category || "—";
+  $("modalDesc").textContent = item.description || "—";
+  $("modalTags").textContent = (item.tags || []).join(", ") || "—";
+  $("modalStatus").textContent = item.status || "public";
+  $("modalDate").textContent = fmtDate(item.createdAt);
+
+  $("modal").classList.add("show");
+
+  // Track view
+  if (item.userId === currentUser.uid) {
+    db.collection(PORTFOLIO_COLLECTION).doc(id).update({
+      views: firebase.firestore.FieldValue.increment(1)
+    }).catch(() => {});
+    item.views = (item.views || 0) + 1;
+  }
+}
+
+$("modalClose").onclick = () => $("modal").classList.remove("show");
+$("modal").onclick = (e) => { if (e.target.id === "modal") $("modal").classList.remove("show"); };
+
+$("modalDownload").onclick = () => { if (modalItemId) downloadItem(modalItemId); };
+$("modalDelete").onclick = () => { if (modalItemId) deleteItem(modalItemId); };
+
+/* ============================================================
+   DOWNLOAD
+   ============================================================ */
+function downloadItem(id) {
+  const item = allItems.find(i => i.id === id);
+  if (!item || !item.imageUrl) return;
+  const a = document.createElement("a");
+  a.href = item.imageUrl;
+  a.download = (item.title || "image") + ".jpg";
+  a.target = "_blank";
+  a.click();
+  toast("Downloading...");
+}
+
+/* ============================================================
+   DELETE
+   ============================================================ */
+async function deleteItem(id) {
+  if (!confirm("Delete this item?")) return;
+  try {
+    const item = allItems.find(i => i.id === id);
+    if (item && item.storagePath) {
+      try { await storage.ref(item.storagePath).delete(); } catch (e) {}
+    }
+    await db.collection(PORTFOLIO_COLLECTION).doc(id).delete();
+    allItems = allItems.filter(i => i.id !== id);
+    updateStats();
+    renderGrid();
+    $("modal").classList.remove("show");
+    toast("✅ Deleted", "ok");
+  } catch (e) {
+    console.error(e);
+    toast("Delete failed: " + e.message, "err");
+  }
+}
 </script>
 
 </body>
