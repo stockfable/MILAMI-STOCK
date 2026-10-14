@@ -791,6 +791,26 @@
         .home-photo-card .hp-info b { display: block; font-size: 13px; line-height: 1.3; }
         .home-photo-card .hp-info small { font-size: 11px; opacity: 0.8; }
 
+        .home-more-btn {
+            display: block;
+            margin: 18px auto 0;
+            padding: 10px 28px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .home-more-btn:hover { background: rgba(251,191,36,0.15); border-color: #fbbf24; }
+        .home-more-btn:disabled { opacity: 0.5; cursor: wait; }
+        .home-more-btn[hidden] { display: none; }
+        .mtx-extra { display: none !important; }
+        .mtx-grid.show-all .mtx-extra { display: flex !important; }
+
         .home-shop-empty {
             grid-column: 1 / -1;
             text-align: center;
@@ -1057,6 +1077,7 @@
                     <a href="qr-code.html" class="mtx-item"><div class="mtx-box mtx-qr"><i class="fas fa-qrcode"></i></div><span>QR Code</span></a>
                     <a href="word-counter.html" class="mtx-item"><div class="mtx-box mtx-word"><i class="fas fa-font"></i></div><span>Word Counter</span></a>
                 </div>
+                <button type="button" class="home-more-btn" id="toolsMore">Show more</button>
             </div>
 
             <!-- ★★★ STOCK PHOTOS (from Firestore "photos") ★★★ -->
@@ -1068,6 +1089,7 @@
                 <div class="home-photo-grid" id="homePhotoGrid">
                     <p class="home-shop-empty">Loading photos...</p>
                 </div>
+                <button type="button" class="home-more-btn" id="homePhotoMore" hidden>Show more</button>
             </section>
             <!-- ★★★ END STOCK PHOTOS ★★★ -->
 
@@ -1080,6 +1102,7 @@
                 <div class="home-shop-grid" id="homeShopGrid">
                     <p class="home-shop-empty">Loading products...</p>
                 </div>
+                <button type="button" class="home-more-btn" id="homeShopMore" hidden>Show more</button>
             </section>
             <!-- ★★★ END FEATURED PRODUCTS ★★★ -->
 
@@ -1199,7 +1222,194 @@
 
     <div id="ms-footer"></div>
 
-    <script src="footer.js"></script>
+    <script>
+(function () {
+  if (window.__msFooterLoaded) return;
+  window.__msFooterLoaded = true;
+
+  function ready(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+
+  ready(function () {
+    /* icons */
+    if (!document.querySelector('link[href*="font-awesome"]')) {
+      var fa = document.createElement("link");
+      fa.rel = "stylesheet";
+      fa.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+      document.head.appendChild(fa);
+    }
+
+    /* is the page dark or light? (light text = dark page) */
+    function lumOf(color) {
+      var m = String(color).match(/[\d.]+/g);
+      if (!m || m.length < 3) return 0;
+      return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255;
+    }
+    var baseDark = lumOf(getComputedStyle(document.body).color) > 0.6;
+
+    /* ---------- styles ---------- */
+    var css = [
+      ".msf{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;width:100%;margin-top:40px;clear:both;position:relative;z-index:5;line-height:1.5;text-align:left}",
+      ".msf *{box-sizing:border-box}",
+      ".msf.msf-light{background:#f5f5f5;color:#222;border-top:1px solid #e1e1e1;--msf-mute:#6e6e6e;--msf-line:#dcdcdc;--msf-btn:#fff}",
+      ".msf.msf-dark{background:#0a0a0a;color:#e5e7eb;border-top:1px solid #1f2937;--msf-mute:#94a3b8;--msf-line:#27303f;--msf-btn:#111827}",
+      ".msf-cols{max-width:1400px;margin:0 auto;padding:36px 20px 18px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}",
+      ".msf h4{font-size:15px;font-weight:700;margin:0 0 12px;color:inherit}",
+      ".msf-cols a{display:block;font-size:14px;color:var(--msf-mute);padding:5px 0;text-decoration:none}",
+      ".msf-cols a:hover{color:inherit;text-decoration:underline}",
+      ".msf-desc{font-size:14px;color:var(--msf-mute);max-width:320px;margin:0}",
+      ".msf-social{display:flex;gap:10px;margin-top:14px}",
+      ".msf-cols .msf-social a{width:34px;height:34px;border-radius:50%;border:1px solid var(--msf-line);display:grid;place-items:center;padding:0;color:inherit}",
+      ".msf-cols .msf-social a:hover{background:#fbbf24;color:#111;border-color:#fbbf24;text-decoration:none}",
+      ".msf-bottom{max-width:1400px;margin:0 auto;padding:16px 20px 26px;border-top:1px solid var(--msf-line);font-size:13px;color:var(--msf-mute);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}",
+      ".msf-btns{display:flex;flex-wrap:wrap;gap:10px}",
+      ".msf-btn{background:var(--msf-btn);border:1px solid var(--msf-line);border-radius:18px;padding:7px 15px;font:inherit;font-size:13px;color:inherit;cursor:pointer}",
+      ".msf-btn:hover{border-color:#fbbf24}",
+      ".msf-pop{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}",
+      ".msf-pop.open{display:flex}",
+      ".msf-box{background:#fff;color:#222;border-radius:10px;max-width:460px;width:100%;padding:24px;max-height:90vh;overflow:auto;font-family:'Segoe UI',system-ui,Arial,sans-serif}",
+      ".msf-box h3{font-size:20px;margin:0 0 12px}",
+      ".msf-box p{font-size:14px;line-height:1.6;color:#555;margin:0 0 10px}",
+      ".msf-box a{color:#1473e6;text-decoration:underline}",
+      ".msf-box select{width:100%;padding:11px;border:1px solid #d5d5d5;border-radius:6px;font:inherit;margin-bottom:14px;background:#fff;color:#222}",
+      ".msf-box .row{display:flex;gap:10px}",
+      ".msf-box button{border:1px solid #222;background:#fff;color:#222;padding:9px 20px;border-radius:20px;font-weight:700;font-size:14px;cursor:pointer}",
+      ".msf-box button.fill{background:#1473e6;border-color:#1473e6;color:#fff}",
+      "#msf-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100000;font-family:'Segoe UI',system-ui,Arial,sans-serif}",
+      "#msf-toast.show{opacity:1}",
+      /* quick theme switch that works on every page */
+      "html.msf-inv{filter:invert(1) hue-rotate(180deg);background:#fff}",
+      "html.msf-inv img,html.msf-inv video,html.msf-inv canvas,html.msf-inv iframe{filter:invert(1) hue-rotate(180deg)}",
+      "@media(max-width:900px){.msf-cols{grid-template-columns:1fr 1fr}}",
+      "@media(max-width:520px){.msf-cols{grid-template-columns:1fr}}"
+    ].join("\n");
+    var st = document.createElement("style");
+    st.textContent = css;
+    document.head.appendChild(st);
+
+    /* ---------- markup ---------- */
+    var html =
+      '<div class="msf-cols">' +
+        '<div><h4>MINAMI STOCK</h4>' +
+          '<p class="msf-desc">Your one-stop destination for premium stock photos, AI tools, and the latest AI news.</p>' +
+          '<div class="msf-social">' +
+            '<a href="#" data-noop aria-label="Facebook"><i class="fab fa-facebook"></i></a>' +
+            '<a href="#" data-noop aria-label="Twitter"><i class="fab fa-twitter"></i></a>' +
+            '<a href="#" data-noop aria-label="YouTube"><i class="fab fa-youtube"></i></a>' +
+          '</div></div>' +
+        '<div><h4>Company</h4>' +
+          '<a href="about.html">About Us</a>' +
+          '<a href="stock-photo.html">Stock Photos</a>' +
+          '<a href="tools.html">Tools</a>' +
+          '<a href="shop.html">Shop</a>' +
+          '<a href="login.html">Login</a>' +
+          '<a href="account.html">My Account</a></div>' +
+        '<div><h4>Tools &amp; Resources</h4>' +
+          '<a href="upscaler.html">Image Upscaler</a>' +
+          '<a href="image-inhancer.html">Image Enhancer</a>' +
+          '<a href="text-to-pdf.html">Text to PDF</a>' +
+          '<a href="word-counter.html">Word Counter</a></div>' +
+        '<div><h4>Legal &amp; Support</h4>' +
+          '<a href="privacy.html">Privacy Policy</a>' +
+          '<a href="about.html">About Us</a>' +
+          '<a href="shop.html">Shop</a>' +
+          '<a href="tools.html">All Tools</a></div>' +
+      '</div>' +
+      '<div class="msf-bottom">' +
+        '<div class="msf-btns">' +
+          '<button type="button" class="msf-btn" data-act="region">&#127760; Change region</button>' +
+          '<button type="button" class="msf-btn" data-act="theme"></button>' +
+          '<button type="button" class="msf-btn" data-act="license">&#9878;&#65039; License Terms</button>' +
+        '</div>' +
+        '<div>&copy; 2026 MINAMI STOCK. All rights reserved.</div>' +
+      '</div>';
+
+    var foot = document.createElement("footer");
+    foot.className = "msf " + (baseDark ? "msf-dark" : "msf-light");
+    foot.innerHTML = html;
+
+    var slot = document.getElementById("ms-footer");
+    if (slot) { slot.innerHTML = ""; slot.appendChild(foot); }
+    else document.body.appendChild(foot);
+
+    /* popups */
+    var regions = ["Bangladesh", "India", "Pakistan", "Nepal", "Sri Lanka", "United States", "United Kingdom", "Canada", "Australia", "Other"];
+    var pops = document.createElement("div");
+    pops.innerHTML =
+      '<div class="msf-pop" id="msf-region" role="dialog" aria-modal="true" aria-label="Change region"><div class="msf-box">' +
+        '<h3>Change region</h3><select id="msf-region-sel">' +
+        regions.map(function (r) { return "<option>" + r + "</option>"; }).join("") +
+        '</select><div class="row"><button type="button" class="fill" id="msf-region-save">Save region</button><button type="button" data-close>Cancel</button></div>' +
+      '</div></div>' +
+      '<div class="msf-pop" id="msf-license" role="dialog" aria-modal="true" aria-label="License Terms"><div class="msf-box">' +
+        '<h3>License Terms</h3>' +
+        '<p>Photos and files on MINAMI STOCK can be used in websites, social media, print and advertising, within the projects your license covers.</p>' +
+        '<p>You may not resell or redistribute a file as-is, and you may not claim it as your own work. Contributors keep the copyright to what they upload.</p>' +
+        '<p>More details: <a href="privacy.html">Privacy Policy</a> &middot; <a href="about.html">About Us</a></p>' +
+        '<div class="row"><button type="button" data-close>Close</button></div>' +
+      '</div></div>' +
+      '<div id="msf-toast"></div>';
+    document.body.appendChild(pops);
+
+    function $(id) { return document.getElementById(id); }
+    function toast(t) {
+      var el = $("msf-toast");
+      el.textContent = t;
+      el.classList.add("show");
+      clearTimeout(toast.t);
+      toast.t = setTimeout(function () { el.classList.remove("show"); }, 2200);
+    }
+    function closePops() {
+      $("msf-region").classList.remove("open");
+      $("msf-license").classList.remove("open");
+    }
+
+    /* theme (works on any page) */
+    function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} }
+    function appearanceDark() {
+      var s = store("ms_theme");
+      return s ? s === "dark" : baseDark;
+    }
+    function applyTheme() {
+      var dark = appearanceDark();
+      document.documentElement.classList.toggle("msf-inv", dark !== baseDark);
+      foot.querySelector('[data-act="theme"]').innerHTML = dark ? "&#9728;&#65039; Light Theme" : "&#127769; Dark Theme";
+    }
+    applyTheme();
+
+    /* region */
+    var savedRegion = store("ms_region");
+    if (savedRegion) $("msf-region-sel").value = savedRegion;
+
+    /* clicks */
+    foot.addEventListener("click", function (e) {
+      var noop = e.target.closest("[data-noop]");
+      if (noop) { e.preventDefault(); return; }
+      var b = e.target.closest("[data-act]");
+      if (!b) return;
+      var act = b.getAttribute("data-act");
+      if (act === "region") $("msf-region").classList.add("open");
+      else if (act === "license") $("msf-license").classList.add("open");
+      else if (act === "theme") {
+        store("ms_theme", appearanceDark() ? "light" : "dark");
+        applyTheme();
+      }
+    });
+    $("msf-region-save").onclick = function () {
+      store("ms_region", $("msf-region-sel").value);
+      closePops();
+      toast("Region set to " + $("msf-region-sel").value);
+    };
+    pops.addEventListener("click", function (e) {
+      if (e.target.hasAttribute("data-close") || e.target.classList.contains("msf-pop")) closePops();
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closePops(); });
+  });
+})();
+
+    </script>
     <script src="script.js"></script>
 
     <script>
@@ -1363,11 +1573,38 @@
                 return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
             });
         }
+        let homePhotoList = [], homePhotoShown = 0;
+        const HOME_PHOTO_STEP = 8;
+
+        function photoCardHtml(p) {
+            return '<a class="home-photo-card" href="stock-photo.html#photo=' + encodeURIComponent(p.id) + '" title="' + escHtml(p.title || 'Photo') + '">' +
+                '<img loading="lazy" src="' + escHtml(p.url) + '" alt="' + escHtml(p.title || 'Stock photo') + '">' +
+                '<div class="hp-info"><b>' + escHtml(p.title || 'Untitled') + '</b><small>' + escHtml(p.author || '') + '</small></div>' +
+                '</a>';
+        }
+        async function showMorePhotos() {
+            const grid = document.getElementById('homePhotoGrid');
+            const btn = document.getElementById('homePhotoMore');
+            const next = homePhotoList.slice(homePhotoShown, homePhotoShown + HOME_PHOTO_STEP);
+            btn.disabled = true;
+            // image code lives in the "photoData" collection (photos without a direct url)
+            await Promise.all(next.map(async function(p) {
+                if (p.url) return;
+                try {
+                    const dd = await getDoc(doc(db, "photoData", p.imageId));
+                    p.url = dd.exists() ? dd.data().data : '';
+                } catch (e) { p.url = ''; }
+            }));
+            grid.insertAdjacentHTML('beforeend', next.filter(function(p) { return p.url; }).map(photoCardHtml).join(''));
+            homePhotoShown += next.length;
+            btn.disabled = false;
+            btn.hidden = homePhotoShown >= homePhotoList.length;
+        }
         async function loadHomePhotos() {
             const grid = document.getElementById('homePhotoGrid');
             if (!grid) return;
             try {
-                const snap = await getDocs(query(collection(db, "stockphoto"), limit(40)));
+                const snap = await getDocs(query(collection(db, "stockphoto"), limit(80)));
                 const list = [];
                 snap.forEach(function(d) {
                     const p = d.data();
@@ -1380,21 +1617,11 @@
                 }
                 const ms = function(p) { return p.createdAt && p.createdAt.toMillis ? p.createdAt.toMillis() : 0; };
                 list.sort(function(a, b) { return ms(b) - ms(a); });
-                const top = list.slice(0, 8);
-                // image code lives in the "photoData" collection (photos without a direct url)
-                await Promise.all(top.map(async function(p) {
-                    if (p.url) return;
-                    try {
-                        const dd = await getDoc(doc(db, "photoData", p.imageId));
-                        p.url = dd.exists() ? dd.data().data : '';
-                    } catch (e) { p.url = ''; }
-                }));
-                grid.innerHTML = top.filter(function(p) { return p.url; }).map(function(p) {
-                    return '<a class="home-photo-card" href="stock-photo.html" title="' + escHtml(p.title || 'Photo') + '">' +
-                        '<img loading="lazy" src="' + escHtml(p.url) + '" alt="' + escHtml(p.title || 'Stock photo') + '">' +
-                        '<div class="hp-info"><b>' + escHtml(p.title || 'Untitled') + '</b><small>' + escHtml(p.author || '') + '</small></div>' +
-                        '</a>';
-                }).join('');
+                homePhotoList = list;
+                homePhotoShown = 0;
+                grid.innerHTML = '';
+                document.getElementById('homePhotoMore').onclick = showMorePhotos;
+                await showMorePhotos();
             } catch (error) {
                 console.error("❌ Home Photos error: ", error);
                 grid.innerHTML = '<p class="home-shop-empty">⚠️ Failed to load photos. Please try again later.</p>';
@@ -1402,73 +1629,104 @@
         }
 
         // ===== HOME FEATURED PRODUCTS =====
+        let homeProductList = [], homeProductShown = 0;
+        const HOME_PRODUCT_STEP = 6;
+
+        function productCardHtml(p) {
+            let discountBadge = '';
+            if (p.oldPrice && p.price && p.oldPrice > p.price) {
+                const percent = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+                discountBadge = `<span class="discount-badge">-${percent}%</span>`;
+            }
+            return `
+                <div class="home-shop-card">
+                    <a href="${p.link || '#'}" target="_blank" rel="noopener sponsored" style="text-decoration:none;">
+                        <div class="img-wrap">
+                            ${discountBadge}
+                            <span class="hot-badge">Hot Deal</span>
+                            <img src="${p.imageUrl}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300/1e293b/64748b?text=No+Image'">
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <div class="brand-tag"><i class="fas fa-tag"></i> Affiliate</div>
+                        <h4>${p.name}</h4>
+                        <div class="product-rating">⭐ 4.6 <span>(New)</span></div>
+                        <div class="price-row">
+                            <span class="price">৳${p.price}</span>
+                            ${p.oldPrice ? `<span class="old-price">৳${p.oldPrice}</span>` : ''}
+                        </div>
+                        <div class="desc-preview">
+                            <div class="desc-preview-text">${p.description || 'No description.'}</div>
+                            <button type="button" class="desc-toggle">Show more</button>
+                        </div>
+                        <a href="${p.link || '#'}" target="_blank" rel="noopener sponsored" class="buy-btn">
+                            <i class="fas fa-shopping-cart"></i> Buy Now
+                        </a>
+                    </div>
+                </div>`;
+        }
+        function showMoreProducts() {
+            const grid = document.getElementById('homeShopGrid');
+            const btn = document.getElementById('homeShopMore');
+            const next = homeProductList.slice(homeProductShown, homeProductShown + HOME_PRODUCT_STEP);
+            grid.insertAdjacentHTML('beforeend', next.map(productCardHtml).join(''));
+            homeProductShown += next.length;
+            btn.hidden = homeProductShown >= homeProductList.length;
+            // description Show more / Show less: only for descriptions that are actually cut off
+            grid.querySelectorAll('.desc-preview:not([data-checked])').forEach(box => {
+                box.setAttribute('data-checked', '1');
+                const text = box.querySelector('.desc-preview-text');
+                const tbtn = box.querySelector('.desc-toggle');
+                if (text && tbtn && text.scrollHeight > text.clientHeight + 1) tbtn.classList.add('visible');
+            });
+        }
         async function loadHomeShop() {
             const grid = document.getElementById('homeShopGrid');
             if (!grid) return;
-
             try {
-                const q = query(collection(db, "products"), limit(6));
-                const querySnapshot = await getDocs(q);
-
+                const querySnapshot = await getDocs(query(collection(db, "products"), limit(60)));
                 if (querySnapshot.empty) {
                     grid.innerHTML = '<p class="home-shop-empty">📭 No products posted yet. Be the first to post!</p>';
                     return;
                 }
-
+                homeProductList = [];
+                querySnapshot.forEach((snap) => { homeProductList.push(snap.data()); });
+                homeProductShown = 0;
                 grid.innerHTML = '';
-                querySnapshot.forEach((doc) => {
-                    const p = doc.data();
-                    
-                    let discountBadge = '';
-                    if (p.oldPrice && p.price && p.oldPrice > p.price) {
-                        const percent = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
-                        discountBadge = `<span class="discount-badge">-${percent}%</span>`;
-                    }
-
-                    grid.innerHTML += `
-                        <div class="home-shop-card">
-                            <a href="${p.link || '#'}" target="_blank" rel="noopener sponsored" style="text-decoration:none;">
-                                <div class="img-wrap">
-                                    ${discountBadge}
-                                    <span class="hot-badge">Hot Deal</span>
-                                    <img src="${p.imageUrl}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x300/1e293b/64748b?text=No+Image'">
-                                </div>
-                            </a>
-                            <div class="card-body">
-                                <div class="brand-tag"><i class="fas fa-tag"></i> Affiliate</div>
-                                <h4>${p.name}</h4>
-                                <div class="product-rating">⭐ 4.6 <span>(New)</span></div>
-                                <div class="price-row">
-                                    <span class="price">৳${p.price}</span>
-                                    ${p.oldPrice ? `<span class="old-price">৳${p.oldPrice}</span>` : ''}
-                                </div>
-                                <div class="desc-preview">
-                                    <div class="desc-preview-text">${p.description || 'No description.'}</div>
-                                    <button type="button" class="desc-toggle">Show more</button>
-                                </div>
-                                <a href="${p.link || '#'}" target="_blank" rel="noopener sponsored" class="buy-btn">
-                                    <i class="fas fa-shopping-cart"></i> Buy Now
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                // Show more / Show less: only for descriptions that are actually cut off
-                grid.querySelectorAll('.desc-preview').forEach(box => {
-                    const text = box.querySelector('.desc-preview-text');
-                    const btn = box.querySelector('.desc-toggle');
-                    if (text && btn && text.scrollHeight > text.clientHeight + 1) {
-                        btn.classList.add('visible');
-                    }
-                });
-
+                document.getElementById('homeShopMore').onclick = showMoreProducts;
+                showMoreProducts();
                 console.log("✅ Home Featured Products loaded!");
-
             } catch (error) {
                 console.error("❌ Home Shop error: ", error);
                 grid.innerHTML = '<p class="home-shop-empty">⚠️ Failed to load products. Please try again later.</p>';
             }
+        }
+
+        // ===== HOME TOOLS: Show more =====
+        // Add more tools here (one line each). They stay hidden until "Show more" is pressed.
+        // Example:
+        // { href: "pdf-merge.html", icon: "fa-file-pdf", name: "PDF Merge", color: "linear-gradient(135deg,#ef4444,#b91c1c)" },
+        const EXTRA_TOOLS = [
+        ];
+        function initHomeTools() {
+            const grid = document.querySelector('.mtx-grid');
+            const btn = document.getElementById('toolsMore');
+            if (!grid || !btn) return;
+            if (!EXTRA_TOOLS.length) {
+                btn.textContent = 'All Tools';
+                btn.onclick = function() { location.href = 'tools.html'; };
+                return;
+            }
+            EXTRA_TOOLS.forEach(function(t) {
+                const a = document.createElement('a');
+                a.href = t.href; a.className = 'mtx-item mtx-extra';
+                a.innerHTML = '<div class="mtx-box" style="background:' + t.color + '"><i class="fas ' + t.icon + '"></i></div><span>' + escHtml(t.name) + '</span>';
+                grid.appendChild(a);
+            });
+            btn.onclick = function() {
+                const open = grid.classList.toggle('show-all');
+                btn.textContent = open ? 'Show less' : 'Show more';
+            };
         }
 
         // Show more / Show less click
@@ -1480,6 +1738,7 @@
             btn.textContent = open ? 'Show less' : 'Show more';
         });
 
+        window.addEventListener('load', initHomeTools);
         window.addEventListener('load', loadHomePhotos);
         window.addEventListener('load', loadHomeShop);
     </script>
