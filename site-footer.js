@@ -1,9 +1,4 @@
-/* MINAMI STOCK - shared footer
-   Add this one line at the very bottom of any page, just before </body>:
-       <script src="footer.js"></script>
-   It builds the same footer (Company, Tools & Resources, Legal & Support) and the bottom-bar
-   buttons (Change region, Dark/Light Theme, License Terms) on every page, and they all work.
-   If a page has <div id="ms-footer"></div> the footer is placed there, otherwise at the end of <body>. */
+/* MINAMI STOCK - shared footer (fixed duplicate About) */
 (function () {
   if (window.__msFooterLoaded) return;
   window.__msFooterLoaded = true;
@@ -14,7 +9,6 @@
   }
 
   ready(function () {
-    /* icons */
     if (!document.querySelector('link[href*="font-awesome"]')) {
       var fa = document.createElement("link");
       fa.rel = "stylesheet";
@@ -22,7 +16,6 @@
       document.head.appendChild(fa);
     }
 
-    /* is the page dark or light? (light text = dark page) */
     function lumOf(color) {
       var m = String(color).match(/[\d.]+/g);
       if (!m || m.length < 3) return 0;
@@ -30,7 +23,6 @@
     }
     var baseDark = lumOf(getComputedStyle(document.body).color) > 0.6;
 
-    /* ---------- styles ---------- */
     var css = [
       ".msf{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;width:100%;margin-top:40px;clear:both;position:relative;z-index:5;line-height:1.5;text-align:left}",
       ".msf *{box-sizing:border-box}",
@@ -50,7 +42,7 @@
       ".msf-btn:hover{border-color:#fbbf24}",
       ".msf-pop{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}",
       ".msf-pop.open{display:flex}",
-      ".msf-box{background:#fff;color:#222;border-radius:10px;max-width:460px;width:100%;padding:24px;max-height:90vh;overflow:auto;font-family:'Segoe UI',system-ui,Arial,sans-serif}",
+      ".msf-box{background:#fff;color:#222;border-radius:10px;max-width:460px;width:100%;padding:24px;max-height:90vh;overflow:auto}",
       ".msf-box h3{font-size:20px;margin:0 0 12px}",
       ".msf-box p{font-size:14px;line-height:1.6;color:#555;margin:0 0 10px}",
       ".msf-box a{color:#1473e6;text-decoration:underline}",
@@ -58,9 +50,8 @@
       ".msf-box .row{display:flex;gap:10px}",
       ".msf-box button{border:1px solid #222;background:#fff;color:#222;padding:9px 20px;border-radius:20px;font-weight:700;font-size:14px;cursor:pointer}",
       ".msf-box button.fill{background:#1473e6;border-color:#1473e6;color:#fff}",
-      "#msf-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100000;font-family:'Segoe UI',system-ui,Arial,sans-serif}",
+      "#msf-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100000}",
       "#msf-toast.show{opacity:1}",
-      /* quick theme switch that works on every page */
       "html.msf-inv{filter:invert(1) hue-rotate(180deg);background:#fff}",
       "html.msf-inv img,html.msf-inv video,html.msf-inv canvas,html.msf-inv iframe{filter:invert(1) hue-rotate(180deg)}",
       "@media(max-width:900px){.msf-cols{grid-template-columns:1fr 1fr}}",
@@ -70,33 +61,35 @@
     st.textContent = css;
     document.head.appendChild(st);
 
-    /* ---------- markup ---------- */
     var html =
       '<div class="msf-cols">' +
         '<div><h4>MINAMI STOCK</h4>' +
-          '<p class="msf-desc">Your one-stop destination for premium stock photos, AI tools, and the latest AI news.</p>' +
+          '<p class="msf-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>' +
           '<div class="msf-social">' +
             '<a href="#" data-noop aria-label="Facebook"><i class="fab fa-facebook"></i></a>' +
             '<a href="#" data-noop aria-label="Twitter"><i class="fab fa-twitter"></i></a>' +
+            '<a href="#" data-noop aria-label="Instagram"><i class="fab fa-instagram"></i></a>' +
+            '<a href="#" data-noop aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>' +
             '<a href="#" data-noop aria-label="YouTube"><i class="fab fa-youtube"></i></a>' +
           '</div></div>' +
-        '<div><h4>Company</h4>' +
-          '<a href="about.html">About Us</a>' +
+        '<div><h4>Explore</h4>' +
+          '<a href="index.html">Home</a>' +
           '<a href="stock-photo.html">Stock Photos</a>' +
           '<a href="tools.html">Tools</a>' +
           '<a href="shop.html">Shop</a>' +
-          '<a href="login.html">Login</a>' +
-          '<a href="account.html">My Account</a></div>' +
-        '<div><h4>Tools &amp; Resources</h4>' +
-          '<a href="upscaler.html">Image Upscaler</a>' +
-          '<a href="image-inhancer.html">Image Enhancer</a>' +
-          '<a href="text-to-pdf.html">Text to PDF</a>' +
-          '<a href="word-counter.html">Word Counter</a></div>' +
-        '<div><h4>Legal &amp; Support</h4>' +
+          '<a href="about.html">About</a></div>' +
+        '<div><h4>Tools</h4>' +
+          '<a href="image-resizer.html">Image Resizer</a>' +
+          '<a href="cropper.html">Image Cropper</a>' +
+          '<a href="compressor.html">Compressor</a>' +
+          '<a href="color-palette.html">Color Palette</a>' +
+          '<a href="bg-remover.html">BG Remover</a></div>' +
+        '<div><h4>Legal &amp; Help</h4>' +
           '<a href="privacy.html">Privacy Policy</a>' +
-          '<a href="about.html">About Us</a>' +
-          '<a href="shop.html">Shop</a>' +
-          '<a href="tools.html">All Tools</a></div>' +
+          '<a href="terms.html">Terms of Service</a>' +
+          '<a href="dmca.html">DMCA</a>' +
+          '<a href="contact.html">Contact</a>' +
+          '<a href="faq.html">FAQ</a></div>' +
       '</div>' +
       '<div class="msf-bottom">' +
         '<div class="msf-btns">' +
@@ -104,7 +97,7 @@
           '<button type="button" class="msf-btn" data-act="theme"></button>' +
           '<button type="button" class="msf-btn" data-act="license">&#9878;&#65039; License Terms</button>' +
         '</div>' +
-        '<div>&copy; 2026 MINAMI STOCK. All rights reserved.</div>' +
+        '<div>&copy; 2026 MINAMI STOCK - All rights reserved</div>' +
       '</div>';
 
     var foot = document.createElement("footer");
@@ -116,7 +109,7 @@
     else document.body.appendChild(foot);
 
     /* popups */
-    var regions = ["Bangladesh", "India", "Pakistan", "Nepal", "Sri Lanka", "United States", "United Kingdom", "Canada", "Australia", "Other"];
+    var regions = ["Bangladesh","India","Pakistan","Nepal","Sri Lanka","United States","United Kingdom","Canada","Australia","Other"];
     var pops = document.createElement("div");
     pops.innerHTML =
       '<div class="msf-pop" id="msf-region" role="dialog" aria-modal="true" aria-label="Change region"><div class="msf-box">' +
@@ -127,8 +120,8 @@
       '<div class="msf-pop" id="msf-license" role="dialog" aria-modal="true" aria-label="License Terms"><div class="msf-box">' +
         '<h3>License Terms</h3>' +
         '<p>Photos and files on MINAMI STOCK can be used in websites, social media, print and advertising, within the projects your license covers.</p>' +
-        '<p>You may not resell or redistribute a file as-is, and you may not claim it as your own work. Contributors keep the copyright to what they upload.</p>' +
-        '<p>More details: <a href="privacy.html">Privacy Policy</a> &middot; <a href="about.html">About Us</a></p>' +
+        '<p>You may not resell or redistribute a file as-is, and you may not claim it as your own work.</p>' +
+        '<p>More details: <a href="privacy.html">Privacy Policy</a> &middot; <a href="terms.html">Terms of Service</a></p>' +
         '<div class="row"><button type="button" data-close>Close</button></div>' +
       '</div></div>' +
       '<div id="msf-toast"></div>';
@@ -147,7 +140,6 @@
       $("msf-license").classList.remove("open");
     }
 
-    /* theme (works on any page) */
     function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} }
     function appearanceDark() {
       var s = store("ms_theme");
@@ -160,11 +152,9 @@
     }
     applyTheme();
 
-    /* region */
     var savedRegion = store("ms_region");
     if (savedRegion) $("msf-region-sel").value = savedRegion;
 
-    /* clicks */
     foot.addEventListener("click", function (e) {
       var noop = e.target.closest("[data-noop]");
       if (noop) { e.preventDefault(); return; }

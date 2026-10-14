@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bulk Photo Upload - MINAMI STOCK</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:#fff;color:#222;padding:20px}
+.wrap{max-width:1100px;margin:auto}
+h1{font-size:26px;margin-bottom:6px}
+p.sub{color:#6e6e6e;font-size:14px;margin-bottom:18px;line-height:1.5}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:4px}
+input[type=text],select{width:100%;padding:10px 12px;border:1px solid #d5d5d5;border-radius:6px;font:inherit;background:#fff}
+.drop{border:2px dashed #b9b9b9;border-radius:10px;padding:26px;text-align:center;cursor:pointer;margin-bottom:14px;background:#fafafa}
+.drop:hover{border-color:#1473e6}
+.drop b{display:block;font-size:16px;margin-bottom:4px}
+.drop span{font-size:13px;color:#6e6e6e}
+button,.btn{border:1px solid #222;background:#fff;padding:10px 20px;border-radius:20px;font-weight:700;font-size:14px;cursor:pointer;text-decoration:none;color:#222;display:inline-block}
+button.fill{background:#1473e6;border-color:#1473e6;color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+#msg{font-size:14px;margin:10px 0 14px;min-height:20px}
+#msg.err{color:#c0392b}
+#msg.ok{color:#1a8a4a}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+.it{border:1px solid #e1e1e1;border-radius:8px;overflow:hidden;background:#fafafa;position:relative}
+.it img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
+.it div{padding:8px 10px;font-size:12px;display:flex;flex-direction:column;gap:5px}
+.it input,.it select{width:100%;border:1px solid #e1e1e1;border-radius:4px;padding:5px 7px;font:inherit;font-size:12px;background:#fff}
+.it.done{outline:2px solid #1a8a4a}
+.it.fail{outline:2px solid #c0392b}
+.rm{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;padding:0;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:15px;line-height:1}
+.bk{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+.badge{display:inline-block;background:#eef4ff;color:#1473e6;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Bulk photo upload</h1>
+  <p class="sub">Choose many photos from your phone or computer. Titles, keywords, category and pixel size are filled automatically — you can still edit them before saving. Signed-in users only.</p>
+
+  <div class="form">
+    <div><label for="ai">Photo type</label>
+      <select id="ai"><option value="no">Real photo</option><option value="yes">AI generated</option></select></div>
+  </div>
+
+  <div class="drop" id="drop"><b>Tap to choose photos</b><span>JPG, PNG or WEBP. You can pick many at once.</span></div>
+  <input type="file" id="file" accept="image/*" multiple hidden>
+
+  <div class="grid" id="grid"></div>
+  <div id="msg"></div>
+  <button class="fill" id="save" disabled>Save all to Firestore</button>
+
+  <div class="bk"><a class="btn" href="stock-photo.html">Open Stock Photos</a> <a class="btn" href="index.html">Back to Home</a></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+  authDomain: "creoverse-stock.firebaseapp.com",
+  databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "creoverse-stock",
+  storageBucket: "creoverse-stock.firebasestorage.app",
+  messagingSenderId: "128072247505",
+  appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+const PHOTO_COLLECTION = "stockphoto";
+const DATA_COLLECTION = "photoData";
+const MAX_SIDE = 6000;          // longest side in pixels (auto resize target)
+const MAX_CHARS = 950000;       // one Firestore document must stay under 1 MB
+
+const $ = id => document.getElementById(id);
+let user = null, items = [];
+
+/* ---------------- helpers ---------------- */
+function say(t, cls){ const m=$("msg"); m.textContent=t; m.className=cls||""; }
+function refreshSave(){ $("save").disabled = !(user && items.some(i => !i.saved)); }
+
+/* ---------------- AUTO TITLE ---------------- */
+function autoTitle(name){
+  const t = name.replace(/\.[^.]+$/, "").replace(/[_\-]+/g, " ").replace(/\s+/g, " ").trim();
+  return t ? t.charAt(0).toUpperCase() + t.slice(1) : "Untitled";
+}
+
+/* ---------------- AUTO CATEGORY ---------------- */
+const CATEGORY_MAP = {
+  Business:    ["meeting","office","business","conference","desk","work","corporate","team","startup","finance"],
+  Nature:      ["nature","tree","forest","mountain","flower","sky","river","ocean","beach","sunset","sunrise","leaf","plant","waterfall","cloud"],
+  People:      ["people","person","man","woman","boy","girl","portrait","face","model","family","child","baby","friend"],
+  Technology:  ["tech","computer","laptop","phone","mobile","code","coding","robot","ai","server","gadget","software","hardware","keyboard"],
+  Travel:      ["travel","trip","city","road","airport","tourism","landmark","hotel","beach","vacation","journey","map"],
+  Food:        ["food","meal","pizza","burger","coffee","cake","fruit","drink","restaurant","breakfast","lunch","dinner","vegetable"],
+  Architecture:["building","house","architecture","bridge","tower","interior","construction","window","door","wall"],
+  Abstract:    ["abstract","pattern","texture","color","gradient","background","shape","line","design"]
+};
+function autoCategory(name){
+  const base = name.toLowerCase();
+  for (const [cat, keys] of Object.entries(CATEGORY_MAP)){
+    if (keys.some(k => base.includes(k))) return cat;
+  }
+  return "Other";
+}
+
+/* ---------------- AUTO KEYWORDS ---------------- */
+function autoKeywords(name, cat){
+  const base = name.replace(/\.[^.]+$/, "").toLowerCase();
+  const words = base.split(/[\s_\-\.]+/).filter(w => w.length > 2);
+  const set = new Set([...words, cat.toLowerCase(), "stock", "photo", "minami"]);
+  return [...set];
+}
+
+/* ---------------- IMAGE READ + COMPRESS ---------------- */
+function readImage(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("bad image")); };
+    img.src = url;
+  });
+}
+/* resize/compress until it fits in one Firestore document (target 6000px longest side) */
+function compress(img){
+  let scale = Math.min(1, MAX_SIDE / Math.max(img.width, img.height));
+  let q = 0.82;
+  for (let i = 0; i < 10; i++){
+    const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    c.getContext("2d").drawImage(img, 0, 0, w, h);
+    const data = c.toDataURL("image/jpeg", q);
+    if (data.length <= MAX_CHARS) return { data, w, h };
+    if (q > 0.5) q -= 0.1; else scale *= 0.8;
+  }
+  return null;
+}
+
+/* ---------------- AUTH ---------------- */
+onAuthStateChanged(auth, u => {
+  user = u;
+  if (!u) say("You are not signed in. Please sign in first (login.html), then open this page from the same website.", "err");
+  else say("Signed in as " + (u.displayName || u.email) + ".", "");
+  refreshSave();
+});
+
+/* ---------------- FILE PICKER ---------------- */
+$("drop").onclick = () => $("file").click();
+
+$("file").onchange = async e => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = "";
+  if (!files.length) return;
+  say("Preparing " + files.length + " photos...", "");
+
+  for (const f of files){
+    try{
+      const img = await readImage(f);
+      const out = compress(img);
+      if (!out){ say("Skipped " + f.name + " (too large even after resizing).", "err"); continue; }
+
+      const cat = autoCategory(f.name);
+      const title = autoTitle(f.name);
+      const kws = autoKeywords(f.name, cat);
+
+      const it = {
+        title, url: out.data, w: out.w, h: out.h,
+        category: cat, keywords: kws, saved: false
+      };
+      items.push(it);
+
+      const d = document.createElement("div");
+      d.className = "it";
+      d.innerHTML = `
+        <button class="rm" aria-label="Remove">&times;</button>
+        <img alt="">
+        <div>
+          <input type="text" class="t" placeholder="Title">
+          <input type="text" class="k" placeholder="keywords, comma, separated">
+          <select class="c"></select>
+          <div style="font-size:11px;color:#6e6e6e">${out.w} × ${out.h} px <span class="badge">Auto</span></div>
+        </div>`;
+      d.querySelector("img").src = it.url;
+
+      const tInp = d.querySelector(".t");
+      tInp.value = title;
+      tInp.oninput = () => { it.title = tInp.value.trim() || "Untitled"; };
+
+      const kInp = d.querySelector(".k");
+      kInp.value = kws.join(", ");
+      kInp.oninput = () => {
+        it.keywords = kInp.value.split(",").map(s => s.trim()).filter(Boolean);
+      };
+
+      const cSel = d.querySelector(".c");
+      ["Business","Nature","People","Technology","Travel","Food","Architecture","Abstract","Other"]
+        .forEach(o => cSel.add(new Option(o, o)));
+      cSel.value = cat;
+      cSel.onchange = () => { it.category = cSel.value; };
+
+      d.querySelector(".rm").onclick = () => {
+        items = items.filter(x => x !== it);
+        d.remove();
+        refreshSave();
+      };
+
+      $("grid").appendChild(d);
+    }catch(err){
+      say("Could not read " + f.name, "err");
+    }
+  }
+  say(items.length + " photos ready. Titles, keywords, category and pixel size filled automatically.", "");
+  refreshSave();
+};
+
+/* ---------------- SAVE TO FIRESTORE ---------------- */
+$("save").onclick = async () => {
+  if (!user){ say("Sign in first.", "err"); return; }
+  const ai = $("ai").value === "yes";
+  const author = user.displayName || (user.email || "MINAMI STOCK").split("@")[0];
+  $("save").disabled = true;
+
+  let ok = 0;
+  for (const it of items){
+    if (it.saved){ ok++; continue; }
+    try{
+      const ref = doc(collection(db, PHOTO_COLLECTION));
+      await setDoc(doc(db, DATA_COLLECTION, ref.id), { data: it.url, authorUid: user.uid });
+      await setDoc(ref, {
+        title: it.title,
+        imageId: ref.id,
+        category: it.category,
+        keywords: it.keywords,
+        author,
+        authorUid: user.uid,
+        width: it.w,
+        height: it.h,
+        aiGenerated: ai,
+        source: "upload",
+        createdAt: serverTimestamp()
+      });
+      it.saved = true;
+      ok++;
+      it.el = it.el || null;
+      say("Saved " + ok + " of " + items.length + "...", "");
+    }catch(err){
+      console.error(err);
+      say("Save failed: " + (err.code || err.message) + ". Check your Firestore rules for stockphoto and photoData.", "err");
+      refreshSave();
+      return;
+    }
+  }
+  say("Done. " + ok + " photos saved. Open stock-photo.html to see them.", "ok");
+  refreshSave();
+};
+</script>
+</body>
+</html>

@@ -706,7 +706,7 @@
             color: #94a3b8;
             line-height: 1.5;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -717,7 +717,7 @@
             overflow: visible;
         }
         .home-shop-card .desc-toggle {
-            display: none;
+            display: inline-block;
             background: none;
             border: 0;
             padding: 0;
@@ -757,7 +757,7 @@
         /* ★★★ STOCK PHOTOS (above Featured Products) ★★★ */
         .home-photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 14px;
         }
         .home-photo-card {
@@ -938,6 +938,23 @@
             .btn-account { width: 28px; height: 28px; font-size: 13px; }
         }
     </style>
+
+    <style id="black-theme">
+        /* ★★★ BLACK THEME ★★★ */
+        html, body, main.center-content { background: #000 !important; }
+        header.top-nav { background: #000 !important; }
+        .app-switcher-bar, .mtx-tools { background: #0a0a0a !important; }
+        .home-shop-card, .home-shop-empty { background: #0a0a0a !important; }
+        .generate-input-wrapper .gen-select option { background: #0a0a0a; }
+        /* products: same height cards, Buy Now always at the bottom on the same line */
+        .home-shop-grid { align-items: stretch !important; }
+        .home-shop-card { display: flex !important; flex-direction: column; }
+        .home-shop-card .card-body { flex: 1; }
+        .home-shop-card .card-body h4 { min-height: 2.8em; }
+        .home-shop-card .buy-btn { margin-top: auto; }
+        .home-shop-card .desc-preview { margin-bottom: 12px; }
+        .sidebar-dropdown { max-height: 75vh; overflow-y: auto; }
+    </style>
 </head>
 <body>
 
@@ -972,6 +989,66 @@
                     <a href="privacy.html" class="sidebar-item" data-color="help">
                         <div class="item-bg"></div>
                         <i class="fas fa-question-circle"></i> <span>Privacy</span>
+                    </a>
+                    <a href="stock-photo.html" class="sidebar-item" data-color="home">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-images"></i> <span>Stock Photos</span>
+                    </a>
+                    <a href="dashboard.html" class="sidebar-item" data-color="apps">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-gauge"></i> <span>Dashboard</span>
+                    </a>
+                    <a href="upload.html" class="sidebar-item" data-color="files">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-cloud-arrow-up"></i> <span>Upload</span>
+                    </a>
+                    <a href="portfolio.html" class="sidebar-item" data-color="benefits">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-briefcase"></i> <span>Portfolio</span>
+                    </a>
+                    <a href="register.html" class="sidebar-item" data-color="create">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-user-plus"></i> <span>Register</span>
+                    </a>
+                    <a href="account.html" class="sidebar-item" data-color="help">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-user-circle"></i> <span>My Account</span>
+                    </a>
+                    <a href="upscaler.html" class="sidebar-item" data-color="home">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-magic"></i> <span>Image Upscaler</span>
+                    </a>
+                    <a href="image-inhancer.html" class="sidebar-item" data-color="apps">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-image"></i> <span>Image Enhancer</span>
+                    </a>
+                    <a href="image-to-pdf.html" class="sidebar-item" data-color="files">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-file-image"></i> <span>Image to PDF</span>
+                    </a>
+                    <a href="text-to-pdf.html" class="sidebar-item" data-color="benefits">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-file-pdf"></i> <span>Text to PDF</span>
+                    </a>
+                    <a href="qr-code.html" class="sidebar-item" data-color="create">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-qrcode"></i> <span>QR Code</span>
+                    </a>
+                    <a href="calculator.html" class="sidebar-item" data-color="help">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-calculator"></i> <span>Calculator</span>
+                    </a>
+                    <a href="converter.html" class="sidebar-item" data-color="home">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-arrow-right-arrow-left"></i> <span>Converter</span>
+                    </a>
+                    <a href="age-calculator.html" class="sidebar-item" data-color="apps">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-cake-candles"></i> <span>Age Calculator</span>
+                    </a>
+                    <a href="word-counter.html" class="sidebar-item" data-color="files">
+                        <div class="item-bg"></div>
+                        <i class="fas fa-file-word"></i> <span>Word Counter</span>
                     </a>
                 </div>
             </div>
@@ -1112,35 +1189,40 @@
                     <p>Explore unique collections of in-demand stock categories</p>
                 </div>
                 <div class="collections-grid">
-                    <a href="#" class="collection-card">
+                    <a href="stock-photo.html?cat=Backgrounds" class="collection-card" data-cat="Backgrounds">
                         <div class="collection-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=600" alt="Backgrounds" loading="lazy"></div>
                         <h4>Backgrounds</h4>
                         <p>Colorful photographs, illustrations, and videos of abstracts and textures</p>
                     </a>
-                    <a href="#" class="collection-card">
+                    <a href="stock-photo.html?cat=Food%20and%20drink" class="collection-card" data-cat="Food and drink">
                         <div class="collection-img"><img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600" alt="Food and drink" loading="lazy"></div>
                         <h4>Food and drink</h4>
                         <p>Browse international food photographs, videos, and vectors</p>
                     </a>
-                    <a href="#" class="collection-card">
+                    <a href="stock-photo.html?cat=Mockups" class="collection-card" data-cat="Mockups">
                         <div class="collection-img"><img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600" alt="Mockups" loading="lazy"></div>
                         <h4>Mockups</h4>
                         <p>Create stunning flyers, posters, product mockups, and more</p>
                     </a>
-                    <a href="#" class="collection-card">
+                    <a href="stock-photo.html?cat=People" class="collection-card" data-cat="People">
                         <div class="collection-img"><img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600" alt="People" loading="lazy"></div>
                         <h4>People</h4>
                         <p>Explore illustrations and photos of diverse people</p>
                     </a>
-                    <a href="#" class="collection-card">
+                    <a href="stock-photo.html?cat=Nature" class="collection-card" data-cat="Nature">
                         <div class="collection-img"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=600" alt="Nature" loading="lazy"></div>
                         <h4>Nature</h4>
                         <p>Discover images and video of landscapes, plants, and wildlife</p>
                     </a>
-                    <a href="#" class="collection-card">
+                    <a href="stock-photo.html?cat=Business" class="collection-card" data-cat="Business">
                         <div class="collection-img"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600" alt="Business" loading="lazy"></div>
                         <h4>Business</h4>
                         <p>Stock photos and videos of office culture, small business, and more</p>
+                    </a>
+                                    <a href="stock-photo.html?cat=AI%20Generated" class="collection-card" data-cat="AI Generated">
+                        <div class="collection-img"><img src="data:image/svg+xml;utf8,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%22600%22%20height=%22400%22%20viewBox=%220%200%20600%20400%22%3E%3Cdefs%3E%3ClinearGradient%20id=%22g%22%20x1=%220%22%20y1=%220%22%20x2=%221%22%20y2=%221%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%237c3aed%22/%3E%3Cstop%20offset=%220.55%22%20stop-color=%22%232563eb%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%2306b6d4%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width=%22600%22%20height=%22400%22%20fill=%22url%28%23g%29%22/%3E%3Ccircle%20cx=%22470%22%20cy=%2290%22%20r=%22120%22%20fill=%22%23ffffff%22%20fill-opacity=%220.12%22/%3E%3Ccircle%20cx=%22110%22%20cy=%22330%22%20r=%22150%22%20fill=%22%23ffffff%22%20fill-opacity=%220.10%22/%3E%3Ctext%20x=%22300%22%20y=%22235%22%20font-family=%22Arial%20Black,Arial,sans-serif%22%20font-size=%22150%22%20font-weight=%22900%22%20fill=%22%23ffffff%22%20text-anchor=%22middle%22%3EAI%3C/text%3E%3C/svg%3E" alt="AI Generated" loading="lazy"></div>
+                        <h4>AI Generated</h4>
+                        <p>Browse AI-made images, art, and creative concepts</p>
                     </a>
                 </div>
             </section>
@@ -1227,13 +1309,46 @@
   if (window.__msFooterLoaded) return;
   window.__msFooterLoaded = true;
 
+  /* ===== all pages of the site (edit here) ===== */
+  var PAGES = {
+    "Explore": [
+      ["Home", "index.html"],
+      ["Stock Photos", "stock-photo.html"],
+      ["Shop", "shop.html"],
+      ["Tools", "tools.html"],
+      ["About Us", "about.html"],
+      ["Portfolio", "portfolio.html"]
+    ],
+    "Tools": [
+      ["Image Upscaler", "upscaler.html"],
+      ["Image Enhancer", "image-inhancer.html"],
+      ["Image to PDF", "image-to-pdf.html"],
+      ["Text to PDF", "text-to-pdf.html"],
+      ["QR Code", "qr-code.html"],
+      ["Calculator", "calculator.html"],
+      ["Converter", "converter.html"],
+      ["Age Calculator", "age-calculator.html"],
+      ["Word Counter", "word-counter.html"]
+    ],
+    "Account": [
+      ["Login", "login.html"],
+      ["Register", "register.html"],
+      ["My Account", "account.html"],
+      ["Dashboard", "dashboard.html"],
+      ["Upload", "upload.html"]
+    ],
+    "Legal": [
+      ["Privacy Policy", "privacy.html"],
+      ["About Us", "about.html"]
+    ]
+  };
+
   function ready(fn) {
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
     else fn();
   }
 
   ready(function () {
-    /* icons */
     if (!document.querySelector('link[href*="font-awesome"]')) {
       var fa = document.createElement("link");
       fa.rel = "stylesheet";
@@ -1241,7 +1356,7 @@
       document.head.appendChild(fa);
     }
 
-    /* is the page dark or light? (light text = dark page) */
+    /* is the page itself dark or light? (light text = dark page) */
     function lumOf(color) {
       var m = String(color).match(/[\d.]+/g);
       if (!m || m.length < 3) return 0;
@@ -1249,24 +1364,24 @@
     }
     var baseDark = lumOf(getComputedStyle(document.body).color) > 0.6;
 
-    /* ---------- styles ---------- */
     var css = [
-      ".msf{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;width:100%;margin-top:40px;clear:both;position:relative;z-index:5;line-height:1.5;text-align:left}",
-      ".msf *{box-sizing:border-box}",
-      ".msf.msf-light{background:#f5f5f5;color:#222;border-top:1px solid #e1e1e1;--msf-mute:#6e6e6e;--msf-line:#dcdcdc;--msf-btn:#fff}",
-      ".msf.msf-dark{background:#0a0a0a;color:#e5e7eb;border-top:1px solid #1f2937;--msf-mute:#94a3b8;--msf-line:#27303f;--msf-btn:#111827}",
-      ".msf-cols{max-width:1400px;margin:0 auto;padding:36px 20px 18px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}",
-      ".msf h4{font-size:15px;font-weight:700;margin:0 0 12px;color:inherit}",
-      ".msf-cols a{display:block;font-size:14px;color:var(--msf-mute);padding:5px 0;text-decoration:none}",
-      ".msf-cols a:hover{color:inherit;text-decoration:underline}",
-      ".msf-desc{font-size:14px;color:var(--msf-mute);max-width:320px;margin:0}",
-      ".msf-social{display:flex;gap:10px;margin-top:14px}",
-      ".msf-cols .msf-social a{width:34px;height:34px;border-radius:50%;border:1px solid var(--msf-line);display:grid;place-items:center;padding:0;color:inherit}",
-      ".msf-cols .msf-social a:hover{background:#fbbf24;color:#111;border-color:#fbbf24;text-decoration:none}",
-      ".msf-bottom{max-width:1400px;margin:0 auto;padding:16px 20px 26px;border-top:1px solid var(--msf-line);font-size:13px;color:var(--msf-mute);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}",
+      ".msf-site{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;width:100%;clear:both;position:relative;z-index:5;margin-top:50px;background:#0f0f12;color:#d8d8dc;border-top:1px solid #26262c;line-height:1.5;text-align:left}",
+      ".msf-site *{box-sizing:border-box}",
+      ".msf-in{max-width:1400px;margin:0 auto;padding:46px 20px 26px;display:grid;grid-template-columns:1.5fr 1fr 1.2fr 1fr 1fr;gap:32px}",
+      ".msf-brand p{font-size:13.5px;line-height:1.7;color:#9a9aa2;margin:14px 0 18px;max-width:320px}",
+      ".msf-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;color:#fff;text-decoration:none}",
+      ".msf-logo img{width:36px;height:36px;object-fit:contain}",
+      ".msf-social{display:flex;gap:10px}",
+      ".msf-social a{width:36px;height:36px;border-radius:50%;background:#1c1c22;display:grid;place-items:center;color:#b8b8c0;text-decoration:none;transition:.15s}",
+      ".msf-social a:hover{background:#fbbf24;color:#111}",
+      ".msf-site h4{font-size:14px;font-weight:700;color:#fff;margin:0 0 14px;letter-spacing:.4px}",
+      ".msf-site ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}",
+      ".msf-site ul a{color:#9a9aa2;font-size:13.5px;text-decoration:none;transition:.15s}",
+      ".msf-site ul a:hover{color:#fff;text-decoration:underline}",
+      ".msf-bottom{max-width:1400px;margin:0 auto;padding:18px 20px 26px;border-top:1px solid #26262c;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;font-size:12.5px;color:#8a8a92}",
       ".msf-btns{display:flex;flex-wrap:wrap;gap:10px}",
-      ".msf-btn{background:var(--msf-btn);border:1px solid var(--msf-line);border-radius:18px;padding:7px 15px;font:inherit;font-size:13px;color:inherit;cursor:pointer}",
-      ".msf-btn:hover{border-color:#fbbf24}",
+      ".msf-btn{background:#16161b;border:1px solid #2c2c34;border-radius:18px;padding:7px 15px;font:inherit;font-size:13px;color:#d8d8dc;cursor:pointer}",
+      ".msf-btn:hover{border-color:#fbbf24;color:#fff}",
       ".msf-pop{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}",
       ".msf-pop.open{display:flex}",
       ".msf-box{background:#fff;color:#222;border-radius:10px;max-width:460px;width:100%;padding:24px;max-height:90vh;overflow:auto;font-family:'Segoe UI',system-ui,Arial,sans-serif}",
@@ -1279,43 +1394,33 @@
       ".msf-box button.fill{background:#1473e6;border-color:#1473e6;color:#fff}",
       "#msf-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100000;font-family:'Segoe UI',system-ui,Arial,sans-serif}",
       "#msf-toast.show{opacity:1}",
-      /* quick theme switch that works on every page */
+      /* quick theme switch that works on every page; the footer and popups keep their own look */
       "html.msf-inv{filter:invert(1) hue-rotate(180deg);background:#fff}",
-      "html.msf-inv img,html.msf-inv video,html.msf-inv canvas,html.msf-inv iframe{filter:invert(1) hue-rotate(180deg)}",
-      "@media(max-width:900px){.msf-cols{grid-template-columns:1fr 1fr}}",
-      "@media(max-width:520px){.msf-cols{grid-template-columns:1fr}}"
+      "html.msf-inv img,html.msf-inv video,html.msf-inv canvas,html.msf-inv iframe,html.msf-inv .msf-site,html.msf-inv .msf-pop,html.msf-inv #msf-toast{filter:invert(1) hue-rotate(180deg)}",
+      "@media(max-width:1000px){.msf-in{grid-template-columns:1fr 1fr 1fr}.msf-brand{grid-column:1/-1}}",
+      "@media(max-width:560px){.msf-in{grid-template-columns:1fr 1fr;padding:36px 18px 22px;gap:26px 18px}}"
     ].join("\n");
     var st = document.createElement("style");
     st.textContent = css;
     document.head.appendChild(st);
 
-    /* ---------- markup ---------- */
+    function list(name) {
+      return '<div><h4>' + name + '</h4><ul>' + PAGES[name].map(function (p) {
+        return '<li><a href="' + p[1] + '">' + p[0] + '</a></li>';
+      }).join("") + '</ul></div>';
+    }
     var html =
-      '<div class="msf-cols">' +
-        '<div><h4>MINAMI STOCK</h4>' +
-          '<p class="msf-desc">Your one-stop destination for premium stock photos, AI tools, and the latest AI news.</p>' +
+      '<div class="msf-in">' +
+        '<div class="msf-brand">' +
+          '<a class="msf-logo" href="index.html"><img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="" onerror="this.onerror=null;this.src=\'logo.png\'"><span>MINAMI STOCK</span></a>' +
+          '<p>Your one-stop destination for premium stock photos, AI tools, and the latest AI news.</p>' +
           '<div class="msf-social">' +
-            '<a href="#" data-noop aria-label="Facebook"><i class="fab fa-facebook"></i></a>' +
+            '<a href="#" data-noop aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>' +
             '<a href="#" data-noop aria-label="Twitter"><i class="fab fa-twitter"></i></a>' +
             '<a href="#" data-noop aria-label="YouTube"><i class="fab fa-youtube"></i></a>' +
-          '</div></div>' +
-        '<div><h4>Company</h4>' +
-          '<a href="about.html">About Us</a>' +
-          '<a href="stock-photo.html">Stock Photos</a>' +
-          '<a href="tools.html">Tools</a>' +
-          '<a href="shop.html">Shop</a>' +
-          '<a href="login.html">Login</a>' +
-          '<a href="account.html">My Account</a></div>' +
-        '<div><h4>Tools &amp; Resources</h4>' +
-          '<a href="upscaler.html">Image Upscaler</a>' +
-          '<a href="image-inhancer.html">Image Enhancer</a>' +
-          '<a href="text-to-pdf.html">Text to PDF</a>' +
-          '<a href="word-counter.html">Word Counter</a></div>' +
-        '<div><h4>Legal &amp; Support</h4>' +
-          '<a href="privacy.html">Privacy Policy</a>' +
-          '<a href="about.html">About Us</a>' +
-          '<a href="shop.html">Shop</a>' +
-          '<a href="tools.html">All Tools</a></div>' +
+          '</div>' +
+        '</div>' +
+        list("Explore") + list("Tools") + list("Account") + list("Legal") +
       '</div>' +
       '<div class="msf-bottom">' +
         '<div class="msf-btns">' +
@@ -1323,18 +1428,16 @@
           '<button type="button" class="msf-btn" data-act="theme"></button>' +
           '<button type="button" class="msf-btn" data-act="license">&#9878;&#65039; License Terms</button>' +
         '</div>' +
-        '<div>&copy; 2026 MINAMI STOCK. All rights reserved.</div>' +
+        '<div>&copy; ' + new Date().getFullYear() + ' MINAMI STOCK. All rights reserved.</div>' +
       '</div>';
 
     var foot = document.createElement("footer");
-    foot.className = "msf " + (baseDark ? "msf-dark" : "msf-light");
+    foot.className = "msf-site";
     foot.innerHTML = html;
-
     var slot = document.getElementById("ms-footer");
     if (slot) { slot.innerHTML = ""; slot.appendChild(foot); }
     else document.body.appendChild(foot);
 
-    /* popups */
     var regions = ["Bangladesh", "India", "Pakistan", "Nepal", "Sri Lanka", "United States", "United Kingdom", "Canada", "Australia", "Other"];
     var pops = document.createElement("div");
     pops.innerHTML =
@@ -1365,8 +1468,6 @@
       $("msf-region").classList.remove("open");
       $("msf-license").classList.remove("open");
     }
-
-    /* theme (works on any page) */
     function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} }
     function appearanceDark() {
       var s = store("ms_theme");
@@ -1379,23 +1480,17 @@
     }
     applyTheme();
 
-    /* region */
     var savedRegion = store("ms_region");
     if (savedRegion) $("msf-region-sel").value = savedRegion;
 
-    /* clicks */
     foot.addEventListener("click", function (e) {
-      var noop = e.target.closest("[data-noop]");
-      if (noop) { e.preventDefault(); return; }
+      if (e.target.closest("[data-noop]")) { e.preventDefault(); return; }
       var b = e.target.closest("[data-act]");
       if (!b) return;
       var act = b.getAttribute("data-act");
       if (act === "region") $("msf-region").classList.add("open");
       else if (act === "license") $("msf-license").classList.add("open");
-      else if (act === "theme") {
-        store("ms_theme", appearanceDark() ? "light" : "dark");
-        applyTheme();
-      }
+      else if (act === "theme") { store("ms_theme", appearanceDark() ? "light" : "dark"); applyTheme(); }
     });
     $("msf-region-save").onclick = function () {
       store("ms_region", $("msf-region-sel").value);

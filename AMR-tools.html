@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMR Tools — Free Online Tools</title>
+<meta name="description" content="Free online tools: Password Generator, Password Strength Checker, Lorem Ipsum, Text to Speech, Remove Duplicates, Text Reverse.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root{
+    --bg:#ffffff; --ink:#111827; --mute:#6b7280; --line:#e5e7eb;
+    --soft:#f5f5f5; --blue:#1473e6; --blue-d:#0d66d0; --yellow:#fbbf24;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:36px 20px 20px}
+  .hero{text-align:center;margin-bottom:28px}
+  .hero h1{font-size:34px;margin:0 0 8px;font-weight:800}
+  .hero p{margin:0;color:var(--mute);font-size:15px}
+  .tabs{
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+    margin:22px 0 26px;border-bottom:1px solid var(--line);padding-bottom:14px;
+  }
+  .tab{
+    border:1px solid var(--line);background:var(--bg);color:inherit;
+    padding:9px 16px;border-radius:22px;font:inherit;font-size:13.5px;
+    font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;
+    transition:.15s;
+  }
+  .tab:hover{border-color:var(--yellow)}
+  .tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+  .tab i{font-size:12px}
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{
+    background:var(--soft);border:1px solid var(--line);border-radius:14px;
+    padding:22px;margin-bottom:16px;
+  }
+  .card h2{margin:0 0 4px;font-size:20px;font-weight:800}
+  .card .sub{margin:0 0 18px;color:var(--mute);font-size:13.5px}
+  label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}
+  textarea,input[type=text],input[type=number],select{
+    width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;
+    font:inherit;font-size:14px;background:#fff;color:var(--ink);resize:vertical;
+  }
+  textarea{min-height:120px}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .row > *{flex:1 1 180px}
+  .btn{
+    border:1px solid var(--ink);background:#fff;color:var(--ink);
+    padding:10px 20px;border-radius:22px;font:inherit;font-weight:700;
+    font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    transition:.15s;
+  }
+  .btn:hover{background:var(--ink);color:#fff}
+  .btn.fill{background:var(--blue);border-color:var(--blue);color:#fff}
+  .btn.fill:hover{background:var(--blue-d);border-color:var(--blue-d)}
+  .btn.warn{border-color:#dc2626;color:#dc2626}
+  .btn.warn:hover{background:#dc2626;color:#fff}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .out{
+    margin-top:14px;padding:14px;background:#fff;border:1px dashed var(--line);
+    border-radius:8px;font-family:'Consolas',monospace;font-size:14px;
+    word-break:break-word;white-space:pre-wrap;min-height:52px;
+    max-height:320px;overflow:auto;
+  }
+  .stat{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .stat div{
+    flex:1 1 120px;background:#fff;border:1px solid var(--line);
+    border-radius:10px;padding:12px;text-align:center;
+  }
+  .stat b{display:block;font-size:22px;font-weight:800;color:var(--blue)}
+  .stat span{font-size:12px;color:var(--mute)}
+  .bar{
+    height:10px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin-top:14px;
+  }
+  .bar > i{
+    display:block;height:100%;width:0;background:#dc2626;
+    transition:width .25s, background .25s;
+  }
+  .meter-label{font-weight:800;font-size:14px;margin-top:8px}
+  .checkline{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--mute);margin-top:6px}
+  .checkline i{color:#22c55e}
+  .toast-pop{
+    position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+    background:#111;color:#fff;padding:11px 20px;border-radius:8px;
+    font-size:13.5px;opacity:0;pointer-events:none;transition:.25s;z-index:99999;
+  }
+  .toast-pop.show{opacity:1}
+  @media(max-width:600px){
+    .hero h1{font-size:26px}
+    .tab{font-size:12.5px;padding:8px 13px}
+    .card{padding:16px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ⬇️ TOP BAR (top-bar.js এই div-এ navbar বসাবে) -->
+<div id="site-topbar"></div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <h1>🧰 AMR Tools</h1>
+    <p>৬টি দরকারি ফ্রি অনলাইন টুল — সব ব্রাউজারেই চলে, কোনো সাইন-ইন লাগে না।</p>
+  </section>
+
+  <!-- Tabs -->
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="pwd-strength"><i class="fas fa-shield-halved"></i> Password Strength</button>
+    <button class="tab" data-tab="pwd-gen"><i class="fas fa-key"></i> Password Generator</button>
+    <button class="tab" data-tab="lorem"><i class="fas fa-paragraph"></i> Lorem Ipsum</button>
+    <button class="tab" data-tab="tts"><i class="fas fa-volume-high"></i> Text to Speech</button>
+    <button class="tab" data-tab="dedupe"><i class="fas fa-layer-group"></i> Remove Duplicates</button>
+    <button class="tab" data-tab="reverse"><i class="fas fa-right-left"></i> Text Reverse</button>
+  </nav>
+
+  <!-- ============ 1. PASSWORD STRENGTH CHECKER ============ -->
+  <section class="panel active" id="pwd-strength">
+    <div class="card">
+      <h2>🔐 Password Strength Checker</h2>
+      <p class="sub">আপনার পাসওয়ার্ড কতটা শক্তিশালী তা সাথে সাথে দেখুন। কিছুই সার্ভারে পাঠানো হয় না।</p>
+
+      <label for="psInput">পাসওয়ার্ড লিখুন</label>
+      <div style="position:relative">
+        <input type="text" id="psInput" placeholder="Type a password..." autocomplete="off" spellcheck="false">
+      </div>
+
+      <div class="bar"><i id="psBar"></i></div>
+      <div class="meter-label" id="psLabel">—</div>
+      <div class="stat">
+        <div><b id="psLen">0</b><span>Length</span></div>
+        <div><b id="psEnt">0</b><span>Entropy (bits)</span></div>
+        <div><b id="psCrack">—</b><span>Crack time</span></div>
+      </div>
+      <div style="margin-top:12px">
+        <div class="checkline" id="ck-len"><i class="fas fa-circle-check"></i> কমপক্ষে ১২ অক্ষর</div>
+        <div class="checkline" id="ck-up"><i class="fas fa-circle-check"></i> বড় হাতের অক্ষর (A–Z)</div>
+        <div class="checkline" id="ck-low"><i class="fas fa-circle-check"></i> ছোট হাতের অক্ষর (a–z)</div>
+        <div class="checkline" id="ck-num"><i class="fas fa-circle-check"></i> সংখ্যা (0–9)</div>
+        <div class="checkline" id="ck-sym"><i class="fas fa-circle-check"></i> বিশেষ চিহ্ন (!@#$…)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. PASSWORD GENERATOR ============ -->
+  <section class="panel" id="pwd-gen">
+    <div class="card">
+      <h2>🔑 Password Generator</h2>
+      <p class="sub">সুরক্ষিত র‍্যান্ডম পাসওয়ার্ড তৈরি করুন — আপনার পছন্দমত দৈর্ঘ্য ও ধরন বেছে নিন।</p>
+
+      <label for="pgLen">দৈর্ঘ্য: <span id="pgLenVal">16</span></label>
+      <input type="range" id="pgLen" min="4" max="64" value="16" style="width:100%">
+
+      <div class="row" style="margin-top:10px">
+        <label class="checkline" style="margin:0"><input type="checkbox" id="pgUpper" checked> Uppercase (A–Z)</label>
+        <label class="checkline" style="margin:0"><input type="checkbox" id="pgLower" checked> Lowercase (a–z)</label>
+        <label class="checkline" style="margin:0"><input type="checkbox" id="pgNum" checked> Numbers (0–9)</label>
+        <label class="checkline" style="margin:0"><input type="checkbox" id="pgSym" checked> Symbols (!@#$…)</label>
+      </div>
+      <label class="checkline" style="margin-top:10px"><input type="checkbox" id="pgNoAmb"> Confusing chars বাদ দিন (0 O l 1 I)</label>
+
+      <div class="out" id="pgOut" style="font-size:18px;font-weight:700;letter-spacing:1px">Click Generate →</div>
+      <div class="btns">
+        <button class="btn fill" id="pgGen"><i class="fas fa-bolt"></i> Generate</button>
+        <button class="btn" id="pgCopy"><i class="fas fa-copy"></i> Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. LOREM IPSUM GENERATOR ============ -->
+  <section class="panel" id="lorem">
+    <div class="card">
+      <h2>📝 Lorem Ipsum Generator</h2>
+      <p class="sub">ডেমো টেক্সট দরকার? প্যারাগ্রাফ / বাক্য / শব্দ অনুযায়ী Lorem Ipsum বানান।</p>
+
+      <div class="row">
+        <select id="liType">
+          <option value="paragraphs">Paragraphs</option>
+          <option value="sentences">Sentences</option>
+          <option value="words">Words</option>
+        </select>
+        <input type="number" id="liCount" value="3" min="1" max="100">
+        <label class="checkline" style="margin:0"><input type="checkbox" id="liStart" checked> "Lorem ipsum…" দিয়ে শুরু</label>
+      </div>
+
+      <div class="out" id="liOut" style="white-space:pre-wrap;font-family:inherit;font-size:14.5px"></div>
+      <div class="btns">
+        <button class="btn fill" id="liGen"><i class="fas fa-wand-magic-sparkles"></i> Generate</button>
+        <button class="btn" id="liCopy"><i class="fas fa-copy"></i> Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. TEXT TO SPEECH ============ -->
+  <section class="panel" id="tts">
+    <div class="card">
+      <h2>🔊 Text to Speech</h2>
+      <p class="sub">যেকোনো লেখা টাইপ করুন, ব্রাউজারই তাকে পড়ে শোনাবে (Web Speech API)।</p>
+
+      <label for="ttsText">লেখা</label>
+      <textarea id="ttsText" placeholder="Type text to speak...">Hello! Welcome to AMR Tools. এই টুলটি আপনার লেখা পড়ে শোনাবে।</textarea>
+
+      <div class="row">
+        <div>
+          <label for="ttsVoice">Voice</label>
+          <select id="ttsVoice"></select>
+        </div>
+        <div>
+          <label for="ttsRate">Speed: <span id="ttsRateVal">1</span></label>
+          <input type="range" id="ttsRate" min="0.5" max="2" step="0.1" value="1" style="width:100%">
+        </div>
+        <div>
+          <label for="ttsPitch">Pitch: <span id="ttsPitchVal">1</span></label>
+          <input type="range" id="ttsPitch" min="0" max="2" step="0.1" value="1" style="width:100%">
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="btn fill" id="ttsPlay"><i class="fas fa-play"></i> Speak</button>
+        <button class="btn" id="ttsPause"><i class="fas fa-pause"></i> Pause</button>
+        <button class="btn" id="ttsResume"><i class="fas fa-play"></i> Resume</button>
+        <button class="btn warn" id="ttsStop"><i class="fas fa-stop"></i> Stop</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. REMOVE DUPLICATES ============ -->
+  <section class="panel" id="dedupe">
+    <div class="card">
+      <h2>🧹 Remove Duplicates</h2>
+      <p class="sub">লাইনের ডুপ্লিকেট সরান — ছোট/বড় হাতের অক্ষর আলাদা রাখা বা একসাথে মেলানোর সুবিধা সহ।</p>
+
+      <label for="ddIn">ইনপুট (প্রতি লাইনে একটি)</label>
+      <textarea id="ddIn" placeholder="apple&#10;banana&#10;apple&#10;Orange&#10;banana"></textarea>
+
+      <label class="checkline"><input type="checkbox" id="ddCase" checked> Case-insensitive (Apple = apple)</label>
+      <label class="checkline"><input type="checkbox" id="ddTrim" checked> খালি লাইন ও স্পেস পরিষ্কার করুন</label>
+      <label class="checkline"><input type="checkbox" id="ddSort"> বর্ণানুক্রমিক সাজান</label>
+
+      <div class="out" id="ddOut"></div>
+      <div class="btns">
+        <button class="btn fill" id="ddRun"><i class="fas fa-broom"></i> Remove Duplicates</button>
+        <button class="btn" id="ddCopy"><i class="fas fa-copy"></i> Copy</button>
+        <button class="btn warn" id="ddClear"><i class="fas fa-trash"></i> Clear</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. TEXT REVERSE ============ -->
+  <section class="panel" id="reverse">
+    <div class="card">
+      <h2>🔁 Text Reverse</h2>
+      <p class="sub">লেখাকে উল্টো করুন — অক্ষর, শব্দ, লাইন বা বাক্য অনুযায়ী।</p>
+
+      <label for="rvIn">ইনপুট</label>
+      <textarea id="rvIn" placeholder="Type text here..."></textarea>
+
+      <label for="rvMode">Reverse mode</label>
+      <select id="rvMode">
+        <option value="chars">Reverse characters (abcd → dcba)</option>
+        <option value="words">Reverse word order (one two → two one)</option>
+        <option value="lines">Reverse line order</option>
+        <option value="sentences">Reverse sentence order</option>
+      </select>
+
+      <div class="out" id="rvOut"></div>
+      <div class="btns">
+        <button class="btn fill" id="rvRun"><i class="fas fa-right-left"></i> Reverse</button>
+        <button class="btn" id="rvCopy"><i class="fas fa-copy"></i> Copy</button>
+        <button class="btn warn" id="rvClear"><i class="fas fa-trash"></i> Clear</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ⬇️ FOOTER (site-footer.js এখানে footer বসাবে) -->
+<div id="ms-footer"></div>
+
+<!-- Toast -->
+<div class="toast-pop" id="toastPop"></div>
+
+<!-- ================== SHARED NAV & FOOTER ================== -->
+<script src="top-bar.js"></script>
+<script src="site-footer.js"></script>
+
+<!-- ================== TOOL LOGIC ================== -->
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- tiny helpers ---------- */
+  const $ = (id) => document.getElementById(id);
+  const toast = (t) => {
+    const el = $("toastPop");
+    el.textContent = t; el.classList.add("show");
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => el.classList.remove("show"), 1800);
+  };
+  const copy = async (text) => {
+    if (!text) { toast("কিছু নেই কপি করার"); return; }
+    try { await navigator.clipboard.writeText(text); toast("✅ Copied!"); }
+    catch { toast("❌ Copy failed"); }
+  };
+
+  /* ================= TAB SWITCHER ================= */
+  document.querySelectorAll("#tabs .tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#tabs .tab").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      const p = $(btn.dataset.tab);
+      if (p) p.classList.add("active");
+    });
+  });
+
+  /* ================= 1. PASSWORD STRENGTH CHECKER ================= */
+  const psInput = $("psInput");
+  const psBar = $("psBar");
+  const psLabel = $("psLabel");
+  const psLen = $("psLen");
+  const psEnt = $("psEnt");
+  const psCrack = $("psCrack");
+  const checks = {
+    len: $("ck-len"), up: $("ck-up"), low: $("ck-low"),
+    num: $("ck-num"), sym: $("ck-sym")
+  };
+
+  const humanTime = (seconds) => {
+    if (seconds < 1) return "Instant";
+    const units = [
+      ["year", 31557600], ["day", 86400], ["hour", 3600],
+      ["minute", 60], ["second", 1]
+    ];
+    for (const [name, sec] of units) {
+      if (seconds >= sec) {
+        const v = seconds / sec;
+        return `${v < 10 ? v.toFixed(1) : Math.round(v)} ${name}${v >= 2 ? "s" : ""}`;
+      }
+    }
+    return "< 1 second";
+  };
+
+  const setCheck = (el, ok) => {
+    el.style.color = ok ? "#22c55e" : "#9ca3af";
+    el.querySelector("i").className = ok ? "fas fa-circle-check" : "fas fa-circle";
+  };
+
+  const evaluate = () => {
+    const p = psInput.value;
+    const len = p.length;
+    psLen.textContent = len;
+
+    const hasUp = /[A-Z]/.test(p);
+    const hasLow = /[a-z]/.test(p);
+    const hasNum = /[0-9]/.test(p);
+    const hasSym = /[^A-Za-z0-9]/.test(p);
+
+    setCheck(checks.len, len >= 12);
+    setCheck(checks.up, hasUp);
+    setCheck(checks.low, hasLow);
+    setCheck(checks.num, hasNum);
+    setCheck(checks.sym, hasSym);
+
+    let pool = 0;
+    if (hasLow) pool += 26;
+    if (hasUp) pool += 26;
+    if (hasNum) pool += 10;
+    if (hasSym) pool += 33;
+    if (pool === 0) pool = 1;
+
+    const entropy = len ? Math.round(len * Math.log2(pool)) : 0;
+    psEnt.textContent = entropy;
+
+    // 10^10 guesses/sec
+    const guesses = Math.pow(2, entropy);
+    const seconds = guesses / 2 / 1e10;
+    psCrack.textContent = len ? humanTime(seconds) : "—";
+
+    let score = 0;
+    if (len >= 8) score++;
+    if (len >= 12) score++;
+    if (len >= 16) score++;
+    if (hasUp && hasLow) score++;
+    if (hasNum) score++;
+    if (hasSym) score++;
+
+    let pct = 0, color = "#dc2626", label = "Very Weak";
+    if (len === 0) { pct = 0; label = "—"; color = "#9ca3af"; }
+    else if (score <= 1) { pct = 15; label = "Very Weak"; color = "#dc2626"; }
+    else if (score === 2) { pct = 35; label = "Weak"; color = "#f97316"; }
+    else if (score === 3) { pct = 55; label = "Fair"; color = "#eab308"; }
+    else if (score === 4) { pct = 75; label = "Good"; color = "#22c55e"; }
+    else if (score === 5) { pct = 90; label = "Strong"; color = "#16a34a"; }
+    else { pct = 100; label = "Very Strong"; color = "#15803d"; }
+
+    psBar.style.width = pct + "%";
+    psBar.style.background = color;
+    psLabel.textContent = len ? `${label}  •  Score ${score}/6` : "—";
+    psLabel.style.color = color;
+  };
+  psInput.addEventListener("input", evaluate);
+  evaluate();
+
+  /* ================= 2. PASSWORD GENERATOR ================= */
+  const pgLen = $("pgLen");
+  const pgLenVal = $("pgLenVal");
+  const pgOut = $("pgOut");
+
+  pgLen.addEventListener("input", () => pgLenVal.textContent = pgLen.value);
+
+  const generatePwd = () => {
+    const len = +pgLen.value;
+    const sets = [];
+    if ($("pgUpper").checked) sets.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    if ($("pgLower").checked) sets.push("abcdefghijklmnopqrstuvwxyz");
+    if ($("pgNum").checked)   sets.push("0123456789");
+    if ($("pgSym").checked)   sets.push("!@#$%^&*()-_=+[]{};:,.?/");
+
+    if (!sets.length) { pgOut.textContent = "⚠️ অন্তত একটি option সিলেক্ট করুন"; return; }
+
+    let all = sets.join("");
+    if ($("pgNoAmb").checked) {
+      all = all.replace(/[0OolI1]/g, "");
+      for (let i = 0; i < sets.length; i++) sets[i] = sets[i].replace(/[0OolI1]/g, "");
+    }
+    if (!all) { pgOut.textContent = "⚠️ সব অক্ষর বাদ পড়েছে, option বদলান"; return; }
+
+    const pick = (s) => s[Math.floor(Math.random() * s.length)];
+    const arr = [];
+    // guarantee one from each selected set
+    sets.forEach(s => { if (s) arr.push(pick(s)); });
+    // fill remainder
+    while (arr.length < len) arr.push(pick(all));
+    // shuffle
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    pgOut.textContent = arr.slice(0, len).join("");
+  };
+
+  $("pgGen").addEventListener("click", generatePwd);
+  $("pgCopy").addEventListener("click", () => copy(pgOut.textContent));
+  generatePwd();
+
+  /* ================= 3. LOREM IPSUM GENERATOR ================= */
+  const LOREM_WORDS = ("lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum eu fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum").split(" ");
+
+  const rnd = (n) => Math.floor(Math.random() * n);
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+  const randSentence = () => {
+    const len = 8 + rnd(10);
+    const arr = [];
+    for (let i = 0; i < len; i++) arr.push(LOREM_WORDS[rnd(LOREM_WORDS.length)]);
+    return cap(arr.join(" ")) + ".";
+  };
+  const randParagraph = () => {
+    const n = 4 + rnd(3);
+    const arr = [];
+    for (let i = 0; i < n; i++) arr.push(randSentence());
+    return arr.join(" ");
+  };
+
+  const generateLorem = () => {
+    const type = $("liType").value;
+    const count = Math.max(1, Math.min(100, +$("liCount").value || 1));
+    let text = "";
+
+    if (type === "paragraphs") {
+      const arr = [];
+      for (let i = 0; i < count; i++) arr.push(randParagraph());
+      text = arr.join("\n\n");
+    } else if (type === "sentences") {
+      const arr = [];
+      for (let i = 0; i < count; i++) arr.push(randSentence());
+      text = arr.join(" ");
+    } else {
+      const arr = [];
+      for (let i = 0; i < count; i++) arr.push(LOREM_WORDS[rnd(LOREM_WORDS.length)]);
+      text = cap(arr.join(" ")) + ".";
+    }
+
+    if ($("liStart").checked && type !== "words") {
+      if (type === "paragraphs") {
+        text = text.replace(/^./, "L").replace(/^[^\s]+/, "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+      } else {
+        text = text.replace(/^[^.]*\./, "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
+      }
+    }
+    $("liOut").textContent = text;
+  };
+
+  $("liGen").addEventListener("click", generateLorem);
+  $("liCopy").addEventListener("click", () => copy($("liOut").textContent));
+  generateLorem();
+
+  /* ================= 4. TEXT TO SPEECH ================= */
+  const ttsText = $("ttsText");
+  const ttsVoice = $("ttsVoice");
+  const ttsRate = $("ttsRate");
+  const ttsPitch = $("ttsPitch");
+  let voices = [];
+
+  const loadVoices = () => {
+    if (!("speechSynthesis" in window)) return;
+    voices = speechSynthesis.getVoices();
+    ttsVoice.innerHTML = "";
+    voices.forEach((v, i) => {
+      const o = document.createElement("option");
+      o.value = i;
+      o.textContent = `${v.name} (${v.lang})`;
+      ttsVoice.appendChild(o);
+    });
+    // prefer an English or Bangla voice
+    const preferred = voices.findIndex(v => /en|bn/i.test(v.lang));
+    if (preferred > -1) ttsVoice.value = preferred;
+  };
+  if ("speechSynthesis" in window) {
+    loadVoices();
+    speechSynthesis.onvoiceschanged = loadVoices;
+  } else {
+    ttsVoice.innerHTML = "<option>Speech Synthesis সাপোর্ট নেই</option>";
+  }
+
+  ttsRate.addEventListener("input", () => $("ttsRateVal").textContent = ttsRate.value);
+  ttsPitch.addEventListener("input", () => $("ttsPitchVal").textContent = ttsPitch.value);
+
+  $("ttsPlay").addEventListener("click", () => {
+    if (!("speechSynthesis" in window)) { toast("এই ব্রাউজারে সাপোর্ট নেই"); return; }
+    const txt = ttsText.value.trim();
+    if (!txt) { toast("কিছু লেখা টাইপ করুন"); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(txt);
+    const v = voices[+ttsVoice.value];
+    if (v) u.voice = v;
+    u.rate = +ttsRate.value;
+    u.pitch = +ttsPitch.value;
+    speechSynthesis.speak(u);
+  });
+  $("ttsPause").addEventListener("click", () => speechSynthesis.pause && speechSynthesis.pause());
+  $("ttsResume").addEventListener("click", () => speechSynthesis.resume && speechSynthesis.resume());
+  $("ttsStop").addEventListener("click", () => speechSynthesis.cancel && speechSynthesis.cancel());
+
+  /* ================= 5. REMOVE DUPLICATES ================= */
+  const ddIn = $("ddIn");
+  const ddOut = $("ddOut");
+
+  const runDedupe = () => {
+    let lines = ddIn.value.split(/\r?\n/);
+    if ($("ddTrim").checked) lines = lines.map(l => l.trim()).filter(l => l !== "");
+
+    const seen = new Set();
+    const result = [];
+    for (const l of lines) {
+      const key = $("ddCase").checked ? l.toLowerCase() : l;
+      if (!seen.has(key)) { seen.add(key); result.push(l); }
+    }
+    if ($("ddSort").checked) result.sort((a, b) => a.localeCompare(b));
+
+    ddOut.textContent = result.join("\n");
+    const removed = lines.length - result.length;
+    if (lines.length) toast(`✅ ${result.length} লাইন রাখা, ${removed} ডুপ্লিকেট সরানো`);
+  };
+
+  $("ddRun").addEventListener("click", runDedupe);
+  $("ddCopy").addEventListener("click", () => copy(ddOut.textContent));
+  $("ddClear").addEventListener("click", () => { ddIn.value = ""; ddOut.textContent = ""; });
+
+  /* ================= 6. TEXT REVERSE ================= */
+  const rvIn = $("rvIn");
+  const rvOut = $("rvOut");
+  const rvMode = $("rvMode");
+
+  const runReverse = () => {
+    const t = rvIn.value;
+    if (!t) { rvOut.textContent = ""; return; }
+    const mode = rvMode.value;
+    let res = "";
+
+    if (mode === "chars") {
+      res = Array.from(t).reverse().join("");
+    } else if (mode === "words") {
+      res = t.split(/\s+/).filter(Boolean).reverse().join(" ");
+    } else if (mode === "lines") {
+      res = t.split(/\r?\n/).reverse().join("\n");
+    } else if (mode === "sentences") {
+      // split by sentence enders, keep them attached
+      const parts = t.match(/[^.!?]+[.!?]?/g) || [t];
+      res = parts.map(s => s.trim()).filter(Boolean).reverse().join(" ");
+    }
+    rvOut.textContent = res;
+  };
+
+  $("rvRun").addEventListener("click", runReverse);
+  $("rvCopy").addEventListener("click", () => copy(rvOut.textContent));
+  $("rvClear").addEventListener("click", () => { rvIn.value = ""; rvOut.textContent = ""; });
+  rvMode.addEventListener("change", runReverse);
+
+})();
+</script>
+
+</body>
+</html>
