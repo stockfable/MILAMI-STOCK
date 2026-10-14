@@ -7,12 +7,13 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0}
-body.dark{--ink:#f1f1f1;--mute:#a3a3a3;--line:#333;--bg:#161616;--soft:#222}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg)}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;color:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ================= HEADER ================= */
 header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
 .top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
 .nav-left{display:flex;align-items:center;gap:16px;min-width:0}
@@ -55,7 +56,8 @@ header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position
 .account-menu-item{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;background:none;border-radius:8px;font-size:14px;font-weight:600;text-align:left}
 .account-menu-item:hover{background:var(--soft)}
 .account-menu-item i{width:18px;text-align:center;color:var(--mute)}
-.cap{padding:7px 9px 8px;font-size:12px;line-height:1.3;color:var(--mute);background:var(--bg)}
+
+/* ================= HERO / SEARCH ================= */
 .hero{background:var(--bg);padding:44px 20px 26px;border-bottom:1px solid var(--line)}
 .hero .in{max-width:900px;margin:auto}
 .hero h1{font-size:clamp(26px,4.4vw,42px);font-weight:800;line-height:1.12;margin-bottom:20px}
@@ -69,18 +71,22 @@ header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position
 .trend span{color:var(--mute)}
 .trend button{background:var(--soft);border:0;padding:5px 12px;border-radius:14px;font-size:13px}
 .trend button:hover{background:var(--line)}
-.filters{border-bottom:1px solid var(--line);background:var(--bg)}
+
+/* ================= FILTERS ================= */
+.filters{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:60px;z-index:20}
 .filters .in{max-width:1400px;margin:auto;padding:12px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.chip{border:1px solid var(--line);background:var(--bg);padding:7px 14px;border-radius:18px;font-size:14px;font-weight:600}
+.chip{border:1px solid var(--line);background:var(--bg);padding:7px 14px;border-radius:18px;font-size:14px;font-weight:600;white-space:nowrap}
 .chip:hover{border-color:var(--ink)}
 .chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .filters .count{margin-left:auto;color:var(--mute);font-size:14px}
 .filters select{border:1px solid var(--line);border-radius:18px;padding:7px 12px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink)}
+
+/* ================= GRID ================= */
 main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
 .grid{columns:4 260px;column-gap:14px}
 .card{break-inside:avoid;margin-bottom:14px;position:relative;border-radius:4px;overflow:hidden;background:var(--soft);cursor:zoom-in}
 .card img{width:100%;display:block;min-height:120px;object-fit:cover;background:#eee}
-.card .ov{position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.65));opacity:0;transition:opacity .15s;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff}
+.card .ov{position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.65));opacity:0;transition:opacity .15s;display:flex;flex-direction:column;justify-content:flex-end;padding:12px;color:#fff;pointer-events:none}
 .card:hover .ov,.card:focus-within .ov{opacity:1}
 .ov b{font-size:14px;line-height:1.25}
 .ov small{opacity:.85;font-size:12px;margin-top:2px}
@@ -89,12 +95,13 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
 .round{width:34px;height:34px;border-radius:50%;border:0;background:#fff;color:#222;display:grid;place-items:center;font-size:16px;box-shadow:0 1px 4px rgba(0,0,0,.3)}
 .round.saved{background:#e34ba9;color:#fff}
 .badge-free{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.72);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;z-index:2}
+.cap{padding:7px 9px 8px;font-size:12px;line-height:1.3;color:var(--mute);background:var(--bg)}
 .state{padding:70px 10px;text-align:center;color:var(--mute)}
 .state h2{color:var(--ink);font-size:22px;margin-bottom:8px}
 .state .btn{margin-top:18px}
 .more{display:block;margin:10px auto 0}
 
-/* ================= Adobe Stock style lightbox ================= */
+/* ================= LIGHTBOX ================= */
 .lb{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:60;display:none;align-items:center;justify-content:center;padding:20px;overflow:auto}
 .lb.open{display:flex}
 .lb .box{background:var(--bg);border-radius:8px;max-width:1300px;width:100%;max-height:94vh;display:grid;grid-template-columns:1fr 380px;overflow:hidden;position:relative}
@@ -108,7 +115,7 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
 .author-line .dot{opacity:.4}
 .src-pill{background:var(--soft);padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600;color:var(--ink)}
 .quick-actions{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
-.qa-btn{border:1px solid var(--line);background:var(--bg);padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+.qa-btn{border:1px solid var(--line);background:var(--bg);padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600}
 .qa-btn:hover{background:var(--soft);border-color:var(--ink)}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-bottom:18px;padding:14px;background:var(--soft);border-radius:8px}
 .info-grid > div{display:flex;flex-direction:column;min-width:0}
@@ -123,21 +130,39 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
 .lic-opt b{display:block;font-size:13px;margin-bottom:2px}
 .lic-opt small{color:var(--mute);font-size:11px;line-height:1.35}
 .lic-price{font-weight:700;font-size:13px;color:var(--blue);white-space:nowrap}
-.download-btn{width:100%;padding:12px;font-size:15px;text-align:center;margin-bottom:8px;border-radius:8px;display:block;text-decoration:none}
-.save-btn{width:100%;padding:11px;font-size:14px;border-radius:8px;margin-bottom:20px}
+.download-btn{width:100%;padding:12px;font-size:15px;text-align:center;margin-bottom:8px;border-radius:8px;display:block;text-decoration:none;background:var(--blue);color:#fff;border:0;font-weight:700}
+.download-btn:hover{background:var(--blue-d)}
+.save-btn{width:100%;padding:11px;font-size:14px;border-radius:8px;margin-bottom:20px;background:transparent;border:1px solid var(--line);color:var(--ink);font-weight:700}
+.save-btn:hover{border-color:var(--blue);color:var(--blue)}
 .kw-section{margin-bottom:16px}
 .kw-label{display:block;font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;font-weight:700}
 .lb .kw{margin:0;display:flex;flex-wrap:wrap;gap:6px}
 .lb .kw span{background:var(--soft);padding:4px 10px;border-radius:12px;font-size:12px;cursor:pointer;transition:.15s}
 .lb .kw span:hover{background:var(--ink);color:var(--bg)}
 .lb .meta{font-size:12px;color:var(--mute);line-height:1.7;padding-top:14px;border-top:1px solid var(--line)}
-.lb .x{position:absolute;top:14px;right:18px;background:rgba(0,0,0,.5);border:0;color:#fff;font-size:30px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:5}
+.lb .x{position:absolute;top:14px;right:18px;background:rgba(0,0,0,.5);border:0;color:#fff;font-size:30px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;cursor:pointer;z-index:5;line-height:1}
 .lb .x:hover{background:rgba(0,0,0,.85)}
 
 #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90}
 #toast.show{opacity:1;transform:translateX(-50%)}
 
-@media(max-width:900px){.nav-links-top,.shop-logo-btn span{display:none}}
+/* ================= FOOTER ================= */
+.site-footer{background:#0f0f12;color:#d8d8dc;margin-top:60px;border-top:1px solid #26262c}
+.site-footer .footer-in{max-width:1400px;margin:auto;padding:52px 20px 30px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px}
+.footer-brand p{font-size:13.5px;line-height:1.7;color:#9a9aa2;margin:14px 0 18px;max-width:340px}
+.footer-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;color:#fff}
+.footer-logo img{width:36px;height:36px;object-fit:contain}
+.footer-social{display:flex;gap:10px}
+.footer-social a{width:36px;height:36px;border-radius:50%;background:#1c1c22;display:grid;place-items:center;color:#b8b8c0;transition:.15s}
+.footer-social a:hover{background:var(--blue);color:#fff}
+.footer-col h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;letter-spacing:.4px}
+.footer-col ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+.footer-col ul a{color:#9a9aa2;font-size:13.5px;transition:.15s}
+.footer-col ul a:hover{color:#fff}
+.footer-bottom{border-top:1px solid #26262c;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;max-width:1400px;margin:auto;font-size:12.5px;color:#8a8a92;flex-wrap:wrap;gap:8px}
+.footer-bottom .footer-lang i{margin-right:6px}
+
+@media(max-width:900px){.nav-links-top,.shop-logo-btn span{display:none}.site-footer .footer-in{grid-template-columns:1fr 1fr;gap:28px}}
 @media(max-width:820px){
   .search select{display:none}
   .btn-signin{display:none}
@@ -147,12 +172,15 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
   .lb .pic img{max-height:45vh}
   .lb .side{padding:18px 16px}
   .info-grid{grid-template-columns:1fr}
+  .filters{top:0}
 }
+@media(max-width:560px){.site-footer .footer-in{grid-template-columns:1fr;padding:40px 20px 24px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
+<!-- ==================== HEADER ==================== -->
 <header class="top-nav"><div class="in">
   <div class="nav-left">
     <div class="sidebar-bottom-menu" id="sidebarMenu">
@@ -201,6 +229,7 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
   </div>
 </div></header>
 
+<!-- ==================== HERO ==================== -->
 <section class="hero"><div class="in">
   <h1>Find photos you can license for any project</h1>
   <form class="search" id="searchForm">
@@ -211,6 +240,7 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
   <div class="trend" id="trend"><span>Popular:</span></div>
 </div></section>
 
+<!-- ==================== FILTERS ==================== -->
 <div class="filters"><div class="in">
   <div id="chips" style="display:contents"></div>
   <span class="count" id="count"></span>
@@ -221,67 +251,53 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
   </select>
 </div></div>
 
+<!-- ==================== GRID ==================== -->
 <main>
   <div class="grid" id="grid"></div>
   <div class="state" id="state" hidden></div>
   <button class="btn more" id="more" hidden>Load more</button>
 </main>
 
-<!-- ============ Adobe Stock style Lightbox ============ -->
+<!-- ==================== LIGHTBOX ==================== -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo details">
   <button class="x" id="lbx" aria-label="Close">&times;</button>
   <div class="box">
-    <div class="pic">
-      <img id="lbImg" alt="">
-    </div>
+    <div class="pic"><img id="lbImg" alt=""></div>
     <div class="side">
       <h3 id="lbT"></h3>
-
       <div class="author-line">
         <span>By <b id="lbAuthor"></b></span>
         <span class="dot">·</span>
         <span id="lbSource" class="src-pill"></span>
       </div>
-
       <div class="quick-actions">
-        <button class="qa-btn" id="qaCopy" title="Copy link">🔗 Copy link</button>
-        <button class="qa-btn" id="qaOpen" title="Open original">↗ Open original</button>
+        <button class="qa-btn" id="qaCopy">🔗 Copy link</button>
+        <button class="qa-btn" id="qaOpen">↗ Open original</button>
       </div>
-
       <div class="info-grid">
         <div><label>Dimensions</label><span id="lbDim">—</span></div>
         <div><label>File type</label><span id="lbType">JPEG</span></div>
         <div><label>Category</label><span id="lbCat">—</span></div>
         <div><label>Type</label><span id="lbSub">—</span></div>
       </div>
-
       <div class="lic-pick">
         <label class="lic-opt active">
           <input type="radio" name="lic" value="standard" checked>
-          <div>
-            <b>Standard license</b>
-            <small>Websites, social media, print & ads</small>
-          </div>
+          <div><b>Standard license</b><small>Websites, social media, print & ads</small></div>
           <span class="lic-price">Free</span>
         </label>
         <label class="lic-opt">
           <input type="radio" name="lic" value="extended">
-          <div>
-            <b>Extended license</b>
-            <small>Resale products, unlimited print</small>
-          </div>
+          <div><b>Extended license</b><small>Resale products, unlimited print</small></div>
           <span class="lic-price">$9.99</span>
         </label>
       </div>
-
-      <a class="btn fill download-btn" id="lbDl" download target="_blank" rel="noopener">⬇ Download</a>
-      <button class="btn save-btn" id="lbSave">♡ Save to collection</button>
-
+      <a class="download-btn" id="lbDl" download target="_blank" rel="noopener">⬇ Download</a>
+      <button class="save-btn" id="lbSave">♡ Save to collection</button>
       <div class="kw-section">
         <label class="kw-label">Similar keywords</label>
         <div class="kw" id="lbKw"></div>
       </div>
-
       <div class="meta" id="lbMeta"></div>
     </div>
   </div>
@@ -289,10 +305,66 @@ main{max-width:1400px;margin:auto;padding:22px 20px 40px;background:var(--bg)}
 
 <div id="toast"></div>
 
+<!-- ==================== FOOTER ==================== -->
+<footer class="site-footer">
+  <div class="footer-in">
+    <div class="footer-col footer-brand">
+      <div class="footer-logo">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </div>
+      <p>Free and premium stock photos you can license for any project. Uploaded by creators, powered by MINAMI.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="stock-photo.html">Stock Photos</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contributors</h4>
+      <ul>
+        <li><a href="upload.html">Upload photos</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="register.html">Become a contributor</a></li>
+        <li><a href="account.html">My account</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Use</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="license.html">License</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; <span id="ftYear"></span> MINAMI STOCK. All rights reserved.</p>
+    <p class="footer-lang"><i class="fas fa-globe"></i> English (US)</p>
+  </div>
+</footer>
+
+<!-- ==================== FIREBASE ==================== -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script>
+/* ============ FIREBASE CONFIG ============ */
 const firebaseConfig = {
   apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
   authDomain: "creoverse-stock.firebaseapp.com",
@@ -303,11 +375,8 @@ const firebaseConfig = {
   appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
 };
 
-/* ================================================================
-   🔑 PIXABAY KEY — Pixabay থেকে rotate করে নতুন key এখানে বসান
-   ================================================================ */
+/* ============ 🔑 PIXABAY KEY — এখানে বসান ============ */
 const PIXABAY_KEY = "YOUR_PIXABAY_KEY_HERE";
-/* ================================================================ */
 
 const PHOTO_COLLECTION = "stockphoto";
 const DATA_COLLECTION  = "photoData";
@@ -320,61 +389,87 @@ const db = firebase.firestore();
 const $ = id => document.getElementById(id);
 const PAGE = 40;
 let all = [], view = [], shown = 0, cat = "", term = "", user = null, saved = new Set(), current = null;
-let currentQuery = "food";
 
-function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),2200)}
-function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function kwList(p){return Array.isArray(p.keywords)?p.keywords:String(p.keywords||"").split(",").map(s=>s.trim()).filter(Boolean)}
+/* ============ helpers ============ */
+function toast(m){
+  const t = $("toast"); t.textContent = m; t.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove("show"), 2200);
+}
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
+function kwList(p){
+  return Array.isArray(p.keywords) ? p.keywords
+    : String(p.keywords || "").split(",").map(s => s.trim()).filter(Boolean);
+}
 
-/* account menu */
-$("avatarBtn").onclick = e => { e.stopPropagation(); $("acctDrop").classList.toggle("show"); };
-$("logoutBtn").onclick = () => auth.signOut().then(() => { $("acctDrop").classList.remove("show"); toast("Signed out"); });
-document.addEventListener("click", e => { if (!$("userBox").contains(e.target)) $("acctDrop").classList.remove("show"); });
-$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
-document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+/* year */
+document.getElementById("ftYear").textContent = new Date().getFullYear();
 
-/* ===== Auth state ===== */
+/* header dropdowns */
+$("appsBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  $("appsDrop").classList.toggle("show");
+});
+$("avatarBtn").addEventListener("click", e => {
+  e.stopPropagation();
+  $("acctDrop").classList.toggle("show");
+});
+document.addEventListener("click", e => {
+  if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show");
+  if (!$("userBox").contains(e.target)) $("acctDrop").classList.remove("show");
+});
+
+/* logout */
+$("logoutBtn").addEventListener("click", () => {
+  auth.signOut().then(() => {
+    $("acctDrop").classList.remove("show");
+    toast("Signed out");
+  });
+});
+
+/* auth state */
 auth.onAuthStateChanged(async u => {
   user = u;
-  if (u) {
-    const n = u.displayName || (u.email||"U").split("@")[0];
-    $("guestBox").style.display = "none"; $("userBox").style.display = "block";
-    $("ddName").textContent = n; $("ddEmail").textContent = u.email || "";
+  if (u){
+    const n = u.displayName || (u.email || "U").split("@")[0];
+    $("guestBox").style.display = "none";
+    $("userBox").style.display = "block";
+    $("ddName").textContent = n;
+    $("ddEmail").textContent = u.email || "";
     const initial = esc(n[0].toUpperCase());
-    const face = u.photoURL ? '<img alt="" src="'+esc(u.photoURL)+'">' : initial;
-    $("avatarBtn").innerHTML = face; $("ddAv").innerHTML = face;
+    const face = u.photoURL ? '<img alt="" src="' + esc(u.photoURL) + '">' : initial;
+    $("avatarBtn").innerHTML = face;
+    $("ddAv").innerHTML = face;
     try {
       const s = await db.collection("users").doc(u.uid).collection("saved").get();
-      saved = new Set(s.docs.map(d=>d.id));
+      saved = new Set(s.docs.map(d => d.id));
     } catch(e){ saved = new Set(); }
   } else {
     saved = new Set();
-    $("guestBox").style.display = "flex"; $("userBox").style.display = "none"; $("acctDrop").classList.remove("show");
+    $("guestBox").style.display = "flex";
+    $("userBox").style.display = "none";
+    $("acctDrop").classList.remove("show");
   }
   render(true);
 });
 
-/* ============================================================
-   Mix of queries: food + nature + wildlife + more
-   ============================================================ */
+/* ============ Pixabay query pool ============ */
 const QUERY_POOL = [
-  // Food
   "burger","pizza","cake","ice cream","coffee","sushi","pasta","salad",
   "sandwich","dessert","chocolate","breakfast","fruit","vegetables","noodles",
-  // Nature
   "nature","forest","mountain","ocean","lake","sunset","sunrise","waterfall",
   "flower","beach","desert","autumn","spring","snow","sky","clouds",
-  // Wildlife
   "wildlife","tiger","lion","elephant","owl","eagle","deer","fox","bear",
   "wolf","parrot","flamingo","butterfly","dolphin","penguin","panda"
 ];
-function randomQuery(){ return QUERY_POOL[Math.floor(Math.random()*QUERY_POOL.length)]; }
+function randomQuery(){ return QUERY_POOL[Math.floor(Math.random() * QUERY_POOL.length)]; }
 
-/* ============================================================
-   PIXABAY
-   ============================================================ */
-async function fetchPixabay(query, count = 30) {
-  if (!PIXABAY_KEY || PIXABAY_KEY === "YOUR_PIXABAY_KEY_HERE") {
+/* ============ PIXABAY ============ */
+async function fetchPixabay(query, count = 30){
+  if (!PIXABAY_KEY || PIXABAY_KEY === "YOUR_PIXABAY_KEY_HERE"){
     console.warn("PIXABAY_KEY not set");
     return [];
   }
@@ -383,8 +478,7 @@ async function fetchPixabay(query, count = 30) {
       + "&q=" + encodeURIComponent(query)
       + "&per_page=" + Math.min(count, 200)
       + "&image_type=photo"
-      + "&safesearch=true"
-      + "&lang=en";
+      + "&safesearch=true&lang=en";
     const r = await fetch(url);
     if (!r.ok) throw new Error("Pixabay HTTP " + r.status);
     const d = await r.json();
@@ -395,7 +489,6 @@ async function fetchPixabay(query, count = 30) {
       fullUrl: p.largeImageURL,
       thumb: p.previewURL,
       author: p.user,
-      authorUrl: "https://pixabay.com/users/" + p.user + "-" + p.user_id + "/",
       category: guessCategory(query),
       subCategory: query,
       keywords: (p.tags || "").split(",").map(s => s.trim()).filter(Boolean),
@@ -405,22 +498,20 @@ async function fetchPixabay(query, count = 30) {
       width: p.imageWidth,
       height: p.imageHeight
     }));
-  } catch(e) {
+  } catch(e){
     console.warn("Pixabay fail:", e.message);
     return [];
   }
 }
-
-function guessCategory(q) {
+function guessCategory(q){
   q = q.toLowerCase();
   if (/burger|pizza|cake|food|coffee|sushi|pasta|salad|dessert|chocolate|fruit|vegetable|noodle|breakfast/.test(q)) return "Food";
   if (/tiger|lion|elephant|owl|eagle|deer|fox|bear|wolf|wildlife|animal|parrot|flamingo|butterfly|dolphin|penguin|panda/.test(q)) return "Wildlife";
   if (/forest|mountain|ocean|lake|sunset|sunrise|waterfall|flower|beach|desert|autumn|spring|snow|sky|cloud|nature/.test(q)) return "Nature";
   return "Photos";
 }
-
 const pixCache = new Map();
-async function fetchPixabayCached(query, count = 30) {
+async function fetchPixabayCached(query, count = 30){
   const k = query + "|" + count;
   if (pixCache.has(k)) return pixCache.get(k);
   const data = await fetchPixabay(query, count);
@@ -428,55 +519,62 @@ async function fetchPixabayCached(query, count = 30) {
   return data;
 }
 
-/* ===== Load photos ===== */
+/* ============ Load photos ============ */
 async function load(){
-  $("state").hidden = false; $("state").innerHTML = "Loading photos...";
+  $("state").hidden = false;
+  $("state").innerHTML = "Loading photos…";
 
   let mine = [];
   try {
-    const snap = await db.collection(PHOTO_COLLECTION).orderBy("createdAt","desc").limit(300).get();
+    const snap = await db.collection(PHOTO_COLLECTION)
+      .orderBy("createdAt", "desc").limit(300).get();
     mine = snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .filter(p => p.url || p.imageId)
       .map(p => ({ ...p, free: false, source: "MINAMI" }));
-  } catch(e) { console.error("Firebase load error:", e); }
+  } catch(e){ console.error("Firebase load error:", e); }
 
-  currentQuery = randomQuery();
+  const currentQuery = randomQuery();
   const free = await fetchPixabayCached(currentQuery, FREE_LIMIT);
-
   all = [...mine, ...free];
 
-  if (!all.length) {
+  if (!all.length){
     $("state").innerHTML = '<h2>No photos yet</h2>'
-      + '<p style="margin:10px 0">Check that PIXABAY_KEY is set, or upload your own photos.</p>'
+      + '<p style="margin:10px 0">Set PIXABAY_KEY or upload your own photos.</p>'
       + '<a class="btn fill" href="upload.html">Upload a photo</a>';
     return;
   }
-
   buildCategories();
   apply();
 }
 
 function buildCategories(){
-  const cats = [...new Set(all.map(p=>p.category).filter(Boolean))].sort();
-  $("catSel").innerHTML = '<option value="">All categories</option>' + cats.map(c=>'<option>'+esc(c)+'</option>').join("");
+  const cats = [...new Set(all.map(p => p.category).filter(Boolean))].sort();
+  $("catSel").innerHTML = '<option value="">All categories</option>'
+    + cats.map(c => '<option>' + esc(c) + '</option>').join("");
   $("chips").innerHTML = '<button class="chip on" data-c="">All</button>'
-    + cats.slice(0,10).map(c=>'<button class="chip" data-c="'+esc(c)+'">'+esc(c)+'</button>').join("");
-  $("chips").querySelectorAll(".chip").forEach(b => b.onclick = () => setCat(b.dataset.c));
+    + cats.slice(0, 12).map(c => '<button class="chip" data-c="' + esc(c) + '">' + esc(c) + '</button>').join("");
+  $("chips").querySelectorAll(".chip").forEach(b => {
+    b.onclick = () => setCat(b.dataset.c);
+  });
 
   const freq = {};
-  all.forEach(p => kwList(p).forEach(k => { k=k.toLowerCase(); freq[k]=(freq[k]||0)+1; }));
-  const top = Object.keys(freq).sort((a,b)=>freq[b]-freq[a]).slice(0,7);
+  all.forEach(p => kwList(p).forEach(k => {
+    k = k.toLowerCase();
+    freq[k] = (freq[k] || 0) + 1;
+  }));
+  const top = Object.keys(freq).sort((a,b) => freq[b] - freq[a]).slice(0, 7);
   $("trend").innerHTML = top.length ? '<span>Popular:</span>' : '';
   top.forEach(k => {
-    const b=document.createElement("button");
-    b.textContent=k;
-    b.onclick=()=>{ $("q").value=k; term=k; apply(); };
+    const b = document.createElement("button");
+    b.textContent = k;
+    b.onclick = () => { $("q").value = k; term = k; apply(); };
     $("trend").appendChild(b);
   });
 }
 
 function setCat(c){
-  cat = c; $("catSel").value = c;
+  cat = c;
+  $("catSel").value = c;
   $("chips").querySelectorAll(".chip").forEach(b => b.classList.toggle("on", b.dataset.c === c));
   apply();
 }
@@ -486,73 +584,103 @@ function apply(){
   view = all.filter(p => {
     if (cat && p.category !== cat) return false;
     if (!t) return true;
-    return (p.title||"").toLowerCase().includes(t)
-        || (p.author||"").toLowerCase().includes(t)
-        || (p.subCategory||"").toLowerCase().includes(t)
-        || kwList(p).some(k=>k.toLowerCase().includes(t));
+    return (p.title || "").toLowerCase().includes(t)
+        || (p.author || "").toLowerCase().includes(t)
+        || (p.subCategory || "").toLowerCase().includes(t)
+        || kwList(p).some(k => k.toLowerCase().includes(t));
   });
   const s = $("sort").value;
   const ms = p => p.createdAt && p.createdAt.toMillis ? p.createdAt.toMillis() : 0;
-  if (s==="old") view.sort((a,b)=>ms(a)-ms(b));
-  else if (s==="az") view.sort((a,b)=>(a.title||"").localeCompare(b.title||""));
-  else view.sort((a,b)=>ms(b)-ms(a));
-  $("count").textContent = view.length + (view.length===1?" photo":" photos");
+  if (s === "old") view.sort((a,b) => ms(a) - ms(b));
+  else if (s === "az") view.sort((a,b) => (a.title || "").localeCompare(b.title || ""));
+  else view.sort((a,b) => ms(b) - ms(a));
+
+  $("count").textContent = view.length + (view.length === 1 ? " photo" : " photos");
   render(true);
 }
 
 function render(reset){
   const g = $("grid");
-  if (reset){ g.innerHTML=""; shown=0; }
+  if (reset){ g.innerHTML = ""; shown = 0; }
   if (!view.length){
-    g.innerHTML="";
-    $("state").hidden=false; $("more").hidden=true;
+    g.innerHTML = "";
+    $("state").hidden = false;
+    $("more").hidden = true;
     $("state").innerHTML = all.length
       ? '<h2>No photos match your search</h2>Try a different keyword or category.'
-      : '<h2>No photos yet</h2>Be the first to share a photo on MINAMI STOCK.<br><a class="btn fill" href="upload.html">Upload a photo</a>';
+      : '<h2>No photos yet</h2>Be the first to share a photo.<br><a class="btn fill" href="upload.html">Upload a photo</a>';
     return;
   }
   $("state").hidden = true;
-  const next = view.slice(shown, shown+PAGE);
+  const next = view.slice(shown, shown + PAGE);
   next.forEach(p => g.appendChild(cardEl(p)));
   shown += next.length;
   $("more").hidden = shown >= view.length;
 }
 
+/* Firebase lazy image loader */
 const imgCache = {};
 function getImg(p){
   if (p.url) return Promise.resolve(p.url);
-  if (!imgCache[p.id]) imgCache[p.id] = db.collection(DATA_COLLECTION).doc(p.imageId).get()
-    .then(d => { p.url = d.exists ? d.data().data : ""; return p.url; })
-    .catch(() => "");
+  if (!imgCache[p.id]) {
+    imgCache[p.id] = db.collection(DATA_COLLECTION).doc(p.imageId).get()
+      .then(d => { p.url = d.exists ? d.data().data : ""; return p.url; })
+      .catch(() => "");
+  }
   return imgCache[p.id];
 }
-const io = "IntersectionObserver" in window ? new IntersectionObserver(es => {
-  es.forEach(e => { if (e.isIntersecting){ io.unobserve(e.target); const img=e.target, p=img._p; getImg(p).then(u => { if (u) img.src = u; else img.closest(".card")?.remove(); }); } });
-}, {rootMargin:"300px"}) : null;
+
+const io = "IntersectionObserver" in window
+  ? new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (e.isIntersecting){
+          io.unobserve(e.target);
+          const img = e.target, p = img._p;
+          getImg(p).then(u => {
+            if (u) img.src = u;
+            else img.closest(".card")?.remove();
+          });
+        }
+      });
+    }, { rootMargin: "300px" })
+  : null;
 
 function cardEl(p){
   const d = document.createElement("div");
   d.className = "card"; d.tabIndex = 0;
-  const badge = p.free ? '<span class="badge-free">'+esc(p.source||"FREE")+'</span>' : '';
-  d.innerHTML = '<img loading="lazy" alt="'+esc(p.title||"Photo")+'"'+(p.url?' src="'+esc(p.url)+'"':'')+'>'
+  const badge = p.free ? '<span class="badge-free">' + esc(p.source || "FREE") + '</span>' : '';
+  d.innerHTML =
+    '<img loading="lazy" alt="' + esc(p.title || "Photo") + '"'
+      + (p.url ? ' src="' + esc(p.url) + '"' : '') + '>'
     + badge
-    + '<div class="tools"><button class="round'+(saved.has(p.id)?' saved':'')+'" title="Save" aria-label="Save">&#9825;</button></div>'
-    + '<div class="ov"><b>'+esc(p.title||"Untitled")+'</b><small>'+esc(p.author||"")+'</small></div>'
-    + '<div class="cap">'+(p.tag?esc(p.tag)+' ':'')+esc(p.title||"Untitled")+'</div>';
+    + '<div class="tools"><button class="round' + (saved.has(p.id) ? ' saved' : '') + '" title="Save" aria-label="Save">&#9825;</button></div>'
+    + '<div class="ov"><b>' + esc(p.title || "Untitled") + '</b><small>' + esc(p.author || "") + '</small></div>'
+    + '<div class="cap">' + esc(p.title || "Untitled") + '</div>';
+
   const im = d.querySelector("img");
-  if (!p.url){ im._p = p; if (io) io.observe(im); else getImg(p).then(u => im.src = u); }
-  d.onclick = e => { if (e.target.closest(".round")) return; openLb(p); };
-  d.onkeydown = e => { if (e.key==="Enter") openLb(p); };
-  d.querySelector(".round").onclick = e => { e.stopPropagation(); toggleSave(p, e.currentTarget); };
+  if (!p.url){
+    im._p = p;
+    if (io) io.observe(im); else getImg(p).then(u => im.src = u);
+  }
+  d.onclick = e => {
+    if (e.target.closest(".round")) return;
+    openLb(p);
+  };
+  d.onkeydown = e => { if (e.key === "Enter") openLb(p); };
+  d.querySelector(".round").onclick = e => {
+    e.stopPropagation();
+    toggleSave(p, e.currentTarget);
+  };
   return d;
 }
 
 async function toggleSave(p, btn){
-  if (!user){ toast("Sign in to save photos"); setTimeout(()=>location.href="login.html",900); return; }
+  if (!user){ toast("Sign in to save photos"); setTimeout(() => location.href = "login.html", 900); return; }
   const ref = db.collection("users").doc(user.uid).collection("saved").doc(p.id);
   try {
-    if (saved.has(p.id)){ await ref.delete(); saved.delete(p.id); toast("Removed from collection"); }
-    else {
+    if (saved.has(p.id)){
+      await ref.delete(); saved.delete(p.id); toast("Removed from collection");
+    } else {
       await ref.set({
         title: p.title || "",
         url: (p.url && p.url.length < 2000) ? p.url : "",
@@ -564,28 +692,30 @@ async function toggleSave(p, btn){
       saved.add(p.id); toast("Saved to collection");
     }
     if (btn) btn.classList.toggle("saved", saved.has(p.id));
-    if (current && current.id===p.id) $("lbSave").textContent = saved.has(p.id) ? "♥ Saved — Remove" : "♡ Save to collection";
+    if (current && current.id === p.id){
+      $("lbSave").textContent = saved.has(p.id) ? "♥ Saved — Remove" : "♡ Save to collection";
+    }
   } catch(e){ console.error(e); toast("Could not save. Check Firestore rules."); }
 }
 
-/* ===== Adobe Stock style Lightbox ===== */
+/* ============ Lightbox ============ */
 function openLb(p){
   current = p;
-
   $("lbImg").src = p.url || "";
   $("lbImg").alt = p.title || "";
   $("lbImg").classList.remove("zoomed");
-  if (!p.url) getImg(p).then(u => { if (current === p) { $("lbImg").src = u; $("lbDl").href = u; } });
-
+  if (!p.url){
+    getImg(p).then(u => {
+      if (current === p){ $("lbImg").src = u; $("lbDl").href = u; }
+    });
+  }
   $("lbT").textContent = p.title || "Untitled";
   $("lbAuthor").textContent = p.author || "Unknown";
   $("lbSource").textContent = p.source || (p.free ? "Free" : "MINAMI");
-
   $("lbDim").textContent = (p.width && p.height) ? (p.width + " × " + p.height + " px") : "—";
   $("lbType").textContent = (p.fileType || "JPEG").replace("image/", "").toUpperCase();
   $("lbCat").textContent = p.category || "—";
-  $("lbSub").textContent = p.subCategory || p.tag || p.ctype || "Photo";
-
+  $("lbSub").textContent = p.subCategory || p.tag || "Photo";
   $("lbDl").href = p.fullUrl || p.url || "#";
   $("lbDl").setAttribute("download", (p.title || "minami-stock").replace(/\s+/g, "-") + ".jpg");
   $("lbSave").textContent = saved.has(p.id) ? "♥ Saved — Remove" : "♡ Save to collection";
@@ -596,10 +726,8 @@ function openLb(p){
     : '<span style="opacity:.5">No keywords</span>';
   $("lbKw").querySelectorAll("span[data-kw]").forEach(s => {
     s.onclick = () => {
-      $("q").value = s.dataset.kw;
-      term = s.dataset.kw;
-      closeLb();
-      apply();
+      $("q").value = s.dataset.kw; term = s.dataset.kw;
+      closeLb(); apply();
     };
   });
 
@@ -613,7 +741,8 @@ function openLb(p){
     opt.onclick = () => {
       document.querySelectorAll(".lic-opt").forEach(o => o.classList.remove("active"));
       opt.classList.add("active");
-      opt.querySelector("input").checked = true;
+      const inp = opt.querySelector("input");
+      if (inp) inp.checked = true;
     };
   });
 
@@ -625,25 +754,27 @@ function openLb(p){
     const link = p.fullUrl || p.url;
     if (link) window.open(link, "_blank", "noopener");
   };
-
   $("lbImg").onclick = () => $("lbImg").classList.toggle("zoomed");
 
   $("lb").classList.add("open");
   document.body.style.overflow = "hidden";
 }
-function closeLb(){ $("lb").classList.remove("open"); document.body.style.overflow=""; current=null; }
+function closeLb(){
+  $("lb").classList.remove("open");
+  document.body.style.overflow = "";
+  current = null;
+}
 $("lbx").onclick = closeLb;
-$("lb").onclick = e => { if (e.target.id==="lb") closeLb(); };
-document.addEventListener("keydown", e => { if (e.key==="Escape"){ closeLb(); } });
+$("lb").onclick = e => { if (e.target.id === "lb") closeLb(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeLb(); });
 $("lbSave").onclick = () => current && toggleSave(current);
 
-/* ===== Search ===== */
+/* ============ Search / filter / sort ============ */
 $("searchForm").onsubmit = async e => {
   e.preventDefault();
   term = $("q").value.trim();
   cat = $("catSel").value;
-
-  if (term) {
+  if (term){
     $("state").hidden = false;
     $("state").innerHTML = "Searching photos…";
     const freeMore = await fetchPixabayCached(term, 60);
@@ -653,11 +784,11 @@ $("searchForm").onsubmit = async e => {
   }
   setCat(cat);
 };
-
 $("catSel").onchange = () => setCat($("catSel").value);
 $("sort").onchange = apply;
 $("more").onclick = () => render(false);
 
+/* ============ Start ============ */
 load();
 </script>
 </body>

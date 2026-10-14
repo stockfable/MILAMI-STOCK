@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Color Palette - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--ok:#12805c;--bad:#d7373f}
+body.dark{--ink:#f1f1f1;--mute:#a3a3a3;--line:#333;--bg:#161616;--soft:#222}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ============== TOP BAR ============== */
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown a.active{background:var(--soft);box-shadow:inset 3px 0 var(--blue)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-signup:hover{background:var(--blue-d)}
+
+/* ============== TOOLS BAR ============== */
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s;cursor:pointer}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item.active{background:var(--bg);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+/* ============== MAIN ============== */
+main{flex:1;padding:28px 20px}
+.wrap{max-width:1200px;margin:auto}
+
+.page-head{margin-bottom:24px}
+.page-head h1{font-size:26px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:12px}
+.page-head h1 i{color:var(--blue)}
+.page-head p{color:var(--mute);font-size:14px;line-height:1.55;max-width:700px}
+
+/* Drop */
+.drop{border:2px dashed var(--line);border-radius:12px;padding:40px 20px;text-align:center;background:var(--soft);cursor:pointer;transition:.2s;margin-bottom:20px}
+.drop:hover,.drop.over{border-color:var(--blue);background:#eaf2fd}
+.drop i{font-size:40px;color:var(--blue);margin-bottom:12px;display:block}
+.drop b{display:block;font-size:16px;margin-bottom:6px}
+.drop span{color:var(--mute);font-size:13px}
+
+/* Workspace */
+.workspace{display:none;grid-template-columns:1fr 360px;gap:24px}
+.workspace.show{display:grid}
+
+.preview-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;align-items:center;justify-content:center;min-height:400px;position:relative;overflow:hidden}
+.preview-card canvas{max-width:100%;max-height:70vh;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.1);cursor:crosshair;display:block}
+.hint-overlay{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;padding:6px 12px;border-radius:16px;pointer-events:none}
+
+.side{display:flex;flex-direction:column;gap:18px}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.panel h3 i{color:var(--blue)}
+.panel h3 .badge{margin-left:auto;background:var(--soft);padding:2px 10px;border-radius:10px;font-size:11px;font-weight:700;color:var(--mute)}
+
+/* Picked color */
+.picked{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.swatch-lg{width:70px;height:70px;border-radius:12px;border:2px solid var(--line);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);flex:none}
+.picked-info{min-width:0;flex:1}
+.picked-info .hex{font-family:"Consolas",monospace;font-size:20px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.picked-info .rgb{font-size:12px;color:var(--mute);font-family:"Consolas",monospace}
+.copy-row{display:flex;gap:6px;margin-top:8px}
+.copy-btn{flex:1;padding:8px;border:1px solid var(--line);background:var(--bg);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;text-align:center}
+.copy-btn:hover{background:var(--soft);border-color:var(--ink)}
+
+/* Palette swatches */
+.palette{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.palette .sw{aspect-ratio:1;border-radius:8px;cursor:pointer;position:relative;border:2px solid transparent;transition:.15s}
+.palette .sw:hover{border-color:var(--ink);transform:scale(1.05)}
+.palette .sw:active{transform:scale(.95)}
+
+/* History */
+.history{display:flex;flex-wrap:wrap;gap:6px}
+.history .h-item{width:32px;height:32px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:.15s}
+.history .h-item:hover{border-color:var(--ink);transform:scale(1.1)}
+
+/* Actions */
+.actions{display:flex;flex-direction:column;gap:8px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;transition:.15s;text-decoration:none}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-d)}
+.btn.success{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.success:hover{background:#0d6b4a}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Inputs */
+input[type=text],input[type=color],select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink)}
+input[type=color]{padding:3px;height:42px;cursor:pointer}
+input:focus,select:focus{outline:none;border-color:var(--blue)}
+
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);margin-bottom:5px}
+
+/* Generated palette preview */
+.gen-strip{display:flex;height:44px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-bottom:8px}
+.gen-strip div{flex:1;cursor:pointer;transition:.15s}
+.gen-strip div:hover{flex:1.4}
+.gen-code{font-family:Consolas,monospace;font-size:11px;color:var(--mute);text-align:center;word-break:break-all}
+
+/* Message */
+#msg{margin:12px 0;font-size:14px;min-height:20px;text-align:center}
+#msg.err{color:var(--bad)}
+#msg.ok{color:var(--ok)}
+
+/* Toast */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ============== FOOTER ============== */
+footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
+.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
+.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
+.footer-col a:hover{color:var(--ink);text-decoration:underline}
+.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
+.social-icons{display:flex;gap:10px;margin-top:14px}
+.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
+.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
+.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
+.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
+.fbtn:hover{background:var(--bg);border-color:var(--ink)}
+
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .workspace{grid-template-columns:1fr}
+  .page-head h1{font-size:22px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .tools-bar .in{padding:0 12px}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+  .palette{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html" class="active"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<!-- ============ TOOLS BAR ============ -->
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-palette.html" class="tool-item active"><i class="fas fa-eye-dropper"></i> Color Palette</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<!-- ============ MAIN ============ -->
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1><i class="fas fa-eye-dropper"></i> Color Palette</h1>
+      <p>ছবি থেকে যেকোনো রঙ নিন। HEX, RGB, HSL copy করুন। অটোমেটিক ৫টা রঙের palette তৈরি করুন। সব প্রসেসিং browser এ হয় — ছবি সার্ভারে যায় না।</p>
+    </div>
+
+    <!-- Drop zone -->
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose image">
+      <i class="fas fa-image"></i>
+      <b>Drop image here, or click to choose</b>
+      <span>JPG, PNG, WebP, GIF · Max 20 MB</span>
+      <input type="file" id="pick" accept="image/*" hidden>
+    </div>
+
+    <div id="msg"></div>
+
+    <!-- Workspace -->
+    <div class="workspace" id="workspace">
+      <div class="preview-card">
+        <canvas id="canvas"></canvas>
+        <div class="hint-overlay"><i class="fas fa-hand-pointer"></i> Click on the image to pick color</div>
+      </div>
+
+      <div class="side">
+        <!-- Picked color -->
+        <div class="panel">
+          <h3><i class="fas fa-crosshairs"></i> Picked color <span class="badge" id="pickedBadge">—</span></h3>
+          <div class="picked">
+            <div class="swatch-lg" id="bigSwatch"></div>
+            <div class="picked-info">
+              <div class="hex" id="hexVal">#000000</div>
+              <div class="rgb" id="rgbVal">rgb(0, 0, 0)</div>
+              <div class="rgb" id="hslVal">hsl(0, 0%, 0%)</div>
+            </div>
+          </div>
+          <div class="copy-row">
+            <button class="copy-btn" id="copyHex">Copy HEX</button>
+            <button class="copy-btn" id="copyRgb">Copy RGB</button>
+            <button class="copy-btn" id="copyHsl">Copy HSL</button>
+          </div>
+        </div>
+
+        <!-- Manual color -->
+        <div class="panel">
+          <h3><i class="fas fa-sliders-h"></i> Pick manually</h3>
+          <div class="field">
+            <label>Color picker</label>
+            <input type="color" id="manualColor" value="#1473e6">
+          </div>
+          <div class="field">
+            <label>HEX code</label>
+            <input type="text" id="manualHex" value="#1473e6" maxlength="7" placeholder="#RRGGBB">
+          </div>
+        </div>
+
+        <!-- Auto palette -->
+        <div class="panel">
+          <h3><i class="fas fa-swatchbook"></i> Auto palette <span class="badge">5 colors</span></h3>
+          <div class="palette" id="palette"></div>
+          <div class="copy-row">
+            <button class="copy-btn" id="copyPalette">Copy all HEX</button>
+            <button class="copy-btn" id="genPalette">Regenerate</button>
+          </div>
+        </div>
+
+        <!-- History -->
+        <div class="panel">
+          <h3><i class="fas fa-history"></i> Recent <span class="badge" id="histBadge">0</span></h3>
+          <div class="history" id="history">
+            <span style="color:var(--mute);font-size:13px">No colors picked yet.</span>
+          </div>
+          <div class="copy-row" style="margin-top:10px">
+            <button class="copy-btn" id="clearHist">Clear history</button>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+          <button class="btn" id="resetBtn"><i class="fas fa-redo"></i> Choose another image</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============ FOOTER (site-wide) ============ -->
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="index.html" class="logo-container" style="margin-bottom:12px">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </a>
+      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
+      <div class="social-icons">
+        <a href="#" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Pinterest" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="stock-photo.html">Stock Photos</a>
+      <a href="tools.html">Tools</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="image-resizer.html">Image Resizer</a>
+      <a href="image-cropper.html">Cropper</a>
+      <a href="image-compressor.html">Compressor</a>
+      <a href="color-palette.html">Color Palette</a>
+      <a href="bg-remover.html">BG Remover</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Help</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="dmca.html">DMCA</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 MINAMI STOCK · All rights reserved</div>
+    <div class="footer-bottom-left">
+      <a class="fbtn" href="privacy.html">Privacy</a>
+      <a class="fbtn" href="terms.html">Terms</a>
+      <a class="fbtn" href="dmca.html">DMCA</a>
+      <a class="fbtn" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let img = null, canvas = null, ctx = null, history = [];
+
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("show"),2000); }
+function msg(t, cls){ const m=$("msg"); m.textContent = t || ""; m.className = cls || ""; }
+
+/* sidebar menu */
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+
+/* file load */
+const drop = $("drop"), pick = $("pick");
+drop.onclick = () => pick.click();
+drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick.click(); } };
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+pick.onchange = () => { if (pick.files[0]) loadFile(pick.files[0]); pick.value = ""; };
+
+function loadFile(file){
+  if (!file.type.startsWith("image/")) { msg("Only image files allowed.", "err"); return; }
+  if (file.size > 20*1024*1024) { msg("File too large. Max 20 MB.", "err"); return; }
+  const url = URL.createObjectURL(file);
+  const image = new Image();
+  image.onload = () => {
+    img = image;
+    canvas = $("canvas");
+    // Max dimension for performance
+    const maxW = 1200;
+    const scale = Math.min(1, maxW / image.naturalWidth);
+    canvas.width = Math.round(image.naturalWidth * scale);
+    canvas.height = Math.round(image.naturalHeight * scale);
+    ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    $("workspace").classList.add("show");
+    drop.style.display = "none";
+    msg("Click on the image to pick a color.", "ok");
+    genAutoPalette();
+  };
+  image.onerror = () => msg("Could not read this image.", "err");
+  image.src = url;
+}
+
+/* click on canvas */
+function handleCanvasClick(e){
+  if (!ctx) return;
+  const rect = canvas.getBoundingClientRect();
+  let x, y;
+  if (e.touches && e.touches[0]) {
+    x = (e.touches[0].clientX - rect.left) * canvas.width / rect.width;
+    y = (e.touches[0].clientY - rect.top) * canvas.height / rect.height;
+  } else {
+    x = (e.clientX - rect.left) * canvas.width / rect.width;
+    y = (e.clientY - rect.top) * canvas.height / rect.height;
+  }
+  x = Math.max(0, Math.min(canvas.width - 1, Math.floor(x)));
+  y = Math.max(0, Math.min(canvas.height - 1, Math.floor(y)));
+  const d = ctx.getImageData(x, y, 1, 1).data;
+  setColor(d[0], d[1], d[2], true);
+}
+
+document.addEventListener("click", e => { if (e.target.id === "canvas") handleCanvasClick(e); });
+
+/* set current color */
+function rgbToHex(r, g, b){ return "#" + [r,g,b].map(v => v.toString(16).padStart(2, "0")).join(""); }
+function rgbToHsl(r, g, b){
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h = 0, s = 0, l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+let currentRGB = [20, 115, 230];
+
+function setColor(r, g, b, addToHistory){
+  currentRGB = [r, g, b];
+  const hex = rgbToHex(r, g, b);
+  const [h, s, l] = rgbToHsl(r, g, b);
+  $("hexVal").textContent = hex.toUpperCase();
+  $("rgbVal").textContent = `rgb(${r}, ${g}, ${b})`;
+  $("hslVal").textContent = `hsl(${h}, ${s}%, ${l}%)`;
+  $("bigSwatch").style.background = hex;
+  $("manualColor").value = hex;
+  $("manualHex").value = hex.toUpperCase();
+  $("pickedBadge").textContent = hex.toUpperCase();
+  if (addToHistory) addHistory(r, g, b);
+}
+
+function addHistory(r, g, b){
+  const hex = rgbToHex(r, g, b);
+  if (history.includes(hex)) return;
+  history.unshift(hex);
+  if (history.length > 24) history.pop();
+  drawHistory();
+}
+function drawHistory(){
+  const box = $("history");
+  if (!history.length) { box.innerHTML = '<span style="color:var(--mute);font-size:13px">No colors picked yet.</span>'; }
+  else {
+    box.innerHTML = history.map(h => `<div class="h-item" style="background:${h}" data-hex="${h}" title="${h}"></div>`).join("");
+    box.querySelectorAll(".h-item").forEach(el => {
+      el.onclick = () => { const h = el.dataset.hex; const [r,g,b] = hexToRgb(h); setColor(r,g,b,false); };
+    });
+  }
+  $("histBadge").textContent = history.length;
+}
+function hexToRgb(hex){
+  hex = hex.replace("#", "");
+  return [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+}
+
+/* Copy buttons */
+function copyText(t){ navigator.clipboard.writeText(t).then(() => toast("Copied: " + t)).catch(() => toast("Copy failed")); }
+$("copyHex").onclick = () => copyText($("hexVal").textContent);
+$("copyRgb").onclick = () => copyText($("rgbVal").textContent);
+$("copyHsl").onclick = () => copyText($("hslVal").textContent);
+
+/* Manual color */
+$("manualColor").oninput = e => { const [r,g,b] = hexToRgb(e.target.value); setColor(r,g,b,true); };
+$("manualHex").oninput = e => {
+  let v = e.target.value.trim();
+  if (!v.startsWith("#")) v = "#" + v;
+  if (/^#[0-9a-f]{6}$/i.test(v)) { const [r,g,b] = hexToRgb(v); setColor(r,g,b,true); }
+};
+
+/* Auto palette — simple dominant color sampling */
+function genAutoPalette(){
+  if (!ctx) return;
+  const samples = 40;
+  const palette = [];
+  const blockW = Math.floor(canvas.width / 6);
+  const blockH = Math.floor(canvas.height / 6);
+  const used = new Set();
+
+  for (let i = 0; i < samples; i++) {
+    const x = Math.floor(Math.random() * (canvas.width - blockW));
+    const y = Math.floor(Math.random() * (canvas.height - blockH));
+    const data = ctx.getImageData(x, y, blockW, blockH).data;
+    let r=0,g=0,b=0,count=0;
+    for (let j=0; j<data.length; j+=16) { r+=data[j]; g+=data[j+1]; b+=data[j+2]; count++; }
+    r=Math.round(r/count); g=Math.round(g/count); b=Math.round(b/count);
+    const hex = rgbToHex(r,g,b);
+    if (!used.has(hex)) { used.add(hex); palette.push({r,g,b,hex}); }
+    if (palette.length >= 5) break;
+  }
+
+  // Fill if less than 5
+  while (palette.length < 5) {
+    palette.push({r: Math.floor(Math.random()*256), g: Math.floor(Math.random()*256), b: Math.floor(Math.random()*256), hex: rgbToHex(Math.floor(Math.random()*256), Math.floor(Math.random()*256), Math.floor(Math.random()*256))});
+  }
+
+  const box = $("palette");
+  box.innerHTML = palette.map((p, i) => `<div class="sw" style="background:${p.hex}" data-hex="${p.hex}" title="${p.hex}"></div>`).join("");
+  box.querySelectorAll(".sw").forEach(el => {
+    el.onclick = () => { const h = el.dataset.hex; const [r,g,b] = hexToRgb(h); setColor(r,g,b,true); };
+  });
+  window._palette = palette.map(p => p.hex);
+}
+
+$("genPalette").onclick = genAutoPalette;
+$("copyPalette").onclick = () => {
+  const p = window._palette || [];
+  if (!p.length) return toast("No palette yet");
+  copyText(p.join(", "));
+};
+$("clearHist").onclick = () => { history = []; drawHistory(); };
+
+/* Reset */
+$("resetBtn").onclick = () => {
+  img = canvas = ctx = null;
+  $("workspace").classList.remove("show");
+  drop.style.display = "";
+  msg("");
+  history = [];
+  drawHistory();
+};
+
+/* Init */
+setColor(20, 115, 230, false);
+</script>
+</body>
+</html>

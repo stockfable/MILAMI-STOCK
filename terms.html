@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms of Service - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-signup:hover{background:var(--blue-d)}
+
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+main{flex:1;padding:40px 20px}
+.wrap{max-width:880px;margin:auto}
+
+.page-head{margin-bottom:32px;padding-bottom:24px;border-bottom:2px solid var(--soft)}
+.page-head h1{font-size:32px;font-weight:800;margin-bottom:8px}
+.page-head .meta{font-size:13px;color:var(--mute);display:flex;gap:16px;flex-wrap:wrap}
+.page-head .meta span{display:flex;align-items:center;gap:6px}
+
+.toc{background:var(--soft);border-radius:12px;padding:22px;margin-bottom:32px}
+.toc h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);margin-bottom:14px}
+.toc ol{margin-left:20px;font-size:14px;line-height:2}
+.toc a{color:var(--blue);font-weight:600}
+.toc a:hover{text-decoration:underline}
+
+.content h2{font-size:22px;font-weight:700;margin:36px 0 14px;padding-top:14px;scroll-margin-top:80px}
+.content h3{font-size:16px;font-weight:700;margin:22px 0 10px}
+.content p{font-size:15px;line-height:1.8;color:var(--ink);margin-bottom:14px}
+.content ul, .content ol{margin:14px 0 18px 24px;font-size:15px;line-height:1.85}
+.content li{margin-bottom:8px}
+.content strong{font-weight:700}
+.content a{color:var(--blue);font-weight:600}
+.content a:hover{text-decoration:underline}
+
+.callout{background:#fff7ed;border-left:4px solid #e67e22;padding:14px 18px;border-radius:8px;margin:18px 0;font-size:14px;line-height:1.7;color:#7d4e1a}
+.callout b{color:#a04b0e}
+
+.callout.blue{background:#f0f7ff;border-left-color:var(--blue);color:#2c4a6b}
+.callout.blue b{color:var(--blue)}
+
+footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
+.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
+.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
+.footer-col a:hover{color:var(--ink);text-decoration:underline}
+.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
+.social-icons{display:flex;gap:10px;margin-top:14px}
+.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
+.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
+.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
+.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
+.fbtn:hover{background:var(--bg);border-color:var(--ink)}
+
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .page-head h1{font-size:24px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-palette.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Palette</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1>Terms of Service</h1>
+      <div class="meta">
+        <span><i class="fas fa-calendar"></i> Last updated: January 15, 2026</span>
+        <span><i class="fas fa-clock"></i> 12 min read</span>
+      </div>
+    </div>
+
+    <div class="toc">
+      <h3>Table of contents</h3>
+      <ol>
+        <li><a href="#accept">Acceptance of terms</a></li>
+        <li><a href="#service">Description of service</a></li>
+        <li><a href="#account">User accounts</a></li>
+        <li><a href="#license">Content license</a></li>
+        <li><a href="#upload">User uploads</a></li>
+        <li><a href="#prohibited">Prohibited uses</a></li>
+        <li><a href="#ip">Intellectual property</a></li>
+        <li><a href="#thirdparty">Third-party content</a></li>
+        <li><a href="#disclaimer">Disclaimers</a></li>
+        <li><a href="#liability">Limitation of liability</a></li>
+        <li><a href="#termination">Termination</a></li>
+        <li><a href="#changes">Changes to terms</a></li>
+        <li><a href="#law">Governing law</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ol>
+    </div>
+
+    <div class="content">
+
+      <h2 id="accept">1. Acceptance of terms</h2>
+      <p>By accessing or using MINAMI STOCK ("the Service", "we", "us", "our"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service.</p>
+
+      <h2 id="service">2. Description of service</h2>
+      <p>MINAMI STOCK provides:</p>
+      <ul>
+        <li><strong>Stock photos</strong> — Free, copyright-free images for personal and commercial use</li>
+        <li><strong>Image tools</strong> — Browser-based tools for resizing, cropping, compressing, and editing images</li>
+        <li><strong>Contributor platform</strong> — A place where users can upload their own photos</li>
+      </ul>
+      <p>The Service is provided "as is" and may be modified, suspended, or discontinued at any time without notice.</p>
+
+      <h2 id="account">3. User accounts</h2>
+      <h3>3.1 Account creation</h3>
+      <p>You may browse and use most features without an account. To upload photos or save collections, you must create a free account.</p>
+      <h3>3.2 Account responsibilities</h3>
+      <ul>
+        <li>You must provide accurate information when registering</li>
+        <li>You are responsible for maintaining the security of your account</li>
+        <li>You must be at least 13 years old to create an account</li>
+        <li>You must notify us immediately of any unauthorized access</li>
+      </ul>
+
+      <h2 id="license">4. Content license</h2>
+      <h3>4.1 What you CAN do</h3>
+      <p>All photos on MINAMI STOCK are free for:</p>
+      <ul>
+        <li>Personal use (wallpapers, presentations, social media)</li>
+        <li>Commercial use (websites, ads, marketing, products)</li>
+        <li>Print use (posters, brochures, books, magazines)</li>
+        <li>Modification and adaptation</li>
+        <li>Distribution as part of a larger creative work</li>
+      </ul>
+      <p><strong>No attribution required</strong>, though we always appreciate a link back.</p>
+
+      <h3>4.2 What you CANNOT do</h3>
+      <ul>
+        <li><strong>Resell</strong> the photos as standalone files (e.g., on another stock photo site)</li>
+        <li><strong>Redistribute</strong> the photos as a collection or bundle</li>
+        <li><strong>Claim ownership</strong> of the original photos</li>
+        <li><strong>Use in AI training</strong> without explicit written permission</li>
+        <li><strong>Use in illegal, defamatory, or harmful content</strong></li>
+        <li><strong>Use to imply endorsement</strong> by people, brands, or organizations depicted</li>
+      </ul>
+
+      <div class="callout blue">
+        <b>Note:</b> Photos may contain brands, logos, or recognizable people. You are responsible for ensuring your specific use complies with trademark, personality rights, and other applicable laws.
+      </div>
+
+      <h2 id="upload">5. User uploads</h2>
+      <h3>5.1 Your responsibility</h3>
+      <p>When you upload content to MINAMI STOCK, you confirm that:</p>
+      <ul>
+        <li>You own all rights to the content, OR have permission from the copyright owner</li>
+        <li>The content does not infringe any third-party rights</li>
+        <li>The content does not contain illegal material</li>
+        <li>You have obtained any necessary model or property releases</li>
+      </ul>
+
+      <h3>5.2 License you grant us</h3>
+      <p>By uploading, you grant MINAMI STOCK a worldwide, non-exclusive, royalty-free license to:</p>
+      <ul>
+        <li>Display your content on our site</li>
+        <li>Distribute your content to users under our license terms</li>
+        <li>Modify (resize, compress) your content for display purposes</li>
+      </ul>
+
+      <h3>5.3 Content removal</h3>
+      <p>We reserve the right to remove any content at any time for any reason, including copyright concerns, quality issues, or violation of these terms.</p>
+
+      <h2 id="prohibited">6. Prohibited uses</h2>
+      <p>You agree NOT to:</p>
+      <ul>
+        <li>Upload copyrighted content without permission</li>
+        <li>Upload illegal, harmful, or offensive content</li>
+        <li>Use bots, scrapers, or automated tools to download content en masse</li>
+        <li>Attempt to hack, overload, or disrupt the Service</li>
+        <li>Impersonate others or create fake accounts</li>
+        <li>Use the Service for spam or phishing</li>
+        <li>Violate any applicable laws or regulations</li>
+      </ul>
+      <p>Violation may result in immediate account termination and legal action.</p>
+
+      <h2 id="ip">7. Intellectual property</h2>
+      <p>The MINAMI STOCK name, logo, design, and code are our intellectual property. You may not copy, modify, or redistribute them without permission.</p>
+      <p>Individual photos are owned by their respective photographers and are licensed to you under the terms in Section 4.</p>
+
+      <h2 id="thirdparty">8. Third-party content</h2>
+      <p>Some photos on MINAMI STOCK come from third-party sources including Pixabay. These are provided under their respective licenses (Pixabay License, CC0, or similar).</p>
+      <p>We make reasonable efforts to verify that all content is copyright-free, but we cannot guarantee this. If you believe content infringes your rights, please see our <a href="dmca.html">DMCA page</a>.</p>
+
+      <h2 id="disclaimer">9. Disclaimers</h2>
+      <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO:</p>
+      <ul>
+        <li>Warranties of merchantability or fitness for a particular purpose</li>
+        <li>Warranties that the Service will be uninterrupted or error-free</li>
+        <li>Warranties about the accuracy or reliability of content</li>
+      </ul>
+
+      <h2 id="liability">10. Limitation of liability</h2>
+      <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, MINAMI STOCK SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOST PROFITS, DATA, OR GOODWILL, ARISING FROM YOUR USE OF THE SERVICE.</p>
+      <p>Our total liability for any claim shall not exceed the amount you paid us (which, for free services, is $0).</p>
+
+      <h2 id="termination">11. Termination</h2>
+      <p>We may terminate or suspend your account at any time, without notice, for violation of these terms or for any other reason at our discretion.</p>
+      <p>You may delete your account at any time by contacting us at <a href="mailto:support@minamistock.com">support@minamistock.com</a>.</p>
+
+      <h2 id="changes">12. Changes to terms</h2>
+      <p>We may update these Terms of Service from time to time. Continued use of the Service after changes means you accept the new terms.</p>
+      <p>Significant changes will be announced on the site or by email.</p>
+
+      <h2 id="law">13. Governing law</h2>
+      <p>These terms are governed by the laws of Bangladesh, without regard to conflict of law principles. Any disputes shall be resolved in the courts of Dhaka, Bangladesh.</p>
+
+      <h2 id="contact">14. Contact</h2>
+      <p>Questions about these terms? Contact us:</p>
+      <ul>
+        <li>Email: <a href="mailto:legal@minamistock.com">legal@minamistock.com</a></li>
+        <li>Contact page: <a href="contact.html">minamistock.com/contact</a></li>
+      </ul>
+
+      <div class="callout">
+        <b>Important:</b> By using MINAMI STOCK, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="index.html" class="logo-container" style="margin-bottom:12px">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </a>
+      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
+      <div class="social-icons">
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="stock-photo.html">Stock Photos</a>
+      <a href="tools.html">Tools</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="image-resizer.html">Image Resizer</a>
+      <a href="image-cropper.html">Cropper</a>
+      <a href="image-compressor.html">Compressor</a>
+      <a href="color-palette.html">Color Palette</a>
+      <a href="bg-remover.html">BG Remover</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Help</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="dmca.html">DMCA</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 MINAMI STOCK · All rights reserved</div>
+    <div class="footer-bottom-left">
+      <a class="fbtn" href="privacy.html">Privacy</a>
+      <a class="fbtn" href="terms.html">Terms</a>
+      <a class="fbtn" href="dmca.html">DMCA</a>
+      <a class="fbtn" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+</script>
+</body>
+</html>

@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Tools - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--ok:#12805c;--warn:#e67e22}
+body.dark{--ink:#f1f1f1;--mute:#a3a3a3;--line:#333;--bg:#161616;--soft:#222}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ===== TOP BAR ===== */
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown a.active{background:var(--soft);box-shadow:inset 3px 0 var(--blue)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-signup:hover{background:var(--blue-d)}
+
+/* ===== TOOLS BAR (horizontal scroll) ===== */
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item.active{background:var(--bg);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+/* ===== MAIN ===== */
+main{flex:1;padding:40px 20px}
+.wrap{max-width:1300px;margin:auto}
+
+.page-head{text-align:center;margin-bottom:36px}
+.page-head h1{font-size:38px;font-weight:800;margin-bottom:12px;line-height:1.15}
+.page-head h1 span{background:linear-gradient(135deg,#1473e6,#7c5cff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-head p{font-size:16px;color:var(--mute);line-height:1.6;max-width:640px;margin:0 auto}
+
+/* Search */
+.tool-search{max-width:480px;margin:22px auto 0;position:relative}
+.tool-search input{width:100%;padding:14px 18px 14px 46px;border:2px solid var(--line);border-radius:12px;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);transition:.15s}
+.tool-search input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(20,115,230,.1)}
+.tool-search i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--mute)}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;max-width:800px;margin:24px auto 0}
+.stat-box{background:var(--soft);border-radius:10px;padding:14px 16px;text-align:center}
+.stat-box b{display:block;font-size:20px;font-weight:800;color:var(--blue);margin-bottom:2px}
+.stat-box span{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+
+/* Category tabs */
+.cat-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:32px 0 26px}
+.cat-tab{padding:9px 20px;border:1px solid var(--line);background:var(--bg);border-radius:22px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;color:var(--mute);display:inline-flex;align-items:center;gap:8px}
+.cat-tab:hover{border-color:var(--ink);color:var(--ink)}
+.cat-tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cat-tab i{font-size:12px}
+
+/* Tools grid */
+.section{margin-bottom:44px}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid var(--soft)}
+.section-head h2{font-size:19px;font-weight:800}
+.section-head .count{margin-left:auto;font-size:12px;color:var(--mute);font-weight:700;background:var(--soft);padding:4px 12px;border-radius:12px;text-transform:uppercase;letter-spacing:.4px}
+
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+
+.tool-card{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:24px 22px;transition:.2s;display:block;position:relative;overflow:hidden}
+.tool-card:hover{border-color:var(--blue);box-shadow:0 10px 30px rgba(20,115,230,.13);transform:translateY(-4px)}
+.tool-card .icon{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#1473e6,#0d66d0);color:#fff;display:grid;place-items:center;font-size:22px;margin-bottom:16px;transition:.2s}
+.tool-card:hover .icon{transform:scale(1.08) rotate(-3deg)}
+.tool-card.alt .icon{background:linear-gradient(135deg,#7c5cff,#e34ba9)}
+.tool-card.alt2 .icon{background:linear-gradient(135deg,#12805c,#4eb87d)}
+.tool-card h3{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.tool-card p{font-size:13px;color:var(--mute);line-height:1.6;margin-bottom:14px;min-height:42px}
+.tool-card .arrow{color:var(--blue);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;transition:.15s}
+.tool-card:hover .arrow{gap:12px}
+.tool-card .badge{position:absolute;top:16px;right:16px;font-size:10px;font-weight:800;padding:4px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
+.badge.new{background:#e8f5ee;color:var(--ok)}
+.badge.popular{background:#fff2e6;color:var(--warn)}
+.badge.free{background:#eaf2fd;color:var(--blue)}
+
+.tool-card.coming{opacity:.7;cursor:not-allowed;pointer-events:none}
+.tool-card.coming::after{content:"Soon";position:absolute;bottom:16px;right:16px;font-size:10px;font-weight:800;color:var(--warn);text-transform:uppercase;letter-spacing:.5px}
+.tool-card.coming .icon{background:var(--line);color:var(--mute)}
+
+/* No results */
+.no-results{text-align:center;padding:60px 20px;color:var(--mute);display:none}
+.no-results.show{display:block}
+.no-results i{font-size:42px;opacity:.35;margin-bottom:14px;display:block}
+
+/* CTA bottom */
+.cta-bottom{background:linear-gradient(135deg,#1473e6,#0d66d0);border-radius:16px;padding:40px 30px;text-align:center;color:#fff;margin-top:50px;position:relative;overflow:hidden}
+.cta-bottom::before{content:"";position:absolute;top:-60%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);border-radius:50%}
+.cta-bottom h2{font-size:26px;font-weight:800;margin-bottom:10px;position:relative}
+.cta-bottom p{opacity:.9;font-size:15px;margin-bottom:20px;position:relative}
+.cta-bottom a{background:#fff;color:var(--blue);padding:12px 30px;border-radius:24px;font-weight:700;font-size:14px;display:inline-block;position:relative;transition:.15s}
+.cta-bottom a:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+
+/* ===== FOOTER ===== */
+footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
+.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
+.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
+.footer-col a:hover{color:var(--ink);text-decoration:underline}
+.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
+.social-icons{display:flex;gap:10px;margin-top:14px}
+.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
+.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
+.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
+.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
+.fbtn:hover{background:var(--bg);border-color:var(--ink)}
+
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .page-head h1{font-size:28px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .tools-bar .in{padding:0 12px}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+  .page-head h1{font-size:24px}
+  .tool-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html" class="active"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<!-- ============ TOOLS BAR ============ -->
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-palette.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Palette</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<!-- ============ MAIN ============ -->
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1>All the <span>tools</span> you need</h1>
+      <p>Professional image editing tools that run entirely in your browser. No upload, no signup, no privacy worries. 100% free forever.</p>
+
+      <div class="tool-search">
+        <i class="fas fa-search"></i>
+        <input type="text" id="toolSearch" placeholder="Search tools..." autocomplete="off">
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box"><b>12+</b><span>Tools</span></div>
+        <div class="stat-box"><b>100%</b><span>Free</span></div>
+        <div class="stat-box"><b>0</b><span>Uploads</span></div>
+        <div class="stat-box"><b>∞</b><span>Uses</span></div>
+      </div>
+    </div>
+
+    <!-- Category tabs -->
+    <div class="cat-tabs" id="catTabs">
+      <button class="cat-tab on" data-cat="all"><i class="fas fa-th"></i> All tools</button>
+      <button class="cat-tab" data-cat="edit"><i class="fas fa-crop"></i> Basic editing</button>
+      <button class="cat-tab" data-cat="advanced"><i class="fas fa-magic"></i> Advanced</button>
+      <button class="cat-tab" data-cat="convert"><i class="fas fa-exchange-alt"></i> Convert</button>
+      <button class="cat-tab" data-cat="utility"><i class="fas fa-tools"></i> Utility</button>
+    </div>
+
+    <div id="toolList">
+
+      <!-- BASIC EDITING -->
+      <div class="section" data-cat="edit">
+        <div class="section-head">
+          <h2><i class="fas fa-crop" style="color:var(--blue)"></i> Basic editing</h2>
+          <span class="count">4 tools</span>
+        </div>
+        <div class="tool-grid">
+
+          <a href="image-resizer.html" class="tool-card">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-expand"></i></div>
+            <h3>Image Resizer</h3>
+            <p>Resize any image to exact dimensions. Presets for FHD, HD, Instagram, Story & more.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="image-cropper.html" class="tool-card">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-crop"></i></div>
+            <h3>Image Cropper</h3>
+            <p>Crop images with precision. Free crop or fixed ratios like 1:1, 16:9, 4:3.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="image-compressor.html" class="tool-card">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-compress"></i></div>
+            <h3>Image Compressor</h3>
+            <p>Reduce file size without visible quality loss. Perfect for web and email.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="image-converter.html" class="tool-card">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-exchange-alt"></i></div>
+            <h3>Format Converter</h3>
+            <p>Convert between JPG, PNG, WebP, GIF, and BMP formats instantly.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ADVANCED -->
+      <div class="section" data-cat="advanced">
+        <div class="section-head">
+          <h2><i class="fas fa-magic" style="color:var(--blue)"></i> Advanced</h2>
+          <span class="count">4 tools</span>
+        </div>
+        <div class="tool-grid">
+
+          <a href="bg-remover.html" class="tool-card alt">
+            <span class="badge popular">Popular</span>
+            <div class="icon"><i class="fas fa-magic"></i></div>
+            <h3>Background Remover</h3>
+            <p>Remove backgrounds from images. Works best with solid color backgrounds.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="watermark.html" class="tool-card alt">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-tint"></i></div>
+            <h3>Watermark</h3>
+            <p>Add text or image watermarks. Customize position, opacity, size, and color.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="filters.html" class="tool-card alt">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-palette"></i></div>
+            <h3>Filters & Effects</h3>
+            <p>Apply grayscale, sepia, blur, brightness, contrast, and more with one click.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="upscaler.html" class="tool-card alt2">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-arrow-up"></i></div>
+            <h3>Image Upscaler</h3>
+            <p>Increase image resolution up to 2× or 4× using smart interpolation.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- CONVERT -->
+      <div class="section" data-cat="convert">
+        <div class="section-head">
+          <h2><i class="fas fa-exchange-alt" style="color:var(--blue)"></i> Convert & export</h2>
+          <span class="count">2 tools</span>
+        </div>
+        <div class="tool-grid">
+
+          <a href="image-to-pdf.html" class="tool-card alt2">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-file-pdf"></i></div>
+            <h3>Image to PDF</h3>
+            <p>Combine multiple images into a single PDF. Reorder, rotate, and export.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="image-converter.html" class="tool-card alt2">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-file-image"></i></div>
+            <h3>WebP Converter</h3>
+            <p>Convert to modern WebP format for smaller files and faster websites.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- UTILITY -->
+      <div class="section" data-cat="utility">
+        <div class="section-head">
+          <h2><i class="fas fa-tools" style="color:var(--blue)"></i> Utility</h2>
+          <span class="count">2 tools</span>
+        </div>
+        <div class="tool-grid">
+
+          <a href="color-palette.html" class="tool-card">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-eye-dropper"></i></div>
+            <h3>Color Palette</h3>
+            <p>Pick colors from any image. Get HEX, RGB, HSL values and auto palettes.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+          <a href="color-picker.html" class="tool-card">
+            <span class="badge free">Free</span>
+            <div class="icon"><i class="fas fa-fill-drip"></i></div>
+            <h3>Color Picker</h3>
+            <p>Choose colors and get instant HEX, RGB, HSL codes. Copy with one click.</p>
+            <div class="arrow">Open tool <i class="fas fa-arrow-right"></i></div>
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="no-results" id="noResults">
+      <i class="fas fa-search"></i>
+      <h3 style="color:var(--ink);margin-bottom:6px">No tools found</h3>
+      <p>Try a different keyword.</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-bottom">
+      <h2>All tools. All free. Forever.</h2>
+      <p>No hidden fees, no watermarks, no signup required for most tools.</p>
+      <a href="stock-photo.html">Browse photos →</a>
+    </div>
+
+  </div>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="index.html" class="logo-container" style="margin-bottom:12px">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </a>
+      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
+      <div class="social-icons">
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="stock-photo.html">Stock Photos</a>
+      <a href="tools.html">Tools</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="image-resizer.html">Image Resizer</a>
+      <a href="image-cropper.html">Cropper</a>
+      <a href="image-compressor.html">Compressor</a>
+      <a href="color-palette.html">Color Palette</a>
+      <a href="bg-remover.html">BG Remover</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Help</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="dmca.html">DMCA</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 MINAMI STOCK · All rights reserved</div>
+    <div class="footer-bottom-left">
+      <a class="fbtn" href="privacy.html">Privacy</a>
+      <a class="fbtn" href="terms.html">Terms</a>
+      <a class="fbtn" href="dmca.html">DMCA</a>
+      <a class="fbtn" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+
+/* Category filter */
+let activeCat = "all";
+document.querySelectorAll(".cat-tab").forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll(".cat-tab").forEach(x => x.classList.remove("on"));
+    t.classList.add("on");
+    activeCat = t.dataset.cat;
+    filterTools();
+  };
+});
+
+/* Search */
+$("toolSearch").addEventListener("input", filterTools);
+
+function filterTools(){
+  const term = $("toolSearch").value.trim().toLowerCase();
+  let visible = 0;
+
+  document.querySelectorAll(".section").forEach(section => {
+    const cat = section.dataset.cat;
+    const catMatch = activeCat === "all" || cat === activeCat;
+    let cardVisible = 0;
+
+    section.querySelectorAll(".tool-card").forEach(card => {
+      const text = card.textContent.toLowerCase();
+      const textMatch = !term || text.includes(term);
+      const show = catMatch && textMatch;
+      card.style.display = show ? "" : "none";
+      if (show) cardVisible++;
+    });
+
+    section.style.display = (catMatch && cardVisible > 0) ? "" : "none";
+    visible += cardVisible;
+  });
+
+  $("noResults").classList.toggle("show", visible === 0);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+
+/* TOP BAR */
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-signup:hover{background:var(--blue-d)}
+
+/* TOOLS BAR */
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+/* MAIN */
+main{flex:1;padding:40px 20px}
+.wrap{max-width:900px;margin:auto}
+.page-head{text-align:center;margin-bottom:36px}
+.page-head h1{font-size:36px;font-weight:800;margin-bottom:12px}
+.page-head p{font-size:16px;color:var(--mute);line-height:1.6;max-width:600px;margin:0 auto}
+
+/* Search FAQ */
+.faq-search{max-width:480px;margin:0 auto 36px;position:relative}
+.faq-search input{width:100%;padding:14px 18px 14px 46px;border:2px solid var(--line);border-radius:12px;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);transition:.15s}
+.faq-search input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 4px rgba(20,115,230,.1)}
+.faq-search i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--mute);font-size:15px}
+
+/* Category tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
+.tab{padding:9px 18px;border:1px solid var(--line);background:var(--bg);border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;color:var(--mute)}
+.tab:hover{border-color:var(--ink);color:var(--ink)}
+.tab.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* FAQ items */
+.faq-group{margin-bottom:32px}
+.faq-group h2{font-size:18px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--soft);color:var(--blue);text-transform:uppercase;letter-spacing:.5px;font-size:13px}
+
+.faq-item{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:var(--bg);overflow:hidden;transition:.15s}
+.faq-item:hover{border-color:var(--mute)}
+.faq-item.open{border-color:var(--blue);box-shadow:0 4px 16px rgba(20,115,230,.08)}
+
+.faq-q{width:100%;padding:18px 22px;background:none;border:0;text-align:left;font-size:15px;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:14px;cursor:pointer}
+.faq-q:hover{background:var(--soft)}
+.faq-q i{color:var(--blue);font-size:14px;transition:transform .2s;flex:none}
+.faq-item.open .faq-q i{transform:rotate(180deg)}
+
+.faq-a{padding:0 22px;max-height:0;overflow:hidden;transition:max-height .3s, padding .3s}
+.faq-item.open .faq-a{max-height:600px;padding:0 22px 20px}
+.faq-a p{font-size:14px;line-height:1.75;color:var(--mute);margin-bottom:10px}
+.faq-a p:last-child{margin-bottom:0}
+.faq-a code{background:var(--soft);padding:2px 6px;border-radius:4px;font-size:13px;font-family:Consolas,monospace;color:var(--ink)}
+.faq-a a{color:var(--blue);font-weight:600}
+.faq-a a:hover{text-decoration:underline}
+
+/* No results */
+.no-results{text-align:center;padding:50px 20px;color:var(--mute);display:none}
+.no-results.show{display:block}
+.no-results i{font-size:42px;opacity:.4;margin-bottom:16px;display:block}
+
+/* CTA */
+.cta-box{background:var(--soft);border-radius:14px;padding:32px;text-align:center;margin-top:40px}
+.cta-box h3{font-size:20px;margin-bottom:10px}
+.cta-box p{color:var(--mute);margin-bottom:18px;font-size:14px}
+.cta-btn{background:var(--blue);color:#fff;padding:11px 26px;border-radius:22px;font-weight:700;font-size:14px;display:inline-block;transition:.15s}
+.cta-btn:hover{background:var(--blue-d);transform:translateY(-1px)}
+
+/* FOOTER */
+footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
+.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
+.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
+.footer-col a:hover{color:var(--ink);text-decoration:underline}
+.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
+.social-icons{display:flex;gap:10px;margin-top:14px}
+.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
+.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
+.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
+.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
+.fbtn:hover{background:var(--bg);border-color:var(--ink)}
+
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .page-head h1{font-size:28px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+  .faq-q{padding:15px 18px;font-size:14px}
+  .faq-a{padding:0 18px}
+  .faq-item.open .faq-a{padding:0 18px 16px}
+}
+</style>
+</head>
+<body>
+
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-palette.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Palette</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1>Frequently Asked Questions</h1>
+      <p>Find answers to the most common questions about MINAMI STOCK photos, tools, licenses, and accounts.</p>
+    </div>
+
+    <div class="faq-search">
+      <i class="fas fa-search"></i>
+      <input type="text" id="faqSearch" placeholder="Search FAQ..." autocomplete="off">
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-cat="all">All</button>
+      <button class="tab" data-cat="general">General</button>
+      <button class="tab" data-cat="photos">Photos</button>
+      <button class="tab" data-cat="tools">Tools</button>
+      <button class="tab" data-cat="account">Account</button>
+      <button class="tab" data-cat="legal">Legal</button>
+    </div>
+
+    <div id="faqList">
+
+      <!-- GENERAL -->
+      <div class="faq-group" data-cat="general">
+        <h2>General</h2>
+
+        <div class="faq-item">
+          <button class="faq-q">What is MINAMI STOCK? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>MINAMI STOCK is a free platform offering high-quality stock photos and creative image editing tools. All photos are copyright-free and can be used for personal and commercial projects without attribution.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Is MINAMI STOCK really free? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Yes, 100% free. You can browse, download, and use any photo without paying. Our tools are also completely free. No signup required for most features.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Do I need to create an account? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>You can browse and download photos without an account. However, an account lets you save favorites, upload your own photos, and access your dashboard. Creating one is free.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">What languages are supported? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>The site is currently available in English. More languages will be added in the future.</p></div>
+        </div>
+      </div>
+
+      <!-- PHOTOS -->
+      <div class="faq-group" data-cat="photos">
+        <h2>Photos</h2>
+
+        <div class="faq-item">
+          <button class="faq-q">Can I use these photos for commercial projects? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Yes. All photos on MINAMI STOCK are free for commercial use — websites, ads, print, products, social media, and more. No attribution required.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Do I need to give credit to the photographer? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>No attribution is required. However, we always appreciate a link back to MINAMI STOCK if you'd like to support us.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Where do the photos come from? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Our photos come from trusted sources including Pixabay (CC0-like license), our own curated uploads, and public domain collections. Every photo is verified copyright-free before being listed.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Can I resell the photos as-is? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>No. You cannot resell, redistribute, or sublicense the photos as standalone files. You can use them in your products (posters, websites, books, etc.) but not sell the photo itself.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">What resolution are the photos? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Most photos are available in high resolution — typically 1280×960 pixels or larger. Some photos go up to 4K or higher. The exact resolution is shown on each photo's detail page.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Can I use photos with people in them? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Yes, for editorial and creative use. However, if a photo shows a recognizable person and you use it for commercial advertising, you may need a model release. Always check the photo details.</p></div>
+        </div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="faq-group" data-cat="tools">
+        <h2>Tools</h2>
+
+        <div class="faq-item">
+          <button class="faq-q">Are the image tools really free? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Yes, all tools are 100% free with no limits. No signup, no watermark, no hidden fees.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Do my images get uploaded to a server? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>No. All our tools run entirely in your browser using HTML5 Canvas and JavaScript. Your images never leave your device. This makes our tools completely private and safe.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">What tools do you offer? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Currently we offer: Image Resizer, Image Cropper, Image Compressor, Format Converter, Background Remover, Watermark, Filters, Color Palette, Image to PDF, and Upscaler. More tools are added regularly.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Why is the background remover slow? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Our background remover processes pixel by pixel to detect edges precisely. The 7-second process shows real-time progress so you know what's happening. For simple backgrounds it works great; complex backgrounds may need more advanced AI tools.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">What file formats are supported? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Input: JPG, PNG, WebP, GIF. Output: JPG, PNG, WebP (depending on the tool). Maximum file size is usually 15–20 MB.</p></div>
+        </div>
+      </div>
+
+      <!-- ACCOUNT -->
+      <div class="faq-group" data-cat="account">
+        <h2>Account</h2>
+
+        <div class="faq-item">
+          <button class="faq-q">How do I create an account? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Click "Sign Up" at the top right corner. You can register with your email or sign in with Google. The process takes less than 30 seconds.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">I forgot my password. What do I do? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>On the <a href="login.html">login page</a>, click "Forgot password?". Enter your email and we'll send you a reset link.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">How do I upload my own photos? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Sign in, then go to the <a href="upload.html">Upload page</a>. Drag your photo, fill in title and keywords, and click Submit for review. Once approved, it will appear on the site.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Can I delete my account? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Yes. Email us at <a href="mailto:support@minamistock.com">support@minamistock.com</a> from your registered email, and we'll delete your account and all associated data within 7 days.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Is my data safe? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Yes. We use Firebase Authentication (Google) for secure login. We never store your password. Your uploaded images are stored securely on Firebase Storage. See our <a href="privacy.html">Privacy Policy</a>.</p></div>
+        </div>
+      </div>
+
+      <!-- LEGAL -->
+      <div class="faq-group" data-cat="legal">
+        <h2>Legal</h2>
+
+        <div class="faq-item">
+          <button class="faq-q">What is your copyright policy? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>All photos on MINAMI STOCK are verified copyright-free. If you believe your copyrighted work has been used improperly, please see our <a href="dmca.html">DMCA page</a> to file a takedown request.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Can I use MINAMI STOCK photos in AI training? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>No. Our photos are free for creative and commercial use, but training AI models on our collection is not permitted without explicit written permission.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">What license do your photos use? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>We use a custom license similar to Pixabay's: free for commercial use, no attribution required, no resale as standalone files. See full details on our <a href="license.html">License page</a>.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q">Can I use photos with brand logos? <i class="fas fa-chevron-down"></i></button>
+          <div class="faq-a"><p>Photos may contain visible brands or trademarks. You cannot use those photos in a way that suggests endorsement or affiliation with the brand. Editorial use is generally fine.</p></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="no-results" id="noResults">
+      <i class="fas fa-search"></i>
+      <h3>No results found</h3>
+      <p>Try a different keyword or <a href="contact.html" style="color:var(--blue);font-weight:600">contact us</a>.</p>
+    </div>
+
+    <div class="cta-box">
+      <h3>Still have questions?</h3>
+      <p>Our support team is here to help. We usually reply within 24 hours.</p>
+      <a href="contact.html" class="cta-btn">Contact Support →</a>
+    </div>
+  </div>
+</main>
+
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="index.html" class="logo-container" style="margin-bottom:12px">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </a>
+      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
+      <div class="social-icons">
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="stock-photo.html">Stock Photos</a>
+      <a href="tools.html">Tools</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="image-resizer.html">Image Resizer</a>
+      <a href="image-cropper.html">Cropper</a>
+      <a href="image-compressor.html">Compressor</a>
+      <a href="color-palette.html">Color Palette</a>
+      <a href="bg-remover.html">BG Remover</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Help</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="dmca.html">DMCA</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 MINAMI STOCK · All rights reserved</div>
+    <div class="footer-bottom-left">
+      <a class="fbtn" href="privacy.html">Privacy</a>
+      <a class="fbtn" href="terms.html">Terms</a>
+      <a class="fbtn" href="dmca.html">DMCA</a>
+      <a class="fbtn" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+
+/* Toggle FAQ */
+document.querySelectorAll(".faq-q").forEach(q => {
+  q.onclick = () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains("open");
+    // Optional: close all others
+    // document.querySelectorAll(".faq-item").forEach(i => i.classList.remove("open"));
+    item.classList.toggle("open", !wasOpen);
+  };
+});
+
+/* Category filter */
+let currentCat = "all";
+document.querySelectorAll(".tab").forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
+    t.classList.add("on");
+    currentCat = t.dataset.cat;
+    filterFAQs();
+  };
+});
+
+/* Search */
+$("faqSearch").addEventListener("input", filterFAQs);
+
+function filterFAQs(){
+  const term = $("faqSearch").value.trim().toLowerCase();
+  let visible = 0;
+
+  document.querySelectorAll(".faq-group").forEach(group => {
+    const groupCat = group.dataset.cat;
+    const catMatch = currentCat === "all" || groupCat === currentCat;
+    let groupVisible = 0;
+
+    group.querySelectorAll(".faq-item").forEach(item => {
+      const text = item.textContent.toLowerCase();
+      const textMatch = !term || text.includes(term);
+      const show = catMatch && textMatch;
+      item.style.display = show ? "" : "none";
+      if (show) { groupVisible++; visible++; }
+    });
+
+    group.style.display = (catMatch && groupVisible > 0) ? "" : "none";
+  });
+
+  $("noResults").classList.toggle("show", visible === 0);
+}
+</script>
+</body>
+</html>

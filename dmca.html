@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DMCA Policy - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--bad:#d7373f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-signup:hover{background:var(--blue-d)}
+
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+main{flex:1;padding:40px 20px}
+.wrap{max-width:880px;margin:auto}
+
+.page-head{margin-bottom:32px;padding-bottom:24px;border-bottom:2px solid var(--soft)}
+.page-head h1{font-size:32px;font-weight:800;margin-bottom:8px}
+.page-head .meta{font-size:13px;color:var(--mute);display:flex;gap:16px;flex-wrap:wrap}
+.page-head .meta span{display:flex;align-items:center;gap:6px}
+
+.alert-box{background:#fdeaea;border-left:4px solid var(--bad);padding:16px 20px;border-radius:8px;margin-bottom:28px;font-size:14px;line-height:1.7;color:#7d2626}
+.alert-box b{color:var(--bad);display:block;margin-bottom:6px;font-size:15px}
+
+.content h2{font-size:22px;font-weight:700;margin:36px 0 14px;padding-top:14px;scroll-margin-top:80px}
+.content h3{font-size:16px;font-weight:700;margin:22px 0 10px}
+.content p{font-size:15px;line-height:1.8;color:var(--ink);margin-bottom:14px}
+.content ul, .content ol{margin:14px 0 18px 24px;font-size:15px;line-height:1.85}
+.content li{margin-bottom:8px}
+.content strong{font-weight:700}
+.content a{color:var(--blue);font-weight:600}
+.content a:hover{text-decoration:underline}
+
+/* DMCA form */
+.dmca-form{background:var(--soft);border-radius:14px;padding:28px;margin:28px 0}
+.dmca-form h3{font-size:17px;margin-bottom:18px;color:var(--ink)}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field label .req{color:var(--bad)}
+.field input,.field textarea,.field select{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink)}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,115,230,.1)}
+.field textarea{min-height:110px;resize:vertical;font-family:inherit}
+.field small{display:block;font-size:12px;color:var(--mute);margin-top:4px}
+.check-row{display:flex;gap:10px;align-items:flex-start;margin:14px 0;font-size:13px;line-height:1.6;color:var(--mute)}
+.check-row input{margin-top:3px;accent-color:var(--blue)}
+
+.btn-submit{width:100%;padding:14px;background:var(--blue);color:#fff;border:0;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:.15s}
+.btn-submit:hover{background:var(--blue-d)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed}
+
+.msg{padding:12px 16px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none}
+.msg.show{display:block}
+.msg.ok{background:#e8f5ee;color:#12805c;border:1px solid #b8e0c8}
+.msg.err{background:#fdeaea;color:var(--bad);border:1px solid #f5c6c6}
+
+.callout{background:#f0f7ff;border-left:4px solid var(--blue);padding:14px 18px;border-radius:8px;margin:18px 0;font-size:14px;line-height:1.7;color:#2c4a6b}
+.callout b{color:var(--blue)}
+
+footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
+.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
+.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
+.footer-col a:hover{color:var(--ink);text-decoration:underline}
+.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
+.social-icons{display:flex;gap:10px;margin-top:14px}
+.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
+.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
+.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
+.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
+.fbtn:hover{background:var(--bg);border-color:var(--ink)}
+
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .page-head h1{font-size:24px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .dmca-form{padding:20px}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-palette.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Palette</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1>DMCA Policy</h1>
+      <div class="meta">
+        <span><i class="fas fa-calendar"></i> Last updated: January 15, 2026</span>
+        <span><i class="fas fa-clock"></i> 6 min read</span>
+        <span><i class="fas fa-copyright"></i> Copyright compliance</span>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <b>⚠️ Copyright Infringement Notice</b>
+      MINAMI STOCK respects the intellectual property rights of others. If you believe your copyrighted work has been used on our site without authorization, please follow the procedure below to file a DMCA takedown notice.
+    </div>
+
+    <div class="content">
+
+      <h2>1. Our Commitment</h2>
+      <p>MINAMI STOCK (the "Site") operates in compliance with the Digital Millennium Copyright Act (DMCA) and similar copyright laws worldwide. We take copyright infringement seriously and will respond promptly to valid notices of claimed infringement.</p>
+      <p>Our policy is to:</p>
+      <ul>
+        <li>Respond to all valid DMCA notices within 48–72 hours</li>
+        <li>Remove or disable access to allegedly infringing content</li>
+        <li>Terminate accounts of repeat infringers</li>
+        <li>Cooperate with copyright holders to resolve disputes</li>
+      </ul>
+
+      <h2>2. How to File a DMCA Notice</h2>
+      <p>If you are a copyright owner, or authorized to act on behalf of one, and you believe that content on our Site infringes your copyright, you may submit a written notification containing the following information:</p>
+
+      <ol>
+        <li><strong>Identification of the copyrighted work</strong> — Describe the copyrighted work you claim has been infringed, or provide a representative list if multiple works.</li>
+        <li><strong>Identification of the infringing material</strong> — Provide the exact URL(s) of the content on our Site that you claim is infringing.</li>
+        <li><strong>Your contact information</strong> — Your full name, mailing address, telephone number, and email address.</li>
+        <li><strong>Good faith statement</strong> — A statement that you have a good faith belief that the use of the material is not authorized by the copyright owner, its agent, or the law.</li>
+        <li><strong>Accuracy statement under penalty of perjury</strong> — A statement that the information in your notice is accurate, and that you are the copyright owner or authorized to act on the owner's behalf.</li>
+        <li><strong>Your signature</strong> — A physical or electronic signature of the copyright owner or authorized person.</li>
+      </ol>
+
+      <div class="callout">
+        <b>Note:</b> Under Section 512(f) of the DMCA, any person who knowingly materially misrepresents that material is infringing may be subject to liability for damages.
+      </div>
+
+      <h2>3. Submit Your Notice</h2>
+      <p>You can file a DMCA notice using one of the following methods:</p>
+
+      <div class="dmca-form">
+        <h3>📧 Email (fastest)</h3>
+        <p style="margin-bottom:16px;font-size:14px;color:var(--mute)">
+          Send your complete DMCA notice to: <a href="mailto:dmca@minamistock.com" style="font-weight:700;color:var(--blue)">dmca@minamistock.com</a>
+        </p>
+        <p style="font-size:13px;color:var(--mute);line-height:1.7">
+          Subject line: <code style="background:var(--bg);padding:2px 6px;border-radius:4px;font-family:Consolas,monospace">DMCA Takedown Request - [Your Name]</code>
+        </p>
+      </div>
+
+      <div class="dmca-form">
+        <h3>📝 Or use this form</h3>
+
+        <div class="msg" id="dmcaMsg"></div>
+
+        <form id="dmcaForm" onsubmit="return false">
+          <div class="field">
+            <label>Your full name <span class="req">*</span></label>
+            <input type="text" id="dName" required placeholder="John Doe">
+          </div>
+
+          <div class="field">
+            <label>Your email address <span class="req">*</span></label>
+            <input type="email" id="dEmail" required placeholder="you@example.com">
+          </div>
+
+          <div class="field">
+            <label>Your company/organization (optional)</label>
+            <input type="text" id="dCompany" placeholder="If filing on behalf of a company">
+          </div>
+
+          <div class="field">
+            <label>URL of infringing content on our site <span class="req">*</span></label>
+            <input type="url" id="dUrl" required placeholder="https://minamistock.com/stock-photo.html?id=...">
+            <small>Copy the exact page URL where the content appears</small>
+          </div>
+
+          <div class="field">
+            <label>Description of the copyrighted work <span class="req">*</span></label>
+            <textarea id="dWork" required placeholder="Describe your original work — title, date of creation, where it was first published, registration number (if any)..."></textarea>
+          </div>
+
+          <div class="field">
+            <label>Proof of ownership <span class="req">*</span></label>
+            <textarea id="dProof" required placeholder="Links to your original work, copyright registration, or other evidence that you own the rights..."></textarea>
+            <small>Provide URLs to your original content if possible</small>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="dGoodFaith" required>
+            <label for="dGoodFaith">I have a good faith belief that the use of the material is not authorized by the copyright owner, its agent, or the law.</label>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="dPerjury" required>
+            <label for="dPerjury">I swear, under penalty of perjury, that the information in this notice is accurate and that I am the copyright owner or authorized to act on the owner's behalf.</label>
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="dSignature" required>
+            <label for="dSignature">I understand that this constitutes my electronic signature and is legally binding.</label>
+          </div>
+
+          <button type="submit" class="btn-submit" id="dmcaBtn">
+            <i class="fas fa-paper-plane"></i> Submit DMCA notice
+          </button>
+        </form>
+      </div>
+
+      <h2>4. What Happens Next</h2>
+      <p>After we receive your valid DMCA notice:</p>
+      <ol>
+        <li><strong>Within 48 hours</strong> — We acknowledge receipt of your notice</li>
+        <li><strong>Within 72 hours</strong> — We review the claim and, if valid, remove or disable access to the content</li>
+        <li><strong>Notification</strong> — We notify the uploader of the removal and provide them a copy of your notice</li>
+        <li><strong>Counter-notice window</strong> — The uploader has 10 business days to file a counter-notice</li>
+      </ol>
+
+      <h2>5. Counter-Notice</h2>
+      <p>If you believe your content was removed by mistake or misidentification, you may file a counter-notice containing:</p>
+      <ul>
+        <li>Your name, address, phone number, and email</li>
+        <li>Identification of the removed content and its previous location</li>
+        <li>A statement under penalty of perjury that you have a good faith belief the content was removed by mistake</li>
+        <li>A statement consenting to the jurisdiction of a federal court</li>
+        <li>Your physical or electronic signature</li>
+      </ul>
+      <p>Send counter-notices to: <a href="mailto:dmca@minamistock.com">dmca@minamistock.com</a></p>
+
+      <h2>6. Repeat Infringers</h2>
+      <p>In accordance with the DMCA and other applicable laws, MINAMI STOCK will terminate, in appropriate circumstances, the accounts of users who are repeat infringers of copyright.</p>
+
+      <h2>7. Our Content Sources</h2>
+      <p>Most photos on MINAMI STOCK are sourced from:</p>
+      <ul>
+        <li><strong>Pixabay</strong> — Photos under the Pixabay License (free for commercial use)</li>
+        <li><strong>Public domain collections</strong> — Photos with expired copyright</li>
+        <li><strong>User uploads</strong> — Verified by uploaders who confirm ownership</li>
+      </ul>
+      <p>If you find that any content on our site infringes your copyright, please notify us using the procedure above so we can take appropriate action.</p>
+
+      <h2>8. Contact Information</h2>
+      <p>For DMCA matters:</p>
+      <ul>
+        <li><strong>Email:</strong> <a href="mailto:dmca@minamistock.com">dmca@minamistock.com</a></li>
+        <li><strong>Response time:</strong> 48–72 hours</li>
+        <li><strong>Mailing address:</strong> Available on request</li>
+      </ul>
+
+      <div class="callout">
+        <b>Important:</b> Only submit a DMCA notice if you are the copyright owner or authorized to act on their behalf. Frivolous or fraudulent claims may result in legal liability.
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="index.html" class="logo-container" style="margin-bottom:12px">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </a>
+      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
+      <div class="social-icons">
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="stock-photo.html">Stock Photos</a>
+      <a href="tools.html">Tools</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="image-resizer.html">Image Resizer</a>
+      <a href="image-cropper.html">Cropper</a>
+      <a href="image-compressor.html">Compressor</a>
+      <a href="color-palette.html">Color Palette</a>
+      <a href="bg-remover.html">BG Remover</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Help</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="dmca.html">DMCA</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 MINAMI STOCK · All rights reserved</div>
+    <div class="footer-bottom-left">
+      <a class="fbtn" href="privacy.html">Privacy</a>
+      <a class="fbtn" href="terms.html">Terms</a>
+      <a class="fbtn" href="dmca.html">DMCA</a>
+      <a class="fbtn" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+
+$("dmcaForm").onsubmit = (e) => {
+  e.preventDefault();
+  const m = $("dmcaMsg");
+  const name = $("dName").value.trim();
+  const email = $("dEmail").value.trim();
+  const url = $("dUrl").value.trim();
+  const work = $("dWork").value.trim();
+  const proof = $("dProof").value.trim();
+
+  if (!name || !email || !url || !work || !proof) {
+    m.textContent = "Please fill all required fields.";
+    m.className = "msg show err";
+    return;
+  }
+  if (!$("dGoodFaith").checked || !$("dPerjury").checked || !$("dSignature").checked) {
+    m.textContent = "Please check all three confirmation boxes.";
+    m.className = "msg show err";
+    return;
+  }
+
+  $("dmcaBtn").disabled = true;
+  $("dmcaBtn").innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+  setTimeout(() => {
+    m.innerHTML = '<b>✓ DMCA notice received.</b><br>We will review your claim within 48–72 hours. A confirmation has been sent to <b>' + email + '</b>.';
+    m.className = "msg show ok";
+    $("dmcaForm").reset();
+    $("dmcaBtn").disabled = false;
+    $("dmcaBtn").innerHTML = '<i class="fas fa-paper-plane"></i> Submit DMCA notice';
+  }, 1500);
+};
+</script>
+</body>
+</html>

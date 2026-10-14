@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Resizer - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--ok:#12805c;--bad:#d7373f}
+body.dark{--ink:#f1f1f1;--mute:#a3a3a3;--line:#333;--bg:#161616;--soft:#222}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* ============== TOP BAR ============== */
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown a.active{background:var(--soft);box-shadow:inset 3px 0 var(--blue)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-account{font-size:26px;color:var(--mute);display:grid;place-items:center}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-signup:hover{background:var(--blue-d)}
+
+/* ============== TOOLS BAR ============== */
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s;cursor:pointer}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item.active{background:var(--bg);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+/* ============== MAIN ============== */
+main{flex:1;padding:28px 20px}
+.wrap{max-width:1200px;margin:auto}
+
+.page-head{margin-bottom:24px}
+.page-head h1{font-size:26px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:12px}
+.page-head h1 i{color:var(--blue)}
+.page-head p{color:var(--mute);font-size:14px;line-height:1.55;max-width:700px}
+
+/* Drop zone */
+.drop{border:2px dashed var(--line);border-radius:12px;padding:44px 20px;text-align:center;background:var(--soft);cursor:pointer;transition:.2s;margin-bottom:20px}
+.drop:hover,.drop.over{border-color:var(--blue);background:#eaf2fd}
+.drop i{font-size:42px;color:var(--blue);margin-bottom:14px;display:block}
+.drop b{display:block;font-size:17px;margin-bottom:6px}
+.drop span{color:var(--mute);font-size:13px}
+
+/* Workspace */
+.workspace{display:none;grid-template-columns:1fr 340px;gap:24px}
+.workspace.show{display:grid}
+
+/* Preview area */
+.preview{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;align-items:center;justify-content:center;min-height:400px;position:relative;overflow:hidden}
+.preview canvas,.preview img{max-width:100%;max-height:70vh;object-fit:contain;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+
+/* Sidebar controls */
+.controls{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:20px;height:fit-content;position:sticky;top:80px}
+.controls h3{font-size:15px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.controls h3 i{color:var(--blue)}
+
+.field{margin-bottom:16px}
+.field label{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);margin-bottom:6px}
+.field input[type=number],.field input[type=text],.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue)}
+
+/* Preset buttons */
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px}
+.preset{padding:8px 6px;border:1px solid var(--line);background:var(--bg);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:.15s}
+.preset:hover{border-color:var(--blue);color:var(--blue)}
+.preset.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* Lock aspect ratio */
+.lock-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;color:var(--mute)}
+.lock-row input{accent-color:var(--blue)}
+
+/* Quality slider */
+.slider{width:100%;accent-color:var(--blue);margin:6px 0}
+
+/* Action buttons */
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;transition:.15s;text-decoration:none}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-d)}
+.btn.success{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.success:hover{background:#0d6b4a}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Info bar */
+.info-bar{background:var(--soft);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--mute);margin-top:14px;display:flex;gap:20px;flex-wrap:wrap}
+.info-bar b{color:var(--ink)}
+
+/* Message */
+#msg{margin:14px 0;font-size:14px;min-height:20px;text-align:center}
+#msg.err{color:var(--bad)}
+#msg.ok{color:var(--ok)}
+
+/* Footer */
+footer{background:var(--soft);border-top:1px solid var(--line);padding:24px 20px;margin-top:40px}
+footer .in{max-width:1400px;margin:auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--mute)}
+footer a:hover{color:var(--ink);text-decoration:underline}
+
+/* Mobile */
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .workspace{grid-template-columns:1fr}
+  .controls{position:static}
+  .preview{min-height:280px;padding:14px}
+  .page-head h1{font-size:22px}
+  .tools-bar .in{padding:0 12px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html" class="active"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<!-- ============ TOOLS BAR ============ -->
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item active"><i class="fas fa-expand"></i> Image Resizer</a>
+  <span class="tool-divider"></span>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-picker.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Picker</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<!-- ============ MAIN ============ -->
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1><i class="fas fa-expand"></i> Image Resizer</h1>
+      <p>ছবির size, dimension ও quality পরিবর্তন করুন। সব প্রসেসিং আপনার browser এ হয় — ছবি কোনো সার্ভারে যায় না। ১০০% private ও safe।</p>
+    </div>
+
+    <!-- Drop zone -->
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose image">
+      <i class="fas fa-cloud-arrow-up"></i>
+      <b>Drop image here, or click to choose</b>
+      <span>JPG, PNG, WebP · Max 20 MB</span>
+      <input type="file" id="pick" accept="image/*" hidden>
+    </div>
+
+    <div id="msg"></div>
+
+    <!-- Workspace -->
+    <div class="workspace" id="workspace">
+      <div class="preview">
+        <img id="previewImg" alt="">
+      </div>
+
+      <div class="controls">
+        <h3><i class="fas fa-sliders"></i> Resize settings</h3>
+
+        <!-- Presets -->
+        <div class="field">
+          <label>Presets</label>
+          <div class="presets" id="presets">
+            <button class="preset on" data-w="1920" data-h="1080">1920×1080<br><small style="font-size:10px;color:var(--mute)">FHD</small></button>
+            <button class="preset" data-w="1280" data-h="720">1280×720<br><small style="font-size:10px;color:var(--mute)">HD</small></button>
+            <button class="preset" data-w="800" data-h="600">800×600<br><small style="font-size:10px;color:var(--mute)">Small</small></button>
+            <button class="preset" data-w="1080" data-h="1080">1080×1080<br><small style="font-size:10px;color:var(--mute)">Square</small></button>
+            <button class="preset" data-w="1080" data-h="1920">1080×1920<br><small style="font-size:10px;color:var(--mute)">Story</small></button>
+            <button class="preset" data-w="2048" data-h="2048">2048×2048<br><small style="font-size:10px;color:var(--mute)">Insta</small></button>
+          </div>
+        </div>
+
+        <!-- Width / Height -->
+        <div class="field">
+          <label>Width (px)</label>
+          <input type="number" id="w" min="1" max="10000" value="1920">
+        </div>
+        <div class="field">
+          <label>Height (px)</label>
+          <input type="number" id="h" min="1" max="10000" value="1080">
+        </div>
+
+        <div class="lock-row">
+          <input type="checkbox" id="lock" checked>
+          <label for="lock">Maintain aspect ratio</label>
+        </div>
+
+        <!-- Quality -->
+        <div class="field">
+          <label>Quality <span id="qVal">90%</span></label>
+          <input type="range" id="quality" class="slider" min="10" max="100" value="90">
+        </div>
+
+        <!-- Format -->
+        <div class="field">
+          <label>Output format</label>
+          <select id="format">
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+
+        <!-- Info -->
+        <div class="info-bar">
+          <div>Original: <b id="origSize">—</b></div>
+          <div>New: <b id="newSize">—</b></div>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+          <button class="btn primary" id="applyBtn"><i class="fas fa-bolt"></i> Apply resize</button>
+          <button class="btn success" id="downloadBtn" disabled><i class="fas fa-download"></i> Download</button>
+          <button class="btn" id="resetBtn"><i class="fas fa-redo"></i> Choose another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer><div class="in">
+  <div>© 2026 MINAMI STOCK · All rights reserved</div>
+  <div>
+    <a href="privacy.html">Privacy</a> ·
+    <a href="terms.html">Terms</a> ·
+    <a href="contact.html">Contact</a>
+  </div>
+</div></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let originalFile = null, originalImg = null, resizedBlob = null;
+
+function msg(t, cls){ const m=$("msg"); m.textContent = t || ""; m.className = cls || ""; }
+function fmt(bytes){ if (bytes < 1024) return bytes + " B"; if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + " KB"; return (bytes/1024/1024).toFixed(2) + " MB"; }
+
+/* Sidebar menu */
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+
+/* File picker */
+const drop = $("drop"), pick = $("pick");
+drop.onclick = () => pick.click();
+drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick.click(); } };
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+pick.onchange = () => { if (pick.files[0]) loadFile(pick.files[0]); pick.value = ""; };
+
+function loadFile(file){
+  if (!file.type.startsWith("image/")) { msg("Only image files allowed.", "err"); return; }
+  if (file.size > 20*1024*1024) { msg("File too large. Max 20 MB.", "err"); return; }
+  originalFile = file;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    originalImg = img;
+    $("previewImg").src = url;
+    $("w").value = img.naturalWidth;
+    $("h").value = img.naturalHeight;
+    $("origSize").textContent = img.naturalWidth + "×" + img.naturalHeight + " · " + fmt(file.size);
+    $("newSize").textContent = "—";
+    $("workspace").classList.add("show");
+    drop.style.display = "none";
+    msg("Image loaded. Adjust settings and click Apply resize.", "ok");
+    resizedBlob = null;
+    $("downloadBtn").disabled = true;
+  };
+  img.onerror = () => msg("Could not read this image.", "err");
+  img.src = url;
+}
+
+/* Lock aspect ratio */
+let ratio = 1;
+$("w").addEventListener("input", () => {
+  if ($("lock").checked && originalImg) {
+    $("h").value = Math.round(parseInt($("w").value) * originalImg.naturalHeight / originalImg.naturalWidth) || 1;
+  }
+});
+$("h").addEventListener("input", () => {
+  if ($("lock").checked && originalImg) {
+    $("w").value = Math.round(parseInt($("h").value) * originalImg.naturalWidth / originalImg.naturalHeight) || 1;
+  }
+});
+
+/* Presets */
+$("presets").querySelectorAll(".preset").forEach(btn => {
+  btn.onclick = () => {
+    $("presets").querySelectorAll(".preset").forEach(b => b.classList.remove("on"));
+    btn.classList.add("on");
+    $("lock").checked = false;
+    $("w").value = btn.dataset.w;
+    $("h").value = btn.dataset.h;
+  };
+});
+
+/* Quality */
+$("quality").addEventListener("input", e => { $("qVal").textContent = e.target.value + "%"; });
+
+/* Apply */
+$("applyBtn").onclick = () => {
+  if (!originalImg) { msg("Choose an image first.", "err"); return; }
+  const w = Math.max(1, Math.min(10000, parseInt($("w").value) || 1));
+  const h = Math.max(1, Math.min(10000, parseInt($("h").value) || 1));
+  const q = Math.max(10, Math.min(100, parseInt($("quality").value) || 90)) / 100;
+  const type = $("format").value;
+
+  msg("Processing…", "");
+  $("applyBtn").disabled = true;
+
+  setTimeout(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(originalImg, 0, 0, w, h);
+
+    canvas.toBlob(blob => {
+      if (!blob) { msg("Resize failed. Try another format.", "err"); $("applyBtn").disabled = false; return; }
+      resizedBlob = blob;
+      $("previewImg").src = URL.createObjectURL(blob);
+      $("newSize").textContent = w + "×" + h + " · " + fmt(blob.size);
+      msg("Resized successfully. Click Download.", "ok");
+      $("downloadBtn").disabled = false;
+      $("applyBtn").disabled = false;
+    }, type, q);
+  }, 30);
+};
+
+/* Download */
+$("downloadBtn").onclick = () => {
+  if (!resizedBlob) return;
+  const type = $("format").value;
+  const ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
+  const base = (originalFile.name || "image").replace(/\.[^.]+$/, "");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(resizedBlob);
+  a.download = base + "-resized-" + $("w").value + "x" + $("h").value + "." + ext;
+  a.click();
+  msg("Downloaded.", "ok");
+};
+
+/* Reset */
+$("resetBtn").onclick = () => {
+  originalFile = originalImg = resizedBlob = null;
+  $("previewImg").src = "";
+  $("workspace").classList.remove("show");
+  drop.style.display = "";
+  msg("");
+};
+</script>
+</body>
+</html>

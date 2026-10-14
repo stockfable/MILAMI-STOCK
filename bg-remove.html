@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Background Remover - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--ok:#12805c;--bad:#d7373f}
+body.dark{--ink:#f1f1f1;--mute:#a3a3a3;--line:#333;--bg:#161616;--soft:#222}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* TOP BAR */
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown a.active{background:var(--soft);box-shadow:inset 3px 0 var(--blue)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn-signup:hover{background:var(--blue-d)}
+
+/* TOOLS BAR */
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s;cursor:pointer}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item.active{background:var(--bg);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+/* MAIN */
+main{flex:1;padding:28px 20px}
+.wrap{max-width:1200px;margin:auto}
+
+.page-head{margin-bottom:24px}
+.page-head h1{font-size:26px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:12px}
+.page-head h1 i{color:var(--blue)}
+.page-head p{color:var(--mute);font-size:14px;line-height:1.55;max-width:720px}
+
+/* Drop */
+.drop{border:2px dashed var(--line);border-radius:12px;padding:44px 20px;text-align:center;background:var(--soft);cursor:pointer;transition:.2s;margin-bottom:20px}
+.drop:hover,.drop.over{border-color:var(--blue);background:#eaf2fd}
+.drop i{font-size:44px;color:var(--blue);margin-bottom:14px;display:block}
+.drop b{display:block;font-size:17px;margin-bottom:6px}
+.drop span{color:var(--mute);font-size:13px}
+
+/* Progress Overlay */
+.progress-overlay{position:fixed;inset:0;background:rgba(255,255,255,.96);z-index:100;display:none;align-items:center;justify-content:center}
+.progress-overlay.show{display:flex}
+.progress-box{background:var(--bg);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:40px 50px;text-align:center;max-width:440px;width:90%}
+.progress-circle{width:120px;height:120px;margin:0 auto 24px;position:relative}
+.progress-circle svg{width:100%;height:100%;transform:rotate(-90deg)}
+.progress-circle .track{fill:none;stroke:var(--line);stroke-width:8}
+.progress-circle .bar{fill:none;stroke:var(--blue);stroke-width:8;stroke-linecap:round;stroke-dasharray:339.292;stroke-dashoffset:339.292;transition:stroke-dashoffset .3s}
+.progress-circle .num{position:absolute;inset:0;display:grid;place-items:center;font-size:24px;font-weight:800;color:var(--ink)}
+.progress-box h3{font-size:18px;margin-bottom:8px;color:var(--ink)}
+.progress-box p{color:var(--mute);font-size:14px;line-height:1.5}
+.progress-steps{display:flex;justify-content:center;gap:8px;margin-top:18px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:.2s}
+.step-dot.on{background:var(--blue);transform:scale(1.3)}
+
+/* Workspace */
+.workspace{display:none;grid-template-columns:1fr 360px;gap:24px}
+.workspace.show{display:grid}
+
+.preview-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;align-items:center;justify-content:center;min-height:420px;position:relative;overflow:hidden}
+.preview-card canvas{max-width:100%;max-height:70vh;border-radius:6px;display:block}
+.view-toggle{position:absolute;top:14px;right:14px;display:flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.view-toggle button{padding:7px 12px;background:none;border:0;font-size:12px;font-weight:600;color:var(--mute);cursor:pointer}
+.view-toggle button.on{background:var(--blue);color:#fff}
+
+/* Side panel */
+.side{display:flex;flex-direction:column;gap:18px}
+.panel{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel h3{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.panel h3 i{color:var(--blue)}
+
+/* Mode selector */
+.mode-select{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.mode-opt{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:8px;padding:11px 12px;cursor:pointer;transition:.15s}
+.mode-opt:hover{border-color:var(--mute)}
+.mode-opt.active{border-color:var(--blue);background:#f0f7ff}
+.mode-opt input{margin:0;accent-color:var(--blue)}
+.mode-opt > div{flex:1;min-width:0}
+.mode-opt b{display:block;font-size:13px;margin-bottom:2px}
+.mode-opt small{color:var(--mute);font-size:11px;line-height:1.35}
+
+/* Fields */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mute);margin-bottom:5px}
+.field input[type=number],.field input[type=text],.field select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue)}
+.slider{width:100%;accent-color:var(--blue);margin:4px 0}
+
+/* Background fill options */
+.bg-options{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.bg-opt{aspect-ratio:1;border-radius:8px;cursor:pointer;border:2px solid var(--line);position:relative;display:grid;place-items:center;font-size:10px;font-weight:700;overflow:hidden}
+.bg-opt:hover{border-color:var(--ink)}
+.bg-opt.on{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset}
+.bg-opt.transparent{background-image:linear-gradient(45deg,#ddd 25%,transparent 25%),linear-gradient(-45deg,#ddd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ddd 75%),linear-gradient(-45deg,transparent 75%,#ddd 75%);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0px;background-color:#fff}
+.bg-opt.white{background:#fff}
+.bg-opt.black{background:#000;color:#fff}
+.bg-opt.custom{background:var(--soft);color:var(--mute)}
+
+/* Actions */
+.actions{display:flex;flex-direction:column;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer;transition:.15s;text-decoration:none}
+.btn:hover{background:var(--soft)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.primary:hover{background:var(--blue-d)}
+.btn.success{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.success:hover{background:#0d6b4a}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+#msg{margin:12px 0;font-size:14px;min-height:20px;text-align:center}
+#msg.err{color:var(--bad)}
+#msg.ok{color:var(--ok)}
+
+.note{background:#f0f7ff;border-left:3px solid var(--blue);padding:12px 14px;font-size:13px;color:#3d5a7d;border-radius:6px;margin-bottom:18px;line-height:1.55}
+.note b{color:var(--blue)}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:110}
+#toast.show{opacity:1;transform:translateX(-50%)}
+
+/* Footer */
+footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
+.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
+.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
+.footer-col a:hover{color:var(--ink);text-decoration:underline}
+.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
+.social-icons{display:flex;gap:10px;margin-top:14px}
+.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
+.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
+.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
+.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
+.fbtn:hover{background:var(--bg);border-color:var(--ink)}
+
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .workspace{grid-template-columns:1fr}
+  .page-head h1{font-size:22px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .tools-bar .in{padding:0 12px}
+  .progress-box{padding:30px 24px}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html" class="active"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<!-- TOOLS BAR -->
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item active"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-palette.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Palette</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<!-- MAIN -->
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1><i class="fas fa-magic"></i> Background Remover</h1>
+      <p>Remove backgrounds from photos in seconds. Works best with solid color backgrounds — product photos, ID photos, logos. 100% private — everything runs in your browser.</p>
+    </div>
+
+    <div class="note">
+      <b>Tip:</b> This tool works best with <b>solid backgrounds</b> (white, black, single color). For complex backgrounds (trees, rooms, people), you need a more powerful AI tool.
+    </div>
+
+    <!-- Drop -->
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose image">
+      <i class="fas fa-image"></i>
+      <b>Drop image here, or click to choose</b>
+      <span>JPG, PNG, WebP · Max 15 MB · Best with solid color background</span>
+      <input type="file" id="pick" accept="image/*" hidden>
+    </div>
+
+    <div id="msg"></div>
+
+    <!-- Workspace -->
+    <div class="workspace" id="workspace">
+      <div class="preview-card" id="previewCard">
+        <canvas id="canvas"></canvas>
+        <div class="view-toggle">
+          <button id="viewBefore">Before</button>
+          <button id="viewAfter" class="on">After</button>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="panel">
+          <h3><i class="fas fa-sliders-h"></i> Removal mode</h3>
+          <div class="mode-select">
+            <label class="mode-opt active">
+              <input type="radio" name="mode" value="auto" checked>
+              <div>
+                <b>Auto (edge-based)</b>
+                <small>Detects background color from image corners</small>
+              </div>
+            </label>
+            <label class="mode-opt">
+              <input type="radio" name="mode" value="white">
+              <div>
+                <b>White background</b>
+                <small>Removes white and near-white pixels</small>
+              </div>
+            </label>
+            <label class="mode-opt">
+              <input type="radio" name="mode" value="color">
+              <div>
+                <b>Pick a color</b>
+                <small>Removes a specific color you choose</small>
+              </div>
+            </label>
+          </div>
+
+          <div class="field" id="colorField" style="display:none">
+            <label>Background color to remove</label>
+            <input type="color" id="pickColor" value="#ffffff" style="width:100%;padding:3px;height:42px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3><i class="fas fa-dot-circle"></i> Precision</h3>
+          <div class="field">
+            <label>Tolerance <span id="tolVal" style="color:var(--blue);font-weight:700">30</span></label>
+            <input type="range" id="tolerance" class="slider" min="5" max="120" value="30">
+            <div style="font-size:11px;color:var(--mute);margin-top:4px">
+              Low = strict (only near-identical colors)<br>
+              High = loose (removes similar shades too)
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3><i class="fas fa-fill-drip"></i> Output background</h3>
+          <div class="bg-options">
+            <div class="bg-opt transparent" data-bg="transparent" title="Transparent"></div>
+            <div class="bg-opt white" data-bg="#ffffff" title="White"></div>
+            <div class="bg-opt black on" data-bg="#000000" title="Black"></div>
+            <div class="bg-opt custom" data-bg="custom" id="customBgBtn" title="Custom color">🎨</div>
+          </div>
+          <div class="field" id="customBgField" style="display:none;margin-top:10px">
+            <label>Custom background color</label>
+            <input type="color" id="customBgColor" value="#1473e6" style="width:100%;padding:3px;height:42px;border:1px solid var(--line);border-radius:8px;cursor:pointer">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="removeBtn"><i class="fas fa-bolt"></i> Remove background</button>
+          <button class="btn success" id="downloadBtn" disabled><i class="fas fa-download"></i> Download PNG</button>
+          <button class="btn" id="resetBtn"><i class="fas fa-redo"></i> Choose another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Progress Overlay -->
+<div class="progress-overlay" id="progressOverlay">
+  <div class="progress-box">
+    <div class="progress-circle">
+      <svg viewBox="0 0 120 120">
+        <circle class="track" cx="60" cy="60" r="54"></circle>
+        <circle class="bar" id="progBar" cx="60" cy="60" r="54"></circle>
+      </svg>
+      <div class="num" id="progNum">0%</div>
+    </div>
+    <h3 id="progTitle">Removing background...</h3>
+    <p id="progSub">Please wait, this takes about 7 seconds.</p>
+    <div class="progress-steps">
+      <div class="step-dot on" id="step1"></div>
+      <div class="step-dot" id="step2"></div>
+      <div class="step-dot" id="step3"></div>
+      <div class="step-dot" id="step4"></div>
+      <div class="step-dot" id="step5"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="index.html" class="logo-container" style="margin-bottom:12px">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </a>
+      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
+      <div class="social-icons">
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="stock-photo.html">Stock Photos</a>
+      <a href="tools.html">Tools</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="image-resizer.html">Image Resizer</a>
+      <a href="image-cropper.html">Cropper</a>
+      <a href="image-compressor.html">Compressor</a>
+      <a href="color-palette.html">Color Palette</a>
+      <a href="bg-remover.html">BG Remover</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Help</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="dmca.html">DMCA</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 MINAMI STOCK · All rights reserved</div>
+    <div class="footer-bottom-left">
+      <a class="fbtn" href="privacy.html">Privacy</a>
+      <a class="fbtn" href="terms.html">Terms</a>
+      <a class="fbtn" href="dmca.html">DMCA</a>
+      <a class="fbtn" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+let img = null, canvas = null, ctx = null, originalData = null, processedBlob = null;
+let outputBg = "#000000"; // default BLACK
+
+function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("show"),2000); }
+function msg(t, cls){ const m=$("msg"); m.textContent = t || ""; m.className = cls || ""; }
+
+/* Sidebar */
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+
+/* File load */
+const drop = $("drop"), pick = $("pick");
+drop.onclick = () => pick.click();
+drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick.click(); } };
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]); });
+pick.onchange = () => { if (pick.files[0]) loadFile(pick.files[0]); pick.value = ""; };
+
+function loadFile(file){
+  if (!file.type.startsWith("image/")) { msg("Only image files allowed.", "err"); return; }
+  if (file.size > 15*1024*1024) { msg("File too large. Max 15 MB.", "err"); return; }
+
+  const url = URL.createObjectURL(file);
+  const image = new Image();
+  image.onload = () => {
+    img = image;
+    canvas = $("canvas");
+    const maxW = 1400;
+    const scale = Math.min(1, maxW / image.naturalWidth);
+    canvas.width = Math.round(image.naturalWidth * scale);
+    canvas.height = Math.round(image.naturalHeight * scale);
+    ctx = canvas.getContext("2d", { willReadFrequently: true });
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    $("workspace").classList.add("show");
+    drop.style.display = "none";
+    msg("Image loaded. Choose mode and press Remove background.", "ok");
+    processedBlob = null;
+    $("downloadBtn").disabled = true;
+  };
+  image.onerror = () => msg("Could not read this image.", "err");
+  image.src = url;
+}
+
+/* Mode radio */
+document.querySelectorAll("input[name=mode]").forEach(r => {
+  r.onchange = () => {
+    document.querySelectorAll(".mode-opt").forEach(o => o.classList.remove("active"));
+    r.closest(".mode-opt").classList.add("active");
+    $("colorField").style.display = (r.value === "color") ? "block" : "none";
+  };
+});
+
+/* Tolerance slider */
+$("tolerance").addEventListener("input", e => $("tolVal").textContent = e.target.value);
+
+/* Output background */
+document.querySelectorAll(".bg-opt").forEach(opt => {
+  opt.onclick = () => {
+    document.querySelectorAll(".bg-opt").forEach(o => o.classList.remove("on"));
+    opt.classList.add("on");
+    const bg = opt.dataset.bg;
+    if (bg === "custom") {
+      $("customBgField").style.display = "block";
+      outputBg = $("customBgColor").value;
+    } else {
+      $("customBgField").style.display = "none";
+      outputBg = bg;
+    }
+  };
+});
+$("customBgColor").addEventListener("input", e => { outputBg = e.target.value; });
+
+/* View toggle */
+$("viewBefore").onclick = () => {
+  if (!originalData) return;
+  ctx.putImageData(originalData, 0, 0);
+  $("viewBefore").classList.add("on"); $("viewAfter").classList.remove("on");
+};
+$("viewAfter").onclick = () => {
+  if (processedBlob) {
+    const timg = new Image();
+    timg.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(timg, 0, 0);
+    };
+    timg.src = URL.createObjectURL(processedBlob);
+  } else if (originalData) {
+    ctx.putImageData(originalData, 0, 0);
+  }
+  $("viewAfter").classList.add("on"); $("viewBefore").classList.remove("on");
+};
+
+/* Core algorithm */
+function computeRemovedData(){
+  const w = canvas.width, h = canvas.height;
+  const data = new Uint8ClampedArray(originalData.data);
+  const tol = parseInt($("tolerance").value);
+  const mode = document.querySelector("input[name=mode]:checked").value;
+
+  let targetColors = [];
+  if (mode === "auto") {
+    const corners = [
+      [2, 2], [w-3, 2], [2, h-3], [w-3, h-3],
+      [Math.floor(w/2), 2], [Math.floor(w/2), h-3],
+      [2, Math.floor(h/2)], [w-3, Math.floor(h/2)]
+    ];
+    const sampled = corners.map(([x, y]) => {
+      const i = (y * w + x) * 4;
+      return [data[i], data[i+1], data[i+2]];
+    });
+    const avg = [0,0,0];
+    sampled.forEach(c => { avg[0]+=c[0]; avg[1]+=c[1]; avg[2]+=c[2]; });
+    avg[0] = Math.round(avg[0]/sampled.length);
+    avg[1] = Math.round(avg[1]/sampled.length);
+    avg[2] = Math.round(avg[2]/sampled.length);
+    targetColors = [avg];
+  } else if (mode === "white") {
+    targetColors = [[255, 255, 255]];
+  } else {
+    const hex = $("pickColor").value;
+    targetColors = [[parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)]];
+  }
+
+  const visited = new Uint8Array(w * h);
+  const queue = [];
+  const match = (r, g, b) => {
+    for (const [tr, tg, tb] of targetColors) {
+      const dr = r - tr, dg = g - tg, db = b - tb;
+      if (Math.sqrt(dr*dr + dg*dg + db*db) <= tol) return true;
+    }
+    return false;
+  };
+
+  for (let x = 0; x < w; x++) { queue.push([x, 0]); queue.push([x, h-1]); }
+  for (let y = 0; y < h; y++) { queue.push([0, y]); queue.push([w-1, y]); }
+
+  while (queue.length) {
+    const [x, y] = queue.pop();
+    if (x < 0 || x >= w || y < 0 || y >= h) continue;
+    const idx = y * w + x;
+    if (visited[idx]) continue;
+    const i = idx * 4;
+    if (!match(data[i], data[i+1], data[i+2])) continue;
+    visited[idx] = 1;
+    data[i+3] = 0;
+    queue.push([x+1, y]); queue.push([x-1, y]);
+    queue.push([x, y+1]); queue.push([x, y-1]);
+  }
+
+  // Apply output background color
+  if (outputBg !== "transparent") {
+    const r = parseInt(outputBg.slice(1,3),16);
+    const g = parseInt(outputBg.slice(3,5),16);
+    const b = parseInt(outputBg.slice(5,7),16);
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i+3] === 0) {
+        data[i] = r; data[i+1] = g; data[i+2] = b; data[i+3] = 255;
+      }
+    }
+  }
+
+  return data;
+}
+
+/* Progress animation - 7 seconds total */
+function animateProgress(onDone){
+  const overlay = $("progressOverlay");
+  const bar = $("progBar");
+  const num = $("progNum");
+  const title = $("progTitle");
+  const sub = $("progSub");
+  const dots = [null, $("step1"), $("step2"), $("step3"), $("step4"), $("step5")];
+
+  const total = 339.292;
+  const duration = 7000; // 7 seconds
+  const start = performance.now();
+
+  overlay.classList.add("show");
+  dots.forEach(d => d && d.classList.remove("on"));
+  dots[1].classList.add("on");
+
+  const steps = [
+    { pct: 10, title: "Analyzing image...", sub: "Reading pixel data" },
+    { pct: 30, title: "Detecting background...", sub: "Finding edges and colors" },
+    { pct: 55, title: "Removing background...", sub: "Processing pixels" },
+    { pct: 80, title: "Applying color...", sub: "Filling with black" },
+    { pct: 95, title: "Encoding image...", sub: "Almost done" }
+  ];
+
+  function frame(now){
+    const elapsed = now - start;
+    const t = Math.min(1, elapsed / duration);
+    // Ease-out curve
+    const eased = 1 - Math.pow(1 - t, 2);
+    const pct = Math.round(eased * 100);
+    bar.style.strokeDashoffset = total - (total * pct / 100);
+    num.textContent = pct + "%";
+
+    // Update step
+    const stepIdx = Math.min(4, Math.floor(pct / 20));
+    if (stepIdx >= 0 && stepIdx < steps.length) {
+      title.textContent = steps[stepIdx].title;
+      sub.textContent = steps[stepIdx].sub;
+      for (let i = 1; i <= 5; i++) {
+        if (dots[i]) dots[i].classList.toggle("on", i === stepIdx + 1);
+      }
+    }
+
+    if (t < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      bar.style.strokeDashoffset = 0;
+      num.textContent = "100%";
+      title.textContent = "Done!";
+      sub.textContent = "Background removed successfully";
+      dots.forEach(d => d && d.classList.add("on"));
+      setTimeout(() => {
+        overlay.classList.remove("show");
+        bar.style.strokeDashoffset = total;
+        if (onDone) onDone();
+      }, 400);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+/* Remove button */
+$("removeBtn").onclick = () => {
+  if (!originalData) { msg("Choose an image first.", "err"); return; }
+  $("removeBtn").disabled = true;
+  $("downloadBtn").disabled = true;
+
+  // Compute result immediately, then animate 7 seconds
+  let resultData;
+  try {
+    resultData = computeRemovedData();
+  } catch(e) {
+    console.error(e);
+    msg("Error: " + e.message, "err");
+    $("removeBtn").disabled = false;
+    return;
+  }
+
+  animateProgress(() => {
+    const w = canvas.width, h = canvas.height;
+    const out = new ImageData(resultData, w, h);
+    ctx.putImageData(out, 0, 0);
+
+    canvas.toBlob(blob => {
+      processedBlob = blob;
+      $("downloadBtn").disabled = false;
+      msg("Background removed. Download your image.", "ok");
+      $("removeBtn").disabled = false;
+    }, "image/png");
+  });
+};
+
+/* Download */
+$("downloadBtn").onclick = () => {
+  if (!processedBlob) return;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(processedBlob);
+  a.download = "no-bg-" + Date.now() + ".png";
+  a.click();
+  msg("Downloaded.", "ok");
+};
+
+/* Reset */
+$("resetBtn").onclick = () => {
+  img = canvas = ctx = originalData = processedBlob = null;
+  $("workspace").classList.remove("show");
+  drop.style.display = "";
+  $("downloadBtn").disabled = true;
+  msg("");
+};
+</script>
+</body>
+</html>

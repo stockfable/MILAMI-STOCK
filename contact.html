@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--ok:#12805c;--bad:#d7373f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+button,input,textarea,select{font:inherit;cursor:pointer;color:inherit}
+
+/* TOP BAR */
+header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
+.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
+.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
+.sidebar-bottom-menu{position:relative}
+.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
+.sidebar-trigger:hover{background:var(--soft)}
+.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
+.sidebar-dropdown.show{display:block}
+.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
+.sidebar-dropdown a:hover{background:var(--soft)}
+.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
+.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
+.site-logo{width:34px;height:34px;object-fit:contain}
+.nav-links-top{display:flex;gap:2px;margin-left:6px}
+.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
+.nav-links-top a:hover{background:var(--soft)}
+.nav-links-top a i{margin-right:6px;font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.shop-logo-btn:hover{background:var(--soft)}
+.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
+.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* TOOLS BAR */
+.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;scrollbar-width:none}
+.tools-bar::-webkit-scrollbar{display:none}
+.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
+.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s}
+.tool-item:hover{background:var(--bg);color:var(--ink)}
+.tool-item i{font-size:14px}
+.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
+
+/* MAIN */
+main{flex:1;padding:40px 20px}
+.wrap{max-width:1100px;margin:auto}
+.page-head{text-align:center;margin-bottom:40px}
+.page-head h1{font-size:36px;font-weight:800;margin-bottom:12px}
+.page-head p{font-size:16px;color:var(--mute);line-height:1.6;max-width:620px;margin:0 auto}
+
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:36px;align-items:start}
+
+/* Info cards */
+.info-col{display:flex;flex-direction:column;gap:16px}
+.info-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:20px;display:flex;gap:16px;align-items:flex-start}
+.info-card i{font-size:22px;color:var(--blue);width:44px;height:44px;display:grid;place-items:center;background:var(--bg);border-radius:10px;flex:none}
+.info-card h3{font-size:15px;font-weight:700;margin-bottom:4px}
+.info-card p, .info-card a{font-size:14px;color:var(--mute);line-height:1.6;word-break:break-word}
+.info-card a:hover{color:var(--blue);text-decoration:underline}
+
+/* Form */
+.contact-form{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:28px}
+.contact-form h2{font-size:20px;font-weight:700;margin-bottom:20px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field input,.field textarea,.field select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink);transition:.15s}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,115,230,.1)}
+.field textarea{resize:vertical;min-height:130px;font-family:inherit}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.btn-submit{width:100%;padding:14px;background:var(--blue);color:#fff;border:0;border-radius:10px;font-weight:700;font-size:15px;transition:.15s;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn-submit:hover{background:var(--blue-d)}
+.btn-submit:disabled{opacity:.6;cursor:not-allowed}
+
+.msg{padding:12px 16px;border-radius:8px;font-size:14px;margin-bottom:16px;display:none}
+.msg.show{display:block}
+.msg.ok{background:#e8f5ee;color:var(--ok);border:1px solid #b8e0c8}
+.msg.err{background:#fdeaea;color:var(--bad);border:1px solid #f5c6c6}
+
+/* FAQ hint */
+.faq-hint{background:var(--soft);border-radius:12px;padding:20px;text-align:center;margin-top:30px}
+.faq-hint p{font-size:14px;color:var(--mute);margin-bottom:10px}
+.faq-hint a{color:var(--blue);font-weight:700}
+.faq-hint a:hover{text-decoration:underline}
+
+/* FOOTER */
+footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
+.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
+.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
+.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
+.footer-col a:hover{color:var(--ink);text-decoration:underline}
+.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
+.social-icons{display:flex;gap:10px;margin-top:14px}
+.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
+.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
+.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
+.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
+.fbtn:hover{background:var(--bg);border-color:var(--ink)}
+
+@media(max-width:900px){
+  .nav-links-top,.shop-logo-btn span{display:none}
+  .contact-grid{grid-template-columns:1fr}
+  .page-head h1{font-size:28px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .field-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .footer-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top-nav"><div class="in">
+  <div class="nav-left">
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
+      <div class="sidebar-dropdown" id="appsDrop">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
+        <a href="tools.html"><i class="fas fa-th-large"></i> Tools</a>
+        <a href="about.html"><i class="fas fa-folder"></i> About</a>
+        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
+        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
+        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
+      </div>
+    </div>
+    <a href="index.html" class="logo-container">
+      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+      <span>MINAMI STOCK</span>
+    </a>
+    <div class="nav-links-top">
+      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
+      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
+      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
+    <a href="login.html" class="btn-signin">Sign In</a>
+    <a href="register.html" class="btn-signup">Sign Up</a>
+  </div>
+</div></header>
+
+<nav class="tools-bar"><div class="in">
+  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
+  <a href="image-cropper.html" class="tool-item"><i class="fas fa-crop"></i> Cropper</a>
+  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
+  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
+  <span class="tool-divider"></span>
+  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
+  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
+  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+  <span class="tool-divider"></span>
+  <a href="color-palette.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Palette</a>
+  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
+  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
+</div></nav>
+
+<main>
+  <div class="wrap">
+    <div class="page-head">
+      <h1>Contact Us</h1>
+      <p>Have a question, feedback, or business inquiry? We'd love to hear from you. We usually reply within 24 hours.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="info-col">
+        <div class="info-card">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <h3>Email</h3>
+            <p><a href="mailto:support@minamistock.com">support@minamistock.com</a></p>
+            <p style="font-size:12px;margin-top:4px">General support, questions, feedback</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <i class="fas fa-copyright"></i>
+          <div>
+            <h3>DMCA / Copyright</h3>
+            <p><a href="mailto:dmca@minamistock.com">dmca@minamistock.com</a></p>
+            <p style="font-size:12px;margin-top:4px">For copyright claims and takedown requests</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <i class="fas fa-briefcase"></i>
+          <div>
+            <h3>Business</h3>
+            <p><a href="mailto:business@minamistock.com">business@minamistock.com</a></p>
+            <p style="font-size:12px;margin-top:4px">Partnerships, sponsorships, API access</p>
+          </div>
+        </div>
+        <div class="info-card">
+          <i class="fas fa-clock"></i>
+          <div>
+            <h3>Response Time</h3>
+            <p>Usually within 24 hours</p>
+            <p style="font-size:12px;margin-top:4px">Monday – Friday, 9am – 6pm UTC</p>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm" onsubmit="return false">
+        <h2>Send us a message</h2>
+
+        <div class="msg" id="formMsg"></div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Your name *</label>
+            <input type="text" id="name" required placeholder="John Doe">
+          </div>
+          <div class="field">
+            <label for="email">Email address *</label>
+            <input type="email" id="email" required placeholder="you@example.com">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="subject">Subject *</label>
+          <select id="subject" required>
+            <option value="">Choose a topic...</option>
+            <option value="General question">General question</option>
+            <option value="Report a problem">Report a problem</option>
+            <option value="DMCA / Copyright">DMCA / Copyright</option>
+            <option value="Business inquiry">Business inquiry</option>
+            <option value="Feedback / Suggestion">Feedback / Suggestion</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Message *</label>
+          <textarea id="message" required placeholder="Write your message here..." minlength="10"></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <i class="fas fa-paper-plane"></i> Send message
+        </button>
+      </form>
+    </div>
+
+    <div class="faq-hint">
+      <p>Looking for quick answers? Check our FAQ page first.</p>
+      <a href="faq.html">Visit FAQ →</a>
+    </div>
+  </div>
+</main>
+
+<footer class="main-footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <a href="index.html" class="logo-container" style="margin-bottom:12px">
+        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
+        <span>MINAMI STOCK</span>
+      </a>
+      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
+      <div class="social-icons">
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="stock-photo.html">Stock Photos</a>
+      <a href="tools.html">Tools</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <a href="image-resizer.html">Image Resizer</a>
+      <a href="image-cropper.html">Cropper</a>
+      <a href="image-compressor.html">Compressor</a>
+      <a href="color-palette.html">Color Palette</a>
+      <a href="bg-remover.html">BG Remover</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal & Help</h4>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="dmca.html">DMCA</a>
+      <a href="contact.html">Contact</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 MINAMI STOCK · All rights reserved</div>
+    <div class="footer-bottom-left">
+      <a class="fbtn" href="privacy.html">Privacy</a>
+      <a class="fbtn" href="terms.html">Terms</a>
+      <a class="fbtn" href="dmca.html">DMCA</a>
+      <a class="fbtn" href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+$ = id => document.getElementById(id);
+$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
+document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
+
+$("contactForm").onsubmit = (e) => {
+  e.preventDefault();
+  const name = $("name").value.trim();
+  const email = $("email").value.trim();
+  const subject = $("subject").value;
+  const message = $("message").value.trim();
+  const m = $("formMsg");
+
+  if (!name || !email || !subject || message.length < 10) {
+    m.textContent = "Please fill all fields correctly.";
+    m.className = "msg show err";
+    return;
+  }
+
+  $("submitBtn").disabled = true;
+  $("submitBtn").innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+  setTimeout(() => {
+    m.innerHTML = '<b>Thank you!</b> Your message has been sent. We\'ll reply to <b>' + email + '</b> within 24 hours.';
+    m.className = "msg show ok";
+    $("contactForm").reset();
+    $("submitBtn").disabled = false;
+    $("submitBtn").innerHTML = '<i class="fas fa-paper-plane"></i> Send message';
+  }, 1200);
+};
+</script>
+</body>
+</html>
