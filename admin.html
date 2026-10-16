@@ -6,15 +6,15 @@
 <title>Admin Panel - MINAMI STOCK</title>
 <meta name="color-scheme" content="light only">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--ok:#12805c;--bad:#d7373f;--warn:#e67e22}
+:root{--ink:#222;--mute:#6e6e6e;--line:#e1e1e1;--bg:#fff;--soft:#f5f5f5;--blue:#1473e6;--blue-d:#0d66d0;--ok:#12805c;--bad:#d7373f;--warn:#e67e22;--gold:#fbbf24;--purple:#8b5cf6;--pink:#e34ba9}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{margin:0;padding:0;background:#f7f8fa !important;color-scheme:light only}
 body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:#222;min-height:100vh}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;color:inherit}
 
-/* TOP BAR */
 header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
 .top-nav .in{max-width:1600px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
 .logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
@@ -26,11 +26,8 @@ header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position
 .logout-btn{padding:8px 16px;border:1px solid var(--line);background:var(--bg);border-radius:20px;font-size:13px;font-weight:600}
 .logout-btn:hover{background:var(--soft)}
 
-/* LAYOUT */
 .layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 60px);max-width:1600px;margin:auto}
-
-/* SIDEBAR */
-.sidebar{background:var(--bg);border-right:1px solid var(--line);padding:20px 12px}
+.sidebar{background:var(--bg);border-right:1px solid var(--line);padding:20px 12px;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto}
 .sidebar h4{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--mute);font-weight:700;padding:12px 14px 6px}
 .menu-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--mute);transition:.15s;cursor:pointer;margin-bottom:2px}
 .menu-item:hover{background:var(--soft);color:var(--ink)}
@@ -39,23 +36,29 @@ header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position
 .menu-item .count{margin-left:auto;background:var(--soft);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;color:var(--mute)}
 .menu-item.on .count{background:var(--blue);color:#fff}
 
-/* MAIN */
 .main{padding:24px}
 .page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px}
 .page-head h1{font-size:24px;font-weight:800;display:flex;align-items:center;gap:12px}
 .page-head h1 i{color:var(--blue)}
 
-/* Stats */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px}
-.stat-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:14px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.stat-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:14px;position:relative;transition:.15s}
+.stat-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.05)}
 .stat-card .icon{width:46px;height:46px;border-radius:11px;display:grid;place-items:center;font-size:19px;flex:none;background:var(--soft);color:var(--blue)}
 .stat-card.warn .icon{background:#fff2e6;color:var(--warn)}
 .stat-card.ok .icon{background:#e8f5ee;color:var(--ok)}
 .stat-card.bad .icon{background:#fdeaea;color:var(--bad)}
+.stat-card.gold .icon{background:#fff7e6;color:var(--gold)}
+.stat-card.purple .icon{background:#f3e8ff;color:var(--purple)}
+.stat-card.pink .icon{background:#fce7f3;color:var(--pink)}
 .stat-card .info b{display:block;font-size:22px;font-weight:800;line-height:1.1}
 .stat-card .info span{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
 
-/* Tabs */
+.chart-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:20px}
+.chart-card h3{font-size:14px;font-weight:700;margin-bottom:16px}
+.chart-card h3 i{color:var(--blue);margin-right:6px}
+.chart-card .chart-wrap{position:relative;height:280px}
+
 .tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:12px 20px;border:0;background:none;font-size:14px;font-weight:600;color:var(--mute);cursor:pointer;border-bottom:2px solid transparent;transition:.15s;display:flex;align-items:center;gap:8px;white-space:nowrap}
@@ -63,7 +66,6 @@ header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position
 .tab.on{color:var(--blue);border-bottom-color:var(--blue)}
 .tab .count{background:var(--soft);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
 
-/* Filter */
 .filter-row{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
 .filter-row input,.filter-row select{padding:9px 12px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:13px;background:var(--bg);color:var(--ink)}
 .filter-row input{flex:1;min-width:180px;max-width:300px}
@@ -71,21 +73,34 @@ header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position
 .filter-row .spacer{flex:1}
 .filter-row .total{font-size:13px;color:var(--mute);font-weight:600}
 
-/* Photo grid */
+.bulk-bar{background:#fff8e6;border:1px solid var(--gold);border-radius:10px;padding:10px 16px;display:none;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.bulk-bar.show{display:flex}
+.bulk-bar .count{font-weight:700;color:#92400e}
+.bulk-bar button{padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-weight:700;font-size:13px}
+.bulk-bar button.approve{background:var(--ok);color:#fff;border-color:var(--ok)}
+.bulk-bar button.reject{background:var(--bad);color:#fff;border-color:var(--bad)}
+
 .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
-.photo-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:.2s;cursor:pointer}
+.photo-card{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:.2s;cursor:pointer;position:relative}
 .photo-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);border-color:var(--blue)}
+.photo-card.selected{border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,115,230,.15)}
 .photo-card .thumb{aspect-ratio:4/3;position:relative;background:#eaeaea;overflow:hidden}
 .photo-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.status-badge{position:absolute;top:10px;left:10px;font-size:10px;font-weight:800;padding:4px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;color:#fff;z-index:2}
+.photo-card .checkbox{position:absolute;top:10px;left:10px;width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,.95);border:2px solid #ccc;display:grid;place-items:center;cursor:pointer;z-index:3}
+.photo-card .checkbox.checked{background:var(--blue);border-color:var(--blue);color:#fff}
+.photo-card .checkbox i{font-size:12px;opacity:0}
+.photo-card .checkbox.checked i{opacity:1}
+.status-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:800;padding:4px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;color:#fff;z-index:2}
 .status-badge.pending{background:var(--warn)}
 .status-badge.approved{background:var(--ok)}
 .status-badge.rejected{background:var(--bad)}
-.source-badge{position:absolute;top:10px;right:10px;font-size:10px;font-weight:800;padding:4px 8px;border-radius:10px;text-transform:uppercase;background:rgba(0,0,0,.7);color:#fff;z-index:2}
 .photo-card .body{padding:12px 14px}
 .photo-card .body h3{font-size:13px;font-weight:700;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .photo-card .body .meta{font-size:11px;color:var(--mute);display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .photo-card .body .meta span{display:flex;align-items:center;gap:4px}
+.photo-card .stats-row{display:flex;gap:10px;font-size:11px;color:var(--mute);padding:8px 0;border-top:1px solid var(--soft);margin-top:8px}
+.photo-card .stats-row span{display:flex;align-items:center;gap:4px}
+.photo-card .stats-row b{color:var(--ink)}
 .photo-card .actions{display:flex;gap:5px}
 .photo-card .actions button{flex:1;padding:7px;border:1px solid var(--line);background:var(--bg);border-radius:6px;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;transition:.15s}
 .photo-card .actions button:hover{background:var(--soft)}
@@ -95,20 +110,31 @@ header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position
 .photo-card .actions button.reject:hover{background:#fdeaea;border-color:var(--bad)}
 .photo-card .actions button.view{color:var(--blue)}
 
-/* Users table */
 .table-wrap{background:var(--bg);border:1px solid var(--line);border-radius:12px;overflow:hidden;overflow-x:auto}
-table.users{width:100%;border-collapse:collapse;font-size:13px}
-table.users th,table.users td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
-table.users th{background:var(--soft);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute)}
-table.users tr:hover td{background:#fafbfc}
-table.users tr:last-child td{border-bottom:0}
-table.users td.user-cell{display:flex;align-items:center;gap:10px}
-table.users .avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none;overflow:hidden}
-table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+table.data-table{width:100%;border-collapse:collapse;font-size:13px}
+table.data-table th,table.data-table td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+table.data-table th{background:var(--soft);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--mute)}
+table.data-table tr:hover td{background:#fafbfc}
+table.data-table tr:last-child td{border-bottom:0}
+table.data-table td.user-cell{display:flex;align-items:center;gap:10px}
+table.data-table .avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;flex:none;overflow:hidden}
+table.data-table .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .role-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px;background:var(--soft);color:var(--mute)}
 .role-badge.admin{background:#fdeaea;color:var(--bad)}
 
-/* Empty / loading */
+.activity-feed{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:4px 0}
+.activity-item{display:flex;gap:14px;padding:14px 20px;border-bottom:1px solid var(--soft);align-items:flex-start}
+.activity-item:last-child{border-bottom:0}
+.activity-item .icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none;font-size:14px}
+.activity-item .icon.approve{background:#e8f5ee;color:var(--ok)}
+.activity-item .icon.reject{background:#fdeaea;color:var(--bad)}
+.activity-item .icon.upload{background:#e8f2fd;color:var(--blue)}
+.activity-item .icon.payment{background:#fff7e6;color:var(--gold)}
+.activity-item .content{flex:1;min-width:0}
+.activity-item .content b{font-size:13px;font-weight:700;display:block;margin-bottom:3px}
+.activity-item .content span{font-size:12px;color:var(--mute)}
+.activity-item .time{font-size:11px;color:var(--mute);white-space:nowrap}
+
 .empty-state{text-align:center;padding:70px 20px;color:var(--mute);background:var(--bg);border:1px solid var(--line);border-radius:12px}
 .empty-state i{font-size:52px;opacity:.35;margin-bottom:18px;display:block;color:var(--blue)}
 .empty-state h3{color:var(--ink);font-size:18px;margin-bottom:6px}
@@ -118,23 +144,22 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
 .spinner{width:44px;height:44px;border:4px solid var(--soft);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Access denied */
+.date-range{display:flex;gap:6px;background:var(--soft);padding:4px;border-radius:10px}
+.date-range button{padding:6px 14px;border:0;background:transparent;border-radius:6px;font-size:12px;font-weight:700;color:var(--mute);cursor:pointer}
+.date-range button.on{background:var(--bg);color:var(--blue);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
 .access-denied{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;background:#f7f8fa}
 .denied-box{max-width:460px;text-align:center;background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:44px 32px;box-shadow:0 10px 40px rgba(0,0,0,.06)}
 .denied-box .icon{width:80px;height:80px;border-radius:50%;background:#fdeaea;color:var(--bad);display:grid;place-items:center;font-size:36px;margin:0 auto 22px}
 .denied-box h1{font-size:22px;font-weight:800;margin-bottom:10px}
 .denied-box p{color:var(--mute);font-size:14px;line-height:1.7;margin-bottom:24px}
-.denied-box .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--blue);color:#fff;border-radius:24px;font-weight:700;font-size:14px;transition:.15s;margin:4px}
-.denied-box .btn:hover{background:var(--blue-d)}
+.denied-box .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:24px;font-weight:700;font-size:14px;margin:4px;background:var(--blue);color:#fff}
 .denied-box .btn.gray{background:#6e6e6e}
-.denied-box .btn.gray:hover{background:#555}
 
-/* Modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
 .modal.show{display:flex}
-.modal-box{background:var(--bg);border-radius:14px;max-width:780px;width:100%;max-height:90vh;overflow:auto;padding:26px;position:relative}
+.modal-box{background:var(--bg);border-radius:14px;max-width:880px;width:100%;max-height:90vh;overflow:auto;padding:26px;position:relative}
 .modal-box .close{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);font-size:16px;display:grid;place-items:center}
-.modal-box .close:hover{background:var(--line)}
 .modal-box h2{font-size:20px;font-weight:800;margin-bottom:6px;padding-right:40px}
 .modal-box .sub{color:var(--mute);font-size:13px;margin-bottom:18px}
 .modal-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
@@ -143,15 +168,16 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
 .modal-info .row:last-child{border-bottom:0}
 .modal-info .row label{font-weight:700;color:var(--mute);min-width:100px;text-transform:uppercase;font-size:11px;letter-spacing:.4px}
 .modal-info .row span{color:var(--ink);word-break:break-word;flex:1}
+.modal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.modal-stats .mini-stat{background:var(--soft);padding:12px;border-radius:8px;text-align:center}
+.modal-stats .mini-stat b{display:block;font-size:18px;font-weight:800;color:var(--ink)}
+.modal-stats .mini-stat span{font-size:11px;color:var(--mute);text-transform:uppercase;font-weight:700;letter-spacing:.4px}
 .modal-actions{display:flex;gap:10px;margin-top:20px}
-.modal-actions button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s}
-.modal-actions button:hover{background:var(--soft)}
+.modal-actions button{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px}
 .modal-actions button.approve{background:var(--ok);border-color:var(--ok);color:#fff}
-.modal-actions button.approve:hover{background:#0d6b4a}
 .modal-actions button.reject{background:var(--bad);border-color:var(--bad);color:#fff}
-.modal-actions button.reject:hover{background:#b02a31}
 
-#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:110;font-weight:600}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:8px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:110;font-weight:600;max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%)}
 
 @media(max-width:900px){
@@ -159,18 +185,18 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
   .sidebar{display:none}
   .modal-layout{grid-template-columns:1fr}
   .page-head h1{font-size:20px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .modal-stats{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- Loading -->
 <div id="authLoading" style="position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#f7f8fa;z-index:50">
   <div class="spinner"></div>
   <p style="color:#6e6e6e;font-size:14px;margin-top:16px">Checking admin access…</p>
 </div>
 
-<!-- Access Denied -->
 <div class="access-denied" id="accessDenied" style="display:none;position:fixed;inset:0;z-index:40">
   <div class="denied-box">
     <div class="icon"><i class="fas fa-shield-alt"></i></div>
@@ -182,9 +208,7 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
   </div>
 </div>
 
-<!-- Admin Panel -->
 <div id="adminPanel" style="display:none">
-
   <header class="top-nav"><div class="in">
     <a href="index.html" class="logo-container">
       <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
@@ -201,6 +225,8 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
     <aside class="sidebar">
       <h4>Overview</h4>
       <div class="menu-item on" data-page="dashboard"><i class="fas fa-gauge"></i> Dashboard</div>
+      <div class="menu-item" data-page="analytics"><i class="fas fa-chart-line"></i> Analytics</div>
+      <div class="menu-item" data-page="earnings"><i class="fas fa-dollar-sign"></i> Earnings</div>
 
       <h4>Moderation</h4>
       <div class="menu-item" data-page="pending"><i class="fas fa-clock"></i> Pending <span class="count" id="sidePending">0</span></div>
@@ -208,12 +234,17 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
       <div class="menu-item" data-page="rejected"><i class="fas fa-times-circle"></i> Rejected <span class="count" id="sideRejected">0</span></div>
       <div class="menu-item" data-page="allphotos"><i class="fas fa-images"></i> All photos <span class="count" id="sideAll">0</span></div>
 
+      <h4>Activity</h4>
+      <div class="menu-item" data-page="downloads"><i class="fas fa-download"></i> Downloads</div>
+      <div class="menu-item" data-page="activity"><i class="fas fa-stream"></i> Activity log</div>
+
       <h4>Users</h4>
-      <div class="menu-item" data-page="users"><i class="fas fa-users"></i> All users</div>
+      <div class="menu-item" data-page="users"><i class="fas fa-users"></i> All users <span class="count" id="sideUsers">0</span></div>
 
       <h4>Site</h4>
       <a class="menu-item" href="index.html"><i class="fas fa-eye"></i> View site</a>
       <a class="menu-item" href="upload.html"><i class="fas fa-cloud-arrow-up"></i> Upload page</a>
+      <a class="menu-item" href="bulk-upload.html"><i class="fas fa-layer-group"></i> Bulk upload</a>
     </aside>
 
     <main class="main" id="mainContent">
@@ -222,7 +253,6 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
   </div>
 </div>
 
-<!-- Modal -->
 <div class="modal" id="photoModal">
   <div class="modal-box">
     <button class="close" id="modalClose"><i class="fas fa-times"></i></button>
@@ -230,7 +260,10 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
     <p class="sub">Review the details and approve or reject this photo.</p>
     <div class="modal-layout">
       <div><img id="modalImg" alt=""></div>
-      <div class="modal-info" id="modalInfo"></div>
+      <div>
+        <div class="modal-info" id="modalInfo"></div>
+        <div class="modal-stats" id="modalStats"></div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="reject" id="modalReject"><i class="fas fa-times"></i> Reject</button>
@@ -244,10 +277,8 @@ table.users .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 <script>
-/* ================================================================
-   Firebase Config
-   ================================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
   authDomain: "creoverse-stock.firebaseapp.com",
@@ -258,14 +289,7 @@ const firebaseConfig = {
   appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
 };
 
-/* ================================================================
-   🔴 ADMIN EMAILS — এখানে আপনার সব admin email
-   ================================================================ */
-const ADMIN_EMAILS = [
-  "bk5969736@gmail.com",
-  "baba1312@gmail.com"
-];
-/* ================================================================ */
+const ADMIN_EMAILS = ["bk5969736@gmail.com", "baba1312@gmail.com"];
 
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -273,17 +297,26 @@ const db = firebase.firestore();
 
 const PHOTO_COLLECTION = "stockphoto";
 const USERS_COLLECTION = "users";
+const DOWNLOADS_COLLECTION = "downloads";
+const PAYMENTS_COLLECTION = "payments";
+const ACTIVITY_COLLECTION = "activity";
 
 const $ = id => document.getElementById(id);
 
 let currentUser = null;
 let allPhotos = [];
 let allUsers = [];
+let allDownloads = [];
+let allPayments = [];
+let allActivity = [];
 let activePage = "dashboard";
 let activeTab = "pending";
 let searchTerm = "";
 let sortBy = "newest";
 let modalPhotoId = null;
+let dateRange = "30d";
+let selectedPhotos = new Set();
+let charts = {};
 
 function toast(m){
   const t = $("toast");
@@ -292,16 +325,46 @@ function toast(m){
   clearTimeout(toast.t);
   toast.t = setTimeout(() => t.classList.remove("show"), 2200);
 }
-function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+}
 function fmtDate(ts){
   if (!ts) return "—";
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   return d.toLocaleDateString() + " " + d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
 }
+function fmtMoney(n){ return "$" + (Number(n) || 0).toFixed(2); }
+function timeAgo(ts){
+  if (!ts) return "—";
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const sec = Math.floor((Date.now() - d.getTime()) / 1000);
+  if (sec < 60) return "just now";
+  if (sec < 3600) return Math.floor(sec / 60) + " min ago";
+  if (sec < 86400) return Math.floor(sec / 3600) + " hr ago";
+  if (sec < 2592000) return Math.floor(sec / 86400) + " days ago";
+  return d.toLocaleDateString();
+}
+function getMillis(ts){ return ts && ts.toMillis ? ts.toMillis() : 0; }
+function daysAgo(n){ return new Date(Date.now() - n * 86400000); }
+function todayStart(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+function dateFilter(ts){
+  if (!ts) return false;
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  const days = (Date.now() - d.getTime()) / 86400000;
+  if (dateRange === "7d") return days <= 7;
+  if (dateRange === "30d") return days <= 30;
+  if (dateRange === "90d") return days <= 90;
+  if (dateRange === "1y") return days <= 365;
+  return true;
+}
+function normalizeStatus(s){
+  s = (s || "pending").toString().toLowerCase().trim();
+  if (!["pending", "approved", "rejected"].includes(s)) return "pending";
+  return s;
+}
 
-/* ============================================================
-   AUTH CHECK
-   ============================================================ */
+/* AUTH */
 auth.onAuthStateChanged(async (u) => {
   $("authLoading").style.display = "flex";
   $("accessDenied").style.display = "none";
@@ -310,22 +373,19 @@ auth.onAuthStateChanged(async (u) => {
   if (!u) {
     $("authLoading").style.display = "none";
     $("accessDenied").style.display = "flex";
-    $("denyReason").textContent = "You are not signed in. Please sign in with an admin account.";
+    $("denyReason").textContent = "You are not signed in.";
     return;
   }
 
-  const userEmail = (u.email || "").toLowerCase().trim();
-  const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase().trim() === userEmail);
-
+  const email = (u.email || "").toLowerCase().trim();
+  const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase().trim() === email);
   if (!isAdmin) {
     $("authLoading").style.display = "none";
     $("accessDenied").style.display = "flex";
-    $("denyReason").innerHTML =
-      'You are signed in as <b>' + esc(u.email || "unknown") + '</b>, but this account is not an admin.';
+    $("denyReason").innerHTML = 'Signed in as <b>' + esc(u.email || "unknown") + '</b>, not an admin.';
     return;
   }
 
-  // ✅ Admin confirmed
   currentUser = u;
   $("adminEmail").textContent = u.email || "—";
   $("authLoading").style.display = "none";
@@ -335,176 +395,303 @@ auth.onAuthStateChanged(async (u) => {
   render();
 });
 
-/* Sign out from denied screen */
-const denySignOut = $("denySignOut");
-if (denySignOut) {
-  denySignOut.onclick = () => auth.signOut().then(() => location.href = "login.html");
-}
+$("denySignOut").onclick = () => auth.signOut().then(() => location.href = "login.html");
 
-/* ============================================================
-   LOAD DATA
-   ============================================================ */
+/* LOAD DATA */
 async function loadData(){
   try {
+    let snap;
     try {
-      const photoSnap = await db.collection(PHOTO_COLLECTION)
-        .orderBy("createdAt", "desc")
-        .limit(500)
-        .get();
-      allPhotos = photoSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      snap = await db.collection(PHOTO_COLLECTION).orderBy("createdAt", "desc").limit(500).get();
     } catch (e) {
-      console.warn("orderBy failed, using simple query:", e.message);
-      const photoSnap = await db.collection(PHOTO_COLLECTION).limit(500).get();
-      allPhotos = photoSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      snap = await db.collection(PHOTO_COLLECTION).limit(500).get();
     }
+    allPhotos = snap.docs.map(d => {
+      const data = d.data();
+      return { id: d.id, ...data, status: normalizeStatus(data.status) };
+    });
+
+    console.log("📸 Loaded", allPhotos.length, "photos");
+    console.log("   Pending:", allPhotos.filter(p => p.status === "pending").length);
+    console.log("   Approved:", allPhotos.filter(p => p.status === "approved").length);
+    console.log("   Rejected:", allPhotos.filter(p => p.status === "rejected").length);
 
     try {
-      const userSnap = await db.collection(USERS_COLLECTION).limit(500).get();
-      allUsers = userSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    } catch (e) {
-      console.warn("Users load failed:", e.message);
-      allUsers = [];
-    }
+      const us = await db.collection(USERS_COLLECTION).limit(500).get();
+      allUsers = us.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) { allUsers = []; }
+
+    try {
+      const ds = await db.collection(DOWNLOADS_COLLECTION).orderBy("downloadedAt", "desc").limit(1000).get();
+      allDownloads = ds.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) { allDownloads = []; }
+
+    try {
+      const ps = await db.collection(PAYMENTS_COLLECTION).orderBy("createdAt", "desc").limit(500).get();
+      allPayments = ps.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) { allPayments = []; }
+
+    try {
+      const as = await db.collection(ACTIVITY_COLLECTION).orderBy("createdAt", "desc").limit(100).get();
+      allActivity = as.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e) { allActivity = []; }
 
     updateSidebarCounts();
   } catch (e) {
-    console.error("[admin] loadData error:", e);
+    console.error("Load error:", e);
     toast("Load error: " + e.message);
   }
 }
 
 function updateSidebarCounts(){
-  const pending = allPhotos.filter(p => (p.status || "pending") === "pending").length;
+  const pending = allPhotos.filter(p => p.status === "pending").length;
   const approved = allPhotos.filter(p => p.status === "approved").length;
   const rejected = allPhotos.filter(p => p.status === "rejected").length;
-  const sP = $("sidePending"), sA = $("sideApproved"), sR = $("sideRejected"), sAll = $("sideAll");
-  if (sP) sP.textContent = pending;
-  if (sA) sA.textContent = approved;
-  if (sR) sR.textContent = rejected;
-  if (sAll) sAll.textContent = allPhotos.length;
+  if ($("sidePending")) $("sidePending").textContent = pending;
+  if ($("sideApproved")) $("sideApproved").textContent = approved;
+  if ($("sideRejected")) $("sideRejected").textContent = rejected;
+  if ($("sideAll")) $("sideAll").textContent = allPhotos.length;
+  if ($("sideUsers")) $("sideUsers").textContent = allUsers.length;
 }
 
-/* ============================================================
-   SIDEBAR NAVIGATION
-   ============================================================ */
+async function logActivity(type, message, metadata){
+  try {
+    await db.collection(ACTIVITY_COLLECTION).add({
+      type, message, metadata: metadata || {},
+      userEmail: currentUser ? currentUser.email : "",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  } catch (e) {}
+}
+
+/* NAVIGATION */
 document.querySelectorAll(".menu-item[data-page]").forEach(m => {
   m.onclick = () => {
     document.querySelectorAll(".menu-item").forEach(x => x.classList.remove("on"));
     m.classList.add("on");
     activePage = m.dataset.page;
-    if (["pending", "approved", "rejected"].includes(activePage)) {
-      activeTab = activePage;
-    }
+    if (["pending", "approved", "rejected"].includes(activePage)) activeTab = activePage;
+    selectedPhotos.clear();
     render();
   };
 });
 
-const logoutBtn = $("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.onclick = () => auth.signOut().then(() => location.href = "index.html");
-}
+$("logoutBtn").onclick = () => auth.signOut().then(() => location.href = "index.html");
 
-/* ============================================================
-   RENDER
-   ============================================================ */
+/* RENDER */
 function render(){
   const main = $("mainContent");
   if (!main) return;
+  Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
+  charts = {};
+
   if (activePage === "dashboard") renderDashboard(main);
+  else if (activePage === "analytics") renderAnalytics(main);
+  else if (activePage === "earnings") renderEarnings(main);
   else if (activePage === "users") renderUsers(main);
+  else if (activePage === "downloads") renderDownloads(main);
+  else if (activePage === "activity") renderActivity(main);
   else renderPhotos(main);
 }
 
-/* ============================================================
-   DASHBOARD
-   ============================================================ */
+/* DASHBOARD */
 function renderDashboard(main){
-  const pending = allPhotos.filter(p => (p.status || "pending") === "pending").length;
+  const pending = allPhotos.filter(p => p.status === "pending").length;
   const approved = allPhotos.filter(p => p.status === "approved").length;
   const rejected = allPhotos.filter(p => p.status === "rejected").length;
   const totalUsers = allUsers.length;
 
+  const totalEarnings = allPayments.filter(p => p.status === "completed" || p.status === "approved").reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  const monthEarnings = allPayments.filter(p => (p.status === "completed" || p.status === "approved") && dateFilter(p.createdAt)).reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  const totalDownloads = allDownloads.length;
+  const todayDownloads = allDownloads.filter(d => {
+    if (!d.downloadedAt) return false;
+    const dd = d.downloadedAt.toDate ? d.downloadedAt.toDate() : new Date(d.downloadedAt);
+    return dd >= todayStart();
+  }).length;
+
   const categories = {};
-  allPhotos.forEach(p => {
-    if (p.category) categories[p.category] = (categories[p.category] || 0) + 1;
-  });
+  allPhotos.forEach(p => { if (p.category) categories[p.category] = (categories[p.category] || 0) + 1; });
   const topCats = Object.entries(categories).sort((a, b) => b[1] - a[1]).slice(0, 6);
 
   main.innerHTML = `
     <div class="page-head">
       <h1><i class="fas fa-gauge"></i> Dashboard</h1>
+      <div class="date-range">
+        <button data-range="7d" class="${dateRange==='7d'?'on':''}">7d</button>
+        <button data-range="30d" class="${dateRange==='30d'?'on':''}">30d</button>
+        <button data-range="90d" class="${dateRange==='90d'?'on':''}">90d</button>
+        <button data-range="1y" class="${dateRange==='1y'?'on':''}">1y</button>
+      </div>
     </div>
 
     <div class="stats-grid">
-      <div class="stat-card warn">
-        <div class="icon"><i class="fas fa-clock"></i></div>
-        <div class="info"><b>${pending}</b><span>Pending review</span></div>
-      </div>
-      <div class="stat-card ok">
-        <div class="icon"><i class="fas fa-check-circle"></i></div>
-        <div class="info"><b>${approved}</b><span>Approved</span></div>
-      </div>
-      <div class="stat-card bad">
-        <div class="icon"><i class="fas fa-times-circle"></i></div>
-        <div class="info"><b>${rejected}</b><span>Rejected</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="icon"><i class="fas fa-images"></i></div>
-        <div class="info"><b>${allPhotos.length}</b><span>Total photos</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="icon"><i class="fas fa-users"></i></div>
-        <div class="info"><b>${totalUsers}</b><span>Users</span></div>
-      </div>
+      <div class="stat-card gold"><div class="icon"><i class="fas fa-dollar-sign"></i></div><div class="info"><b>${fmtMoney(totalEarnings)}</b><span>Total Earnings</span></div></div>
+      <div class="stat-card ok"><div class="icon"><i class="fas fa-chart-line"></i></div><div class="info"><b>${fmtMoney(monthEarnings)}</b><span>Last ${dateRange}</span></div></div>
+      <div class="stat-card purple"><div class="icon"><i class="fas fa-download"></i></div><div class="info"><b>${totalDownloads}</b><span>Downloads</span></div></div>
+      <div class="stat-card"><div class="icon"><i class="fas fa-calendar-day"></i></div><div class="info"><b>${todayDownloads}</b><span>Today</span></div></div>
     </div>
 
-    <div class="page-head">
-      <h1 style="font-size:18px"><i class="fas fa-fire"></i> Top categories</h1>
+    <div class="stats-grid">
+      <div class="stat-card warn"><div class="icon"><i class="fas fa-clock"></i></div><div class="info"><b>${pending}</b><span>Pending</span></div></div>
+      <div class="stat-card ok"><div class="icon"><i class="fas fa-check-circle"></i></div><div class="info"><b>${approved}</b><span>Approved</span></div></div>
+      <div class="stat-card bad"><div class="icon"><i class="fas fa-times-circle"></i></div><div class="info"><b>${rejected}</b><span>Rejected</span></div></div>
+      <div class="stat-card pink"><div class="icon"><i class="fas fa-users"></i></div><div class="info"><b>${totalUsers}</b><span>Users</span></div></div>
     </div>
+
+    <div class="chart-card">
+      <h3><i class="fas fa-chart-area"></i> Earnings (14 days)</h3>
+      <div class="chart-wrap"><canvas id="earningsChart"></canvas></div>
+    </div>
+
+    <div class="chart-card">
+      <h3><i class="fas fa-chart-bar"></i> Downloads (14 days)</h3>
+      <div class="chart-wrap"><canvas id="downloadsChart"></canvas></div>
+    </div>
+
+    <div class="page-head" style="margin-top:30px"><h1 style="font-size:18px"><i class="fas fa-fire"></i> Top categories</h1></div>
     <div class="stats-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
       ${topCats.length ? topCats.map(([name, count]) => `
-        <div class="stat-card">
-          <div class="icon"><i class="fas fa-tag"></i></div>
-          <div class="info"><b>${count}</b><span>${esc(name)}</span></div>
-        </div>
-      `).join("") : `<div class="empty-state" style="grid-column:1/-1;padding:40px"><i class="fas fa-tags"></i><p style="color:var(--mute)">No categories yet</p></div>`}
+        <div class="stat-card"><div class="icon"><i class="fas fa-tag"></i></div><div class="info"><b>${count}</b><span>${esc(name)}</span></div></div>
+      `).join("") : `<div class="empty-state" style="grid-column:1/-1;padding:40px"><i class="fas fa-tags"></i><p>No categories yet</p></div>`}
     </div>
-
-    ${pending > 0 ? `
-      <div class="page-head" style="margin-top:30px">
-        <h1 style="font-size:18px"><i class="fas fa-clock" style="color:var(--warn)"></i> Waiting for review</h1>
-        <button class="logout-btn" onclick="gotoPending()">Review all →</button>
-      </div>
-      <div class="photo-grid" id="dashPending"></div>
-    ` : ``}
   `;
 
-  if (pending > 0) {
-    const grid = $("dashPending");
-    allPhotos.filter(p => (p.status || "pending") === "pending").slice(0, 6).forEach(p => {
-      grid.appendChild(buildPhotoCard(p));
+  main.querySelectorAll(".date-range button").forEach(b => {
+    b.onclick = () => { dateRange = b.dataset.range; render(); };
+  });
+
+  drawEarningsChart();
+  drawDownloadsChart();
+}
+
+function getLast14Days(){ const a = []; for (let i = 13; i >= 0; i--) a.push(daysAgo(i)); return a; }
+function dayLabel(d){ return d.toLocaleDateString("en", {month:"short", day:"numeric"}); }
+
+function drawEarningsChart(){
+  const ctx = $("earningsChart"); if (!ctx) return;
+  const days = getLast14Days();
+  const data = days.map(d => {
+    const s = new Date(d); s.setHours(0,0,0,0);
+    const e = new Date(d); e.setHours(23,59,59,999);
+    return allPayments.filter(p => {
+      if (p.status !== "completed" && p.status !== "approved") return false;
+      if (!p.createdAt) return false;
+      const pd = p.createdAt.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
+      return pd >= s && pd <= e;
+    }).reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+  });
+
+  charts.earnings = new Chart(ctx, {
+    type: "line",
+    data: { labels: days.map(dayLabel), datasets: [{ data, borderColor: "#fbbf24", backgroundColor: "rgba(251,191,36,.12)", fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: v => "$" + v } }, x: { grid: { display: false } } } }
+  });
+}
+function drawDownloadsChart(){
+  const ctx = $("downloadsChart"); if (!ctx) return;
+  const days = getLast14Days();
+  const data = days.map(d => {
+    const s = new Date(d); s.setHours(0,0,0,0);
+    const e = new Date(d); e.setHours(23,59,59,999);
+    return allDownloads.filter(dl => {
+      if (!dl.downloadedAt) return false;
+      const dd = dl.downloadedAt.toDate ? dl.downloadedAt.toDate() : new Date(dl.downloadedAt);
+      return dd >= s && dd <= e;
+    }).length;
+  });
+  charts.downloads = new Chart(ctx, {
+    type: "bar",
+    data: { labels: days.map(dayLabel), datasets: [{ data, backgroundColor: "rgba(20,115,230,.7)", borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } }
+  });
+}
+
+/* ANALYTICS */
+function renderAnalytics(main){
+  const catMap = {};
+  allPhotos.forEach(p => { const c = p.category || "Uncategorized"; catMap[c] = (catMap[c] || 0) + 1; });
+
+  const pending = allPhotos.filter(p => p.status === "pending").length;
+  const approved = allPhotos.filter(p => p.status === "approved").length;
+  const rejected = allPhotos.filter(p => p.status === "rejected").length;
+
+  main.innerHTML = `
+    <div class="page-head"><h1><i class="fas fa-chart-line"></i> Analytics</h1></div>
+    <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Photos by Category</h3><div class="chart-wrap"><canvas id="catChart"></canvas></div></div>
+    <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Photos by Status</h3><div class="chart-wrap"><canvas id="statusChart"></canvas></div></div>
+  `;
+
+  if (Object.keys(catMap).length) {
+    charts.cat = new Chart($("catChart"), {
+      type: "doughnut",
+      data: { labels: Object.keys(catMap), datasets: [{ data: Object.values(catMap), backgroundColor: ["#1473e6","#fbbf24","#12805c","#d7373f","#8b5cf6","#e67e22","#e34ba9","#06b6d4","#84cc16","#f97316"] }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "right" } } }
+    });
+  }
+
+  charts.status = new Chart($("statusChart"), {
+    type: "doughnut",
+    data: { labels: ["Pending", "Approved", "Rejected"], datasets: [{ data: [pending, approved, rejected], backgroundColor: ["#e67e22", "#12805c", "#d7373f"] }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "right" } } }
+  });
+}
+
+/* EARNINGS */
+function renderEarnings(main){
+  const totalEarnings = allPayments.filter(p => p.status === "completed" || p.status === "approved").reduce((s, p) => s + (Number(p.amount) || 0), 0);
+  const monthlyEarnings = {};
+  allPayments.filter(p => p.status === "completed" || p.status === "approved").forEach(p => {
+    if (!p.createdAt) return;
+    const d = p.createdAt.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
+    const k = d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0");
+    monthlyEarnings[k] = (monthlyEarnings[k] || 0) + (Number(p.amount) || 0);
+  });
+  const sortedMonths = Object.keys(monthlyEarnings).sort().reverse().slice(0, 12);
+
+  main.innerHTML = `
+    <div class="page-head"><h1><i class="fas fa-dollar-sign"></i> Earnings</h1></div>
+    <div class="stats-grid">
+      <div class="stat-card gold"><div class="icon"><i class="fas fa-coins"></i></div><div class="info"><b>${fmtMoney(totalEarnings)}</b><span>All Time</span></div></div>
+      <div class="stat-card purple"><div class="icon"><i class="fas fa-receipt"></i></div><div class="info"><b>${allPayments.length}</b><span>Transactions</span></div></div>
+      <div class="stat-card warn"><div class="icon"><i class="fas fa-hourglass"></i></div><div class="info"><b>${allPayments.filter(p => p.status === 'pending').length}</b><span>Pending</span></div></div>
+    </div>
+    <div class="chart-card"><h3><i class="fas fa-chart-bar"></i> Monthly Earnings</h3><div class="chart-wrap"><canvas id="monthlyChart"></canvas></div></div>
+    <div class="page-head" style="margin-top:30px"><h1 style="font-size:18px"><i class="fas fa-history"></i> Recent Transactions</h1></div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Date</th><th>User</th><th>Plan</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          ${allPayments.length ? allPayments.slice(0, 50).map(p => `
+            <tr>
+              <td>${fmtDate(p.createdAt)}</td>
+              <td>${esc(p.userEmail || p.email || "—")}</td>
+              <td>${esc(p.plan || "—")}</td>
+              <td><b>${fmtMoney(p.amount)}</b></td>
+              <td><span class="status-badge ${p.status === 'completed' || p.status === 'approved' ? 'approved' : p.status === 'rejected' ? 'rejected' : 'pending'}" style="position:static">${esc(p.status || 'pending')}</span></td>
+            </tr>
+          `).join("") : `<tr><td colspan="5" style="text-align:center;color:var(--mute);padding:30px">No transactions</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  if (sortedMonths.length) {
+    charts.monthly = new Chart($("monthlyChart"), {
+      type: "bar",
+      data: { labels: sortedMonths.map(m => { const [y, mo] = m.split("-"); return new Date(y, mo-1).toLocaleDateString("en", {month:"short", year:"numeric"}); }), datasets: [{ data: sortedMonths.map(m => monthlyEarnings[m]), backgroundColor: "rgba(251,191,36,.8)", borderRadius: 6 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: v => "$" + v } } } }
     });
   }
 }
 
-window.gotoPending = () => {
-  document.querySelectorAll(".menu-item").forEach(x => x.classList.remove("on"));
-  const el = document.querySelector('[data-page="pending"]');
-  if (el) el.classList.add("on");
-  activePage = "pending";
-  activeTab = "pending";
-  render();
-};
-
-/* ============================================================
-   PHOTOS PAGE
-   ============================================================ */
+/* PHOTOS PAGE */
 function renderPhotos(main){
   const tab = activeTab;
   let filtered = allPhotos.slice();
 
   if (tab !== "allphotos") {
-    filtered = filtered.filter(p => (p.status || "pending") === tab);
+    filtered = filtered.filter(p => normalizeStatus(p.status) === tab);
   }
 
   if (searchTerm) {
@@ -512,90 +699,134 @@ function renderPhotos(main){
     filtered = filtered.filter(p =>
       (p.title || "").toLowerCase().includes(t) ||
       (p.author || "").toLowerCase().includes(t) ||
-      (p.category || "").toLowerCase().includes(t) ||
-      (p.userEmail || "").toLowerCase().includes(t)
+      (p.category || "").toLowerCase().includes(t)
     );
   }
 
-  const ms = p => p.createdAt && p.createdAt.toMillis ? p.createdAt.toMillis() : 0;
-  if (sortBy === "newest") filtered.sort((a, b) => ms(b) - ms(a));
-  else if (sortBy === "oldest") filtered.sort((a, b) => ms(a) - ms(b));
-  else if (sortBy === "az") filtered.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+  if (sortBy === "newest") {
+    filtered.sort((a, b) => {
+      const am = getMillis(activeTab === "approved" ? (a.reviewedAt || a.createdAt) : a.createdAt);
+      const bm = getMillis(activeTab === "approved" ? (b.reviewedAt || b.createdAt) : b.createdAt);
+      return bm - am;
+    });
+  } else if (sortBy === "oldest") {
+    filtered.sort((a, b) => {
+      const am = getMillis(activeTab === "approved" ? (a.reviewedAt || a.createdAt) : a.createdAt);
+      const bm = getMillis(activeTab === "approved" ? (b.reviewedAt || b.createdAt) : b.createdAt);
+      return am - bm;
+    });
+  } else if (sortBy === "az") {
+    filtered.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+  }
 
   const titles = { pending: "Pending review", approved: "Approved photos", rejected: "Rejected photos", allphotos: "All photos" };
   const icons = { pending: "fa-clock", approved: "fa-check-circle", rejected: "fa-times-circle", allphotos: "fa-images" };
 
   main.innerHTML = `
-    <div class="page-head">
-      <h1><i class="fas ${icons[tab]}"></i> ${titles[tab]}</h1>
-    </div>
+    <div class="page-head"><h1><i class="fas ${icons[tab]}"></i> ${titles[tab]}</h1></div>
 
     <div class="tabs">
-      <button class="tab ${tab === 'pending' ? 'on' : ''}" data-tab="pending"><i class="fas fa-clock"></i> Pending <span class="count">${allPhotos.filter(p => (p.status || 'pending') === 'pending').length}</span></button>
-      <button class="tab ${tab === 'approved' ? 'on' : ''}" data-tab="approved"><i class="fas fa-check"></i> Approved <span class="count">${allPhotos.filter(p => p.status === 'approved').length}</span></button>
-      <button class="tab ${tab === 'rejected' ? 'on' : ''}" data-tab="rejected"><i class="fas fa-times"></i> Rejected <span class="count">${allPhotos.filter(p => p.status === 'rejected').length}</span></button>
+      <button class="tab ${tab === 'pending' ? 'on' : ''}" data-tab="pending"><i class="fas fa-clock"></i> Pending <span class="count">${allPhotos.filter(p => normalizeStatus(p.status) === 'pending').length}</span></button>
+      <button class="tab ${tab === 'approved' ? 'on' : ''}" data-tab="approved"><i class="fas fa-check"></i> Approved <span class="count">${allPhotos.filter(p => normalizeStatus(p.status) === 'approved').length}</span></button>
+      <button class="tab ${tab === 'rejected' ? 'on' : ''}" data-tab="rejected"><i class="fas fa-times"></i> Rejected <span class="count">${allPhotos.filter(p => normalizeStatus(p.status) === 'rejected').length}</span></button>
       <button class="tab ${tab === 'allphotos' ? 'on' : ''}" data-tab="allphotos"><i class="fas fa-images"></i> All <span class="count">${allPhotos.length}</span></button>
     </div>
 
     <div class="filter-row">
-      <input type="text" id="searchInput" placeholder="Search by title, author, category…" value="${esc(searchTerm)}">
+      <input type="text" id="searchInput" placeholder="Search…" value="${esc(searchTerm)}">
       <select id="sortSelect">
         <option value="newest" ${sortBy === 'newest' ? 'selected' : ''}>Newest first</option>
         <option value="oldest" ${sortBy === 'oldest' ? 'selected' : ''}>Oldest first</option>
         <option value="az" ${sortBy === 'az' ? 'selected' : ''}>Title A–Z</option>
       </select>
+      <button id="selectAllBtn" class="logout-btn">Select all</button>
       <div class="spacer"></div>
       <div class="total">${filtered.length} photo${filtered.length === 1 ? "" : "s"}</div>
     </div>
 
+    <div class="bulk-bar" id="bulkBar">
+      <span class="count" id="bulkCount">0 selected</span>
+      <button class="approve" onclick="bulkAction('approved')"><i class="fas fa-check"></i> Approve All</button>
+      <button class="reject" onclick="bulkAction('rejected')"><i class="fas fa-times"></i> Reject All</button>
+      <button onclick="bulkClear()">Clear</button>
+    </div>
+
     ${filtered.length ? `<div class="photo-grid" id="photoGrid"></div>` :
-      `<div class="empty-state">
-        <i class="fas fa-inbox"></i>
-        <h3>No photos here</h3>
-        <p>${searchTerm ? "No results match your search." : "Nothing to show in this category yet."}</p>
-      </div>`}
+      `<div class="empty-state"><i class="fas fa-inbox"></i><h3>No photos here</h3><p>${searchTerm ? "No results match." : "Nothing here yet."}</p></div>`}
   `;
 
   document.querySelectorAll(".tabs .tab").forEach(t => {
-    t.onclick = () => { activeTab = t.dataset.tab; render(); };
+    t.onclick = () => { activeTab = t.dataset.tab; selectedPhotos.clear(); render(); };
   });
 
   const si = $("searchInput");
-  if (si) {
-    si.oninput = (e) => {
-      searchTerm = e.target.value;
-      clearTimeout(si._t);
-      si._t = setTimeout(render, 250);
-    };
-  }
+  if (si) si.oninput = (e) => { searchTerm = e.target.value; clearTimeout(si._t); si._t = setTimeout(render, 250); };
 
   const so = $("sortSelect");
   if (so) so.onchange = (e) => { sortBy = e.target.value; render(); };
 
+  const saBtn = $("selectAllBtn");
+  if (saBtn) saBtn.onclick = () => {
+    if (selectedPhotos.size === filtered.length) selectedPhotos.clear();
+    else filtered.forEach(p => selectedPhotos.add(p.id));
+    renderPhotos(main);
+  };
+
   const grid = $("photoGrid");
-  if (grid) {
-    filtered.forEach(p => grid.appendChild(buildPhotoCard(p)));
-  }
+  if (grid) filtered.forEach(p => grid.appendChild(buildPhotoCard(p)));
+
+  updateBulkBar();
 }
 
-/* ============================================================
-   PHOTO CARD
-   ============================================================ */
+function updateBulkBar(){
+  const bar = $("bulkBar"), cnt = $("bulkCount");
+  if (!bar) return;
+  if (selectedPhotos.size > 0) { bar.classList.add("show"); cnt.textContent = selectedPhotos.size + " selected"; }
+  else bar.classList.remove("show");
+}
+
+async function bulkAction(status){
+  if (selectedPhotos.size === 0) return;
+  if (!confirm("Are you sure you want to " + (status === "approved" ? "approve" : "reject") + " " + selectedPhotos.size + " photos?")) return;
+  const ids = [...selectedPhotos];
+  let ok = 0;
+  for (const id of ids){
+    try {
+      await db.collection(PHOTO_COLLECTION).doc(id).update({
+        status, reviewedAt: firebase.firestore.FieldValue.serverTimestamp(), reviewedBy: currentUser.email || ""
+      });
+      ok++;
+    } catch(e) { console.warn("Bulk failed:", id, e.message); }
+  }
+  await logActivity(status === "approved" ? "approve" : "reject", "Bulk " + status + " " + ok + " photos", { count: ok });
+  selectedPhotos.clear();
+  await loadData();
+  toast(ok + " photos " + status);
+  render();
+}
+
+function bulkClear(){ selectedPhotos.clear(); render(); }
+
+/* PHOTO CARD */
 function buildPhotoCard(p){
   const card = document.createElement("div");
-  card.className = "photo-card";
+  card.className = "photo-card" + (selectedPhotos.has(p.id) ? " selected" : "");
+  card.dataset.id = p.id;
 
-  const status = p.status || "pending";
-  const imgSrc = p.imageUrl || p.url || p.photoUrl || p.image || "https://via.placeholder.com/400x300/eaeaea/6e6e6e?text=No+Image";
+  const status = normalizeStatus(p.status);
+  const imgSrc = p.thumb || p.imageUrl || p.url || p.photoUrl || p.image || "https://via.placeholder.com/400x300/eaeaea/6e6e6e?text=No+Image";
   const title = p.title || p.name || "Untitled";
   const author = p.author || p.userName || (p.userEmail ? p.userEmail.split("@")[0] : "Unknown");
   const category = p.category || "—";
-  const source = p.source || p.type || "upload";
+
+  const dlCount = allDownloads.filter(d => d.photoId === p.id).length;
+  const views = p.views || 0;
+  const earnings = allPayments.filter(pay => pay.photoId === p.id && (pay.status === "completed" || pay.status === "approved")).reduce((s, pay) => s + (Number(pay.amount) || 0), 0);
 
   card.innerHTML = `
     <div class="thumb">
+      <div class="checkbox ${selectedPhotos.has(p.id) ? 'checked' : ''}" data-check="${p.id}"><i class="fas fa-check"></i></div>
       <span class="status-badge ${status}">${status}</span>
-      <span class="source-badge">${esc(source)}</span>
       <img src="${esc(imgSrc)}" alt="${esc(title)}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/eaeaea/6e6e6e?text=No+Image'">
     </div>
     <div class="body">
@@ -604,22 +835,36 @@ function buildPhotoCard(p){
         <span><i class="fas fa-user"></i> ${esc(author)}</span>
         <span><i class="fas fa-tag"></i> ${esc(category)}</span>
       </div>
+      <div class="stats-row">
+        <span><i class="fas fa-download"></i> <b>${dlCount}</b></span>
+        <span><i class="fas fa-eye"></i> <b>${views}</b></span>
+        <span><i class="fas fa-dollar-sign"></i> <b>${fmtMoney(earnings)}</b></span>
+      </div>
       <div class="actions">
         <button class="view" data-act="view" data-id="${p.id}"><i class="fas fa-eye"></i> View</button>
-        ${status !== "approved" ? `<button class="approve" data-act="approve" data-id="${p.id}"><i class="fas fa-check"></i> Approve</button>` : ""}
-        ${status !== "rejected" ? `<button class="reject" data-act="reject" data-id="${p.id}"><i class="fas fa-times"></i> Reject</button>` : ""}
+        ${status !== "approved" ? `<button class="approve" data-act="approve" data-id="${p.id}"><i class="fas fa-check"></i></button>` : ""}
+        ${status !== "rejected" ? `<button class="reject" data-act="reject" data-id="${p.id}"><i class="fas fa-times"></i></button>` : ""}
       </div>
     </div>
   `;
+
+  const cb = card.querySelector("[data-check]");
+  cb.onclick = (e) => {
+    e.stopPropagation();
+    if (selectedPhotos.has(p.id)) selectedPhotos.delete(p.id);
+    else selectedPhotos.add(p.id);
+    card.classList.toggle("selected", selectedPhotos.has(p.id));
+    cb.classList.toggle("checked", selectedPhotos.has(p.id));
+    updateBulkBar();
+  };
 
   card.querySelectorAll("button[data-act]").forEach(btn => {
     btn.onclick = (e) => {
       e.stopPropagation();
       const act = btn.dataset.act;
-      const id = btn.dataset.id;
-      if (act === "view") openModal(id);
-      else if (act === "approve") updateStatus(id, "approved");
-      else if (act === "reject") updateStatus(id, "rejected");
+      if (act === "view") openModal(p.id);
+      else if (act === "approve") updateStatus(p.id, "approved");
+      else if (act === "reject") updateStatus(p.id, "rejected");
     };
   });
 
@@ -627,138 +872,149 @@ function buildPhotoCard(p){
   return card;
 }
 
-/* ============================================================
-   USERS PAGE
-   ============================================================ */
-function renderUsers(main){
-  main.innerHTML = `
-    <div class="page-head">
-      <h1><i class="fas fa-users"></i> All users</h1>
-      <div style="font-size:13px;color:var(--mute);font-weight:600">${allUsers.length} total</div>
-    </div>
-
-    ${allUsers.length ? `
-      <div class="table-wrap">
-        <table class="users">
-          <thead>
-            <tr>
-              <th>User</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Photos</th>
-              <th>Joined</th>
-            </tr>
-          </thead>
-          <tbody id="usersBody"></tbody>
-        </table>
-      </div>
-    ` : `
-      <div class="empty-state">
-        <i class="fas fa-users"></i>
-        <h3>No users yet</h3>
-        <p>Users will appear here once they sign up.</p>
-      </div>
-    `}
-  `;
-
-  const body = $("usersBody");
-  if (!body) return;
-
-  allUsers.forEach(u => {
-    const name = u.displayName || u.name || (u.email ? u.email.split("@")[0] : "User");
-    const email = u.email || "—";
-    const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === (email || "").toLowerCase());
-    const photoCount = allPhotos.filter(p => p.userId === u.id || p.userEmail === email).length;
-    const joined = fmtDate(u.createdAt);
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>
-        <div class="user-cell">
-          <div class="avatar">${u.photoURL ? `<img src="${esc(u.photoURL)}" alt="">` : esc(name[0].toUpperCase())}</div>
-          <span>${esc(name)}</span>
-        </div>
-      </td>
-      <td>${esc(email)}</td>
-      <td><span class="role-badge ${isAdmin ? 'admin' : ''}">${isAdmin ? 'Admin' : 'User'}</span></td>
-      <td>${photoCount}</td>
-      <td>${esc(joined)}</td>
-    `;
-    body.appendChild(tr);
-  });
-}
-
-/* ============================================================
-   UPDATE STATUS
-   ============================================================ */
+/* UPDATE STATUS */
 async function updateStatus(id, status){
   try {
+    console.log("🔵 Updating:", id, "→", status);
+
     await db.collection(PHOTO_COLLECTION).doc(id).update({
       status: status,
       reviewedAt: firebase.firestore.FieldValue.serverTimestamp(),
       reviewedBy: currentUser.email || ""
     });
 
-    const p = allPhotos.find(x => x.id === id);
-    if (p) p.status = status;
+    console.log("✅ Firestore saved");
+
+    allPhotos = allPhotos.map(p =>
+      p.id === id ? { ...p, status: status } : p
+    );
+
+    selectedPhotos.delete(id);
+
+    logActivity(
+      status === "approved" ? "approve" : "reject",
+      "Photo " + status,
+      { photoId: id }
+    );
 
     updateSidebarCounts();
     toast("Photo " + status);
     render();
+
   } catch (e) {
-    console.error(e);
-    toast("Failed: " + e.message);
+    console.error("❌ Failed:", e);
+    alert("Update failed!\n\n" + e.message);
   }
 }
 
-/* ============================================================
-   MODAL
-   ============================================================ */
+/* DOWNLOADS */
+function renderDownloads(main){
+  main.innerHTML = `
+    <div class="page-head"><h1><i class="fas fa-download"></i> Download History</h1></div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Time</th><th>Photo</th><th>User</th></tr></thead>
+        <tbody>
+          ${allDownloads.length ? allDownloads.slice(0, 100).map(d => {
+            const p = allPhotos.find(x => x.id === d.photoId);
+            return `<tr><td>${timeAgo(d.downloadedAt)}</td><td>${p ? esc(p.title || "Untitled") : esc(d.photoId || "—")}</td><td>${esc(d.userEmail || d.userId || "—")}</td></tr>`;
+          }).join("") : `<tr><td colspan="3" style="text-align:center;color:var(--mute);padding:30px">No downloads</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ACTIVITY */
+function renderActivity(main){
+  const icons = { approve:"fa-check", reject:"fa-times", upload:"fa-cloud-arrow-up", payment:"fa-dollar-sign" };
+  main.innerHTML = `
+    <div class="page-head"><h1><i class="fas fa-stream"></i> Activity Log</h1></div>
+    ${allActivity.length ? `<div class="activity-feed">${allActivity.map(a => `
+      <div class="activity-item">
+        <div class="icon ${a.type || 'default'}"><i class="fas ${icons[a.type] || 'fa-circle-info'}"></i></div>
+        <div class="content"><b>${esc(a.message || "Activity")}</b><span>${esc(a.userEmail || "")}</span></div>
+        <div class="time">${timeAgo(a.createdAt)}</div>
+      </div>
+    `).join("")}</div>` : `<div class="empty-state"><i class="fas fa-stream"></i><p>No activity yet</p></div>`}
+  `;
+}
+
+/* USERS */
+function renderUsers(main){
+  main.innerHTML = `
+    <div class="page-head"><h1><i class="fas fa-users"></i> All users (${allUsers.length})</h1></div>
+    ${allUsers.length ? `
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Photos</th><th>Joined</th></tr></thead>
+          <tbody id="usersBody"></tbody>
+        </table>
+      </div>
+    ` : `<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>`}
+  `;
+
+  const body = $("usersBody");
+  if (!body) return;
+  allUsers.forEach(u => {
+    const name = u.displayName || u.name || (u.email ? u.email.split("@")[0] : "User");
+    const email = u.email || "—";
+    const isAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === (email || "").toLowerCase());
+    const photoCount = allPhotos.filter(p => p.userId === u.id || p.userEmail === email).length;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><div class="user-cell"><div class="avatar">${u.photoURL ? `<img src="${esc(u.photoURL)}" alt="">` : esc(name[0].toUpperCase())}</div><span>${esc(name)}</span></div></td>
+      <td>${esc(email)}</td>
+      <td><span class="role-badge ${isAdmin ? 'admin' : ''}">${isAdmin ? 'Admin' : 'User'}</span></td>
+      <td>${photoCount}</td>
+      <td>${esc(fmtDate(u.createdAt))}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+/* MODAL */
 function openModal(id){
   const p = allPhotos.find(x => x.id === id);
   if (!p) return;
   modalPhotoId = id;
 
-  const imgSrc = p.imageUrl || p.url || p.photoUrl || p.image || "https://via.placeholder.com/600x400/eaeaea/6e6e6e?text=No+Image";
-  $("modalImg").src = imgSrc;
+  $("modalImg").src = p.url || p.imageUrl || p.photoUrl || p.image || "https://via.placeholder.com/600x400/eaeaea/6e6e6e?text=No+Image";
   $("modalTitle").textContent = p.title || p.name || "Untitled";
 
   const rows = [
-    ["Author", p.author || p.userName || "—"],
+    ["Author", p.author || "—"],
     ["Email", p.userEmail || "—"],
     ["Category", p.category || "—"],
-    ["Tags", (p.tags || []).join(", ") || "—"],
-    ["Status", p.status || "pending"],
-    ["Source", p.source || p.type || "upload"],
+    ["Keywords", Array.isArray(p.keywords) ? p.keywords.slice(0, 8).join(", ") : (p.keywords || "—")],
+    ["Status", normalizeStatus(p.status)],
     ["Uploaded", fmtDate(p.createdAt)],
     ["Description", p.description || "—"]
   ];
 
-  $("modalInfo").innerHTML = rows.map(([k, v]) =>
-    `<div class="row"><label>${esc(k)}</label><span>${esc(v)}</span></div>`
-  ).join("");
+  $("modalInfo").innerHTML = rows.map(([k, v]) => `<div class="row"><label>${esc(k)}</label><span>${esc(v)}</span></div>`).join("");
+
+  const dlCount = allDownloads.filter(d => d.photoId === id).length;
+  $("modalStats").innerHTML = `
+    <div class="mini-stat"><b>${dlCount}</b><span>Downloads</span></div>
+    <div class="mini-stat"><b>${p.views || 0}</b><span>Views</span></div>
+    <div class="mini-stat"><b>${fmtMoney(0)}</b><span>Earned</span></div>
+  `;
 
   $("photoModal").classList.add("show");
 }
 
 $("modalClose").onclick = () => $("photoModal").classList.remove("show");
 $("photoModal").onclick = (e) => { if (e.target.id === "photoModal") $("photoModal").classList.remove("show"); };
-
-$("modalApprove").onclick = () => {
-  if (modalPhotoId) {
-    updateStatus(modalPhotoId, "approved");
-    $("photoModal").classList.remove("show");
-  }
-};
-$("modalReject").onclick = () => {
-  if (modalPhotoId) {
-    updateStatus(modalPhotoId, "rejected");
-    $("photoModal").classList.remove("show");
-  }
-};
+$("modalApprove").onclick = () => { if (modalPhotoId) { updateStatus(modalPhotoId, "approved"); $("photoModal").classList.remove("show"); } };
+$("modalReject").onclick = () => { if (modalPhotoId) { updateStatus(modalPhotoId, "rejected"); $("photoModal").classList.remove("show"); } };
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") $("photoModal").classList.remove("show");
+  if ($("photoModal").classList.contains("show")) {
+    if (e.key === "Escape") $("photoModal").classList.remove("show");
+    else if (e.key.toLowerCase() === "a" && modalPhotoId) { updateStatus(modalPhotoId, "approved"); $("photoModal").classList.remove("show"); }
+    else if (e.key.toLowerCase() === "r" && modalPhotoId) { updateStatus(modalPhotoId, "rejected"); $("photoModal").classList.remove("show"); }
+  }
 });
 </script>
 
