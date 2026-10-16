@@ -1,439 +1,511 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minami Stock - Upload</title>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDK (v8) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <style>
-        /* ================= Base Styles ================= */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
-        body { background-color: #f4f4f4; color: #333; font-size: 13px; display: flex; flex-direction: column; min-height: 100vh; }
-        
-        /* Main Layout */
-        .main-container { display: flex; flex: 1; overflow: hidden; background-color: #fff; }
-        
-        /* Left Side: Image Grid */
-        .grid-area { flex: 1; padding: 20px; overflow-y: auto; background-color: #f4f4f4; position: relative; }
-        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        
-        /* Image Card Selection Styling */
-        .image-card { background-color: #fff; border: 2px solid #ddd; border-radius: 4px; overflow: hidden; position: relative; transition: all 0.2s; cursor: pointer; }
-        .image-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .image-card.selected { border-color: #1473e6; box-shadow: 0 0 0 2px rgba(20,115,230,0.3); }
-        .image-card .checkmark { position: absolute; top: 5px; right: 5px; background: #1473e6; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 12px; z-index: 2; }
-        .image-card.selected .checkmark { display: flex; }
-        
-        .image-thumbnail { width: 100%; height: 100px; background-color: #e0e0e0; background-size: cover; background-position: center; }
-        .image-info { padding: 6px; display: flex; justify-content: space-between; font-size: 11px; color: #777; background-color: #fafafa; border-top: 1px solid #eee; }
-
-        /* Right Side: Sidebar Form */
-        .sidebar { width: 380px; background-color: #fff; border-left: 1px solid #ddd; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; }
-        
-        .form-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
-        .form-group label { font-weight: 700; font-size: 11px; color: #444; text-transform: uppercase; }
-        .form-group select, .form-group input[type="text"], .form-group textarea { padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline: none; width: 100%; background-color: #fff; }
-        .form-group select:focus, .form-group input:focus, .form-group textarea:focus { border-color: #1473e6; }
-        .form-group textarea { resize: vertical; min-height: 60px; }
-
-        /* Keyword Suggestion Dropdown */
-        .suggestion-box { position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-height: 150px; overflow-y: auto; display: none; z-index: 100; }
-        .suggestion-item { padding: 8px 10px; cursor: pointer; font-size: 13px; }
-        .suggestion-item:hover { background: #f0f7ff; color: #1473e6; }
-
-        .sidebar-actions { display: flex; gap: 10px; margin-top: 10px; padding-top: 15px; border-top: 1px solid #eee; flex-wrap: wrap; }
-        .btn-clear { padding: 10px; border: 1px solid #ccc; background-color: #fff; border-radius: 4px; cursor: pointer; flex: 1; font-weight: 600; }
-        .btn-save-work { padding: 10px; border: 1px solid #1473e6; background-color: #fff; color: #1473e6; border-radius: 4px; cursor: pointer; flex: 1; font-weight: 600; }
-        .btn-submit { padding: 10px; border: none; background-color: #1473e6; color: white; border-radius: 4px; cursor: pointer; flex: 2; font-weight: 600; }
-        
-        .btn-release { padding: 8px; border: 1px solid #fbbf24; background-color: #fffbeb; color: #b45309; border-radius: 4px; cursor: pointer; font-weight: 600; width: 100%; display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 5px; }
-
-        /* Loading Spinner */
-        .loader-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 10; justify-content: center; align-items: center; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1473e6; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Release Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-box { background: #fff; padding: 25px; border-radius: 8px; width: 90%; max-width: 450px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .modal-box h3 { margin-bottom: 15px; font-size: 18px; }
-        .modal-box .form-group { margin-bottom: 15px; }
-        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-        .modal-actions button { padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-        .modal-actions .btn-cancel { border: 1px solid #ccc; background: #fff; }
-        .modal-actions .btn-confirm { border: none; background: #1473e6; color: #fff; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<style>
+:root{--ink:#2c2c2c;--mute:#6e6e6e;--line:#e1e1e1;--soft:#f5f5f5;--blue:#378ef0;--green:#2d9d78;--green-d:#268e6c;--bad:#d7373f}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+button{font:inherit;cursor:pointer;color:inherit;background:none;border:0}
+input,select,textarea{font:inherit;color:inherit}
+.tabs{display:flex;gap:26px;padding:0 24px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:16px 0 13px;font-size:14px;font-weight:600;color:var(--mute);border-bottom:3px solid transparent;white-space:nowrap}
+.tab.on{color:var(--ink);border-color:var(--blue)}
+.tab small{margin-left:6px;font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.tabs .sp{flex:1}
+.btn-submit{align-self:center;background:var(--green);color:#fff;font-weight:700;font-size:14px;padding:9px 20px;border-radius:5px;white-space:nowrap;margin:6px 0}
+.btn-submit:hover{background:var(--green-d)}
+.layout{flex:1;display:grid;grid-template-columns:1fr 380px;align-items:stretch;min-height:calc(100vh - 115px)}
+.left{padding:14px 24px 40px;min-width:0;border-right:1px solid var(--line);min-height:calc(100vh - 115px)}
+.toolbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-bottom:14px}
+.toolbar .sp{flex:1}
+.toolbar label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.toolbar select{border:1px solid var(--line);border-radius:4px;padding:4px 6px;font-size:12px;background:#fff}
+.add-btn{border:1px solid var(--blue);color:var(--blue);font-weight:700;border-radius:5px;padding:6px 14px;font-size:13px}
+.add-btn:hover{background:var(--blue);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;min-height:calc(100vh - 260px);align-content:start}
+.card{position:relative;background:var(--soft);border:3px solid transparent;border-radius:2px;cursor:pointer;overflow:hidden}
+.card.sel{border-color:var(--blue)}
+.card .th{aspect-ratio:1/1;background-size:cover;background-position:center}
+.card .chk{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.85);border:1px solid #bbb;display:grid;place-items:center;font-size:11px;color:#fff}
+.card.sel .chk{background:var(--green);border-color:var(--green)}
+.card .info{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font-size:11px}
+.card .info .t{margin-left:auto}
+.card.bad{border-color:var(--bad)}
+.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:70px 10px;font-size:14px}
+.empty i{font-size:38px;color:#c9c9c9;display:block;margin-bottom:12px}
+.panel{padding:18px 22px 40px;position:sticky;top:70px;max-height:calc(100vh - 80px);overflow-y:auto}
+.f{margin-bottom:16px}
+.f>label,.f .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--mute);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
+.f select,.f input[type=text],.f textarea{width:100%;border:1px solid var(--line);border-radius:4px;padding:9px 10px;font-size:14px;background:#fff}
+.f textarea{resize:vertical;min-height:70px}
+.f select:focus,.f input:focus,.f textarea:focus{outline:none;border-color:var(--blue)}
+.chk-row{display:flex;align-items:center;gap:9px;font-size:13px;margin-bottom:14px;cursor:pointer}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.seg button{padding:7px 18px;font-size:13px;font-weight:600;color:var(--mute)}
+.seg button.on{background:var(--blue);color:#fff}
+.kw{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.kw .n{width:24px;height:24px;border-radius:50%;border:1px solid var(--blue);color:var(--blue);font-size:12px;display:grid;place-items:center;flex:none}
+.kw input{flex:1;border:1px solid var(--line);border-radius:4px;padding:7px 9px;font-size:14px;min-width:0}
+.kw button{color:var(--mute);font-size:13px;padding:4px}
+.kw button:hover{color:var(--bad)}
+.sug{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.sug span{font-size:12px;border:1px solid var(--line);border-radius:14px;padding:3px 10px;cursor:pointer;color:var(--mute)}
+.sug span:hover{border-color:var(--blue);color:var(--blue)}
+.link{color:var(--blue);font-size:12px;font-weight:600}
+.bulk-kw{width:100%;border:1px dashed var(--blue);border-radius:6px;padding:10px;font-size:13px;background:#f7fbff;resize:vertical;min-height:60px;margin-top:8px}
+.bulk-kw:focus{outline:none;border-color:var(--blue);background:#fff}
+.bulk-hint{font-size:11px;color:var(--mute);margin-top:4px;display:flex;justify-content:space-between;align-items:center}
+.bulk-add-btn{padding:6px 14px;background:var(--blue);color:#fff;border-radius:5px;font-weight:700;font-size:12px;cursor:pointer}
+.bulk-add-btn:hover{background:#0d66d0}
+.actions{display:flex;gap:10px;margin-top:20px}
+.actions button{flex:1;padding:11px;border-radius:5px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.actions .primary{background:var(--green);border-color:var(--green);color:#fff}
+.actions button:hover{background:var(--soft)}
+.actions .primary:hover{background:var(--green-d)}
+.nosel{color:var(--mute);font-size:14px;text-align:center;padding:50px 10px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:2000;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-weight:700}
+.spin{width:44px;height:44px;border:4px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2100;align-items:center;justify-content:center;padding:16px}
+.box{background:#fff;border-radius:8px;padding:22px;width:100%;max-width:420px}
+.box h3{margin-bottom:8px}
+.box p{font-size:13px;color:var(--mute);margin-bottom:14px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:3000;max-width:90vw;text-align:center;white-space:pre-line}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.err{background:#b91c1c;font-weight:700}
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;min-height:auto}
+  .left{border-right:0;min-height:auto}
+  .panel{position:static;max-height:none;border-top:1px solid var(--line)}
+  .tabs{padding:0 14px}
+  .left{padding:14px}
+  .grid{min-height:auto}
+}
+</style>
 </head>
 <body>
 
-    <div id="site-topbar"></div>
+<div id="site-topbar"></div>
 
-    <div class="main-container">
-        <!-- Left Side: Image Grid -->
-        <div class="grid-area">
-            <div class="loader-overlay" id="loaderOverlay">
-                <div class="spinner"></div>
-            </div>
-            
-            <div class="image-grid" id="imageGrid">
-                <p style="color: #777; grid-column: 1 / -1; text-align: center; margin-top: 50px;" id="noFilesMsg">No files yet. Upload your first file to get started.</p>
-            </div>
-        </div>
+<div class="tabs" id="tabs">
+  <button class="tab on" data-tab="new">New <small id="cNew">0</small></button>
+  <button class="tab" data-tab="review">In review <small id="cRev">0</small></button>
+  <button class="tab" data-tab="reminder">Reminder</button>
+  <button class="tab" data-tab="rejected">Rejected</button>
+  <button class="tab" data-tab="releases">Releases <small id="cRel">0</small></button>
+  <span class="sp"></span>
+  <button class="btn-submit" id="submitTop">Submit file</button>
+</div>
 
-        <!-- Right Side: Sidebar Form -->
-        <div class="sidebar">
-            
-            <div class="preview-box" id="previewBox" onclick="document.getElementById('fileInput').click()" style="border: 2px dashed #ccc; padding: 20px; text-align: center; cursor: pointer; border-radius: 4px;">
-                <div class="placeholder-text">
-                    <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #1473e6;"></i>
-                    <p style="margin-top: 5px;">Click to select images (Multiple allowed)</p>
-                </div>
-            </div>
-            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
-
-            <div class="form-group">
-                <label>FILE TYPE</label>
-                <select id="fileType">
-                    <option value="Photo">Photo</option>
-                    <option value="Illustration">Illustration</option>
-                    <option value="Vector">Vector</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>CATEGORY *</label>
-                <select id="category">
-                    <option value="">Select category</option>
-                    <option value="Travel">Travel</option>
-                    <option value="Nature">Nature</option>
-                    <option value="Business">Business</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Food">Food</option>
-                </select>
-            </div>
-
-            <!-- Title with Suggestion -->
-            <div class="form-group">
-                <label>TITLE *</label>
-                <input type="text" id="title" placeholder="Enter title" autocomplete="off">
-                <div class="suggestion-box" id="titleSuggestions"></div>
-            </div>
-
-            <div class="form-group">
-                <label>DESCRIPTION</label>
-                <textarea id="description" placeholder="Short description..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label>KEYWORDS (COMMA SEPARATED)</label>
-                <input type="text" id="keywords" placeholder="e.g. road, sky, travel, nature">
-            </div>
-
-            <button class="btn-release" id="releaseBtn" onclick="openReleaseModal()">
-                <i class="fas fa-file-signature"></i> Add Release Document
-            </button>
-
-            <div class="sidebar-actions">
-                <button class="btn-clear" onclick="clearForm()">Clear</button>
-                <button class="btn-save-work" id="saveWorkBtn">Save Work</button>
-                <button class="btn-submit" id="submitBtn">Submit File</button>
-            </div>
-        </div>
+<div class="layout">
+  <div class="left">
+    <div class="toolbar">
+      <span>File types: All</span>
+      <label><input type="checkbox" id="selAll"> Select all</label>
+      <span class="sp"></span>
+      <button class="add-btn" id="addBtn"><i class="fas fa-plus"></i> Add files</button>
+      <label>Sort by
+        <select id="sortBy"><option value="date">Upload date</option><option value="title">Title</option></select>
+      </label>
     </div>
+    <div class="grid" id="grid"></div>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+  </div>
 
-    <div id="ms-footer"></div>
+  <aside class="panel" id="panel"></aside>
+</div>
 
-    <!-- Release Modal -->
-    <div class="modal-overlay" id="releaseModal">
-        <div class="modal-box">
-            <h3>Add Release Document</h3>
-            <p style="margin-bottom: 15px; color: #666;">If your image contains a recognizable person or property, please attach a signed release form.</p>
-            
-            <div class="form-group">
-                <label>Release Type</label>
-                <select id="releaseType">
-                    <option value="Model">Model Release</option>
-                    <option value="Property">Property Release</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Document Name / ID</label>
-                <input type="text" id="releaseName" placeholder="e.g. John Doe - Signed 2026">
-            </div>
+<div id="ms-footer"></div>
 
-            <div class="form-group">
-                <label>Upload Release File (PDF/Image)</label>
-                <input type="file" id="releaseFile" accept=".pdf,image/*">
-            </div>
+<div class="overlay" id="overlay"><div class="spin"></div><div id="ovText">Uploading...</div></div>
 
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeReleaseModal()">Cancel</button>
-                <button class="btn-confirm" onclick="saveReleaseLocally()">Attach</button>
-            </div>
-        </div>
+<div class="modal" id="relModal">
+  <div class="box">
+    <h3>Add release document</h3>
+    <p>If your image contains a recognizable person or property, attach a signed release.</p>
+    <div class="f"><label>Release type</label>
+      <select id="relType"><option value="Model">Model release</option><option value="Property">Property release</option></select></div>
+    <div class="f"><label>Document name / ID</label><input type="text" id="relName" placeholder="e.g. Jane Doe - signed 2026"></div>
+    <div class="f"><label>Release file (PDF or image)</label><input type="file" id="relFile" accept=".pdf,image/*"></div>
+    <div class="actions"><button id="relCancel">Cancel</button><button class="primary" id="relOk">Attach</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================================================================
+   ✅ CLOUDINARY CONFIG  —  Cloud name ঠিক করা হয়েছে
+   ================================================================ */
+const CLOUD_NAME    = "yt1jzpnb";
+const UPLOAD_PRESET = "minami_unsigned";
+const FOLDER        = "minami-stock";
+
+/* ---------- Cloudinary upload helper ---------- */
+function uploadToCloudinary(file, onProgress){
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", UPLOAD_PRESET);
+    fd.append("folder", FOLDER);
+
+    const type = file.type.startsWith("video/") ? "video"
+               : file.type === "application/pdf" ? "raw"
+               : "image";
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${type}/upload`);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) {
+        onProgress(Math.round(e.loaded / e.total * 100));
+      }
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try { resolve(JSON.parse(xhr.responseText)); }
+        catch (err) { reject(new Error("Invalid response")); }
+      } else {
+        let msg = "Upload fail (" + xhr.status + ")";
+        try { msg = JSON.parse(xhr.responseText).error.message || msg; } catch(e){}
+        reject(new Error(msg));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Network error"));
+    xhr.send(fd);
+  });
+}
+
+/* ================================================================
+   FIREBASE
+   ================================================================ */
+const FB = {
+  apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+  authDomain: "creoverse-stock.firebaseapp.com",
+  projectId: "creoverse-stock",
+  storageBucket: "creoverse-stock.firebasestorage.app",
+  messagingSenderId: "128072247505",
+  appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
+};
+try { if (typeof firebase !== "undefined" && !firebase.apps.length) firebase.initializeApp(FB); } catch (e) { console.warn(e); }
+
+const CATS = ["Travel","Nature","Business","Technology","People","Food","AI Generated","Animals","Sports","Mockups","Backgrounds","Abstract","City","Architecture","Fashion","Health","Education","Music","Cars","Festival","Space","Flowers","Textures","Posters","Illustrations","Icons","3D","Typography","Night"];
+const KWDB = {road:["highway","asphalt","travel","landscape","sky"],nature:["green","tree","forest","outdoor","environment"],business:["office","meeting","corporate","work","professional"],technology:["computer","digital","code","innovation","future"],food:["delicious","meal","cooking","fresh","restaurant"],travel:["vacation","journey","destination","tourism","adventure"],city:["skyline","urban","building","night","street"],sky:["clouds","blue","sunset","horizon","air"]};
+const GUESS = [["Nature",["nature","tree","sky","mountain","forest","flower"]],["Business",["business","office","meeting","work"]],["Food",["food","fruit","cook","meal"]],["Technology",["tech","computer","code","digital"]],["City",["city","urban","building"]],["Travel",["travel","road","beach","trip"]],["Animals",["animal","dog","cat","bird"]]];
+
+let items = [], sel = new Set(), tab = "new", nextId = 1, relFor = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(m, isErr){
+  const t=$("toast");
+  t.textContent=m;
+  t.classList.toggle("err", !!isErr);
+  t.classList.add("show");
+  clearTimeout(toast.t);
+  toast.t=setTimeout(()=>{ t.classList.remove("show"); t.classList.remove("err"); }, isErr ? 5000 : 2800);
+}
+const cur = () => items.find(i => sel.has(i.id));
+const chosen = () => items.filter(i => sel.has(i.id));
+
+/* Add files */
+$("addBtn").onclick = () => $("fileInput").click();
+$("fileInput").onchange = e => {
+  Array.from(e.target.files).filter(f => f.type.startsWith("image/")).forEach(file => {
+    const base = file.name.replace(/\.[^.]+$/, "");
+    const low = base.toLowerCase();
+    const g = GUESS.find(x => x[1].some(k => low.includes(k)));
+    items.push({id: nextId++, file, url: URL.createObjectURL(file), title: base.replace(/[-_]+/g," ").replace(/\b\w/g,l=>l.toUpperCase()),
+      category: g ? g[0] : "", type: "Photo", desc: "", kws: [], ai: false, editorial: false, people: false, release: null, state: "new", bad: false});
+  });
+  e.target.value = "";
+  tab = "new";
+  if (!sel.size && items.length) sel.add(items.find(i => i.state === "new").id);
+  render();
+};
+
+/* Tabs / toolbar */
+$("tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; tab = b.dataset.tab; sel.clear(); render(); };
+$("sortBy").onchange = render;
+$("selAll").onchange = e => { sel.clear(); if (e.target.checked) visible().forEach(i => sel.add(i.id)); render(); };
+
+function visible(){
+  let v = items.filter(i => tab === "new" ? i.state === "new" : tab === "review" ? i.state !== "new" : tab === "releases" ? !!i.release : false);
+  v.sort($("sortBy").value === "title" ? (a,b) => a.title.localeCompare(b.title) : (a,b) => b.id - a.id);
+  return v;
+}
+
+function render(){
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.tab === tab));
+  $("cNew").textContent = items.filter(i => i.state === "new").length;
+  $("cRev").textContent = items.filter(i => i.state !== "new").length;
+  $("cRel").textContent = items.filter(i => i.release).length;
+  const v = visible(), g = $("grid");
+  if (!v.length) {
+    g.innerHTML = '<div class="empty"><i class="far fa-images"></i>' + (tab === "new" ? "No files yet. Click Add files to get started." : "Nothing here yet.") + "</div>";
+  } else {
+    g.innerHTML = v.map(i => `<div class="card ${sel.has(i.id) ? "sel" : ""} ${i.bad ? "bad" : ""}" data-id="${i.id}">
+      <div class="th" style="background-image:url('${i.url}')"></div><div class="chk" data-chk="${i.id}"><i class="fas fa-check"></i></div>
+      <div class="info"><span><i class="fas fa-tag"></i> ${i.kws.length}</span><span><i class="fas fa-user"></i> ${i.release ? 1 : 0}</span><span class="t">${i.type}${i.state === "draft" ? " · draft" : ""}</span></div></div>`).join("");
+  }
+  $("selAll").checked = v.length > 0 && v.every(i => sel.has(i.id));
+  renderPanel();
+}
+
+$("grid").onclick = e => {
+  const card = e.target.closest(".card"); if (!card) return;
+  const id = +card.dataset.id;
+  if (e.target.closest(".chk")) { sel.has(id) ? sel.delete(id) : sel.add(id); }
+  else { sel.clear(); sel.add(id); }
+  render();
+};
+
+/* Panel */
+function renderPanel(){
+  const p = $("panel"), c = cur();
+  if (!c || tab !== "new") { p.innerHTML = '<div class="nosel"><i class="far fa-hand-pointer" style="font-size:28px;display:block;margin-bottom:10px;color:#c9c9c9"></i>' + (tab === "new" ? "Select a file to edit its details." : "Files you submit appear here.") + "</div>"; return; }
+  const many = sel.size > 1;
+  p.innerHTML = `
+  ${many ? `<div class="f" style="font-size:13px;color:var(--blue);font-weight:600">${sel.size} files selected. Changes apply to all of them.</div>` : ""}
+  <div class="f"><label>File type</label><select id="pType">${["Photo","Illustration","Vector"].map(t => `<option ${c.type===t?"selected":""}>${t}</option>`).join("")}</select></div>
+  <div class="f"><label>Category *</label><select id="pCat"><option value="">Select category</option>${CATS.map(t => `<option ${c.category===t?"selected":""}>${t}</option>`).join("")}</select></div>
+  <label class="chk-row"><input type="checkbox" id="pEd" ${c.editorial?"checked":""}> This is illustrative editorial content</label>
+  <label class="chk-row"><input type="checkbox" id="pAi" ${c.ai?"checked":""}> This image is AI generated</label>
+  <div class="f"><span class="lab">Recognizable people or property?</span>
+    <div class="seg"><button data-ppl="1" class="${c.people?"on":""}">Yes</button><button data-ppl="0" class="${c.people?"":"on"}">No</button></div>
+    ${c.people ? `<div style="margin-top:8px"><button class="link" id="relBtn"><i class="fas fa-file-signature"></i> ${c.release ? "Release: " + esc(c.release.name) : "Add release document"}</button></div>` : ""}</div>
+  <div class="f"><label>Title * <span id="tCnt">${c.title.length}/200</span></label><textarea id="pTitle" maxlength="200">${esc(c.title)}</textarea></div>
+  <div class="f"><label>Description</label><textarea id="pDesc">${esc(c.desc)}</textarea></div>
+
+  <div class="f"><span class="lab"><span>Keywords (min 5, max 50)</span><span id="kCnt">${c.kws.length}</span></span>
+    <div id="kwList"></div>
+    <div class="sug" id="sug"></div>
+
+    <textarea id="bulkKw" class="bulk-kw"
+      placeholder="💡 Paste many keywords here (comma separated), e.g.:&#10;room, interior, cozy, sofa, window, light, furniture, home"></textarea>
+    <div class="bulk-hint">
+      <span>Comma বা Enter দিয়ে আলাদা করুন · একসাথে সব add হবে</span>
+      <button type="button" class="bulk-add-btn" id="bulkAddBtn">+ Add all</button>
     </div>
+  </div>
 
-    <!-- Firebase Configuration -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+  <div class="actions"><button id="clrBtn">Clear</button><button id="saveBtn">Save work</button><button class="primary" id="subBtn">Submit file</button></div>`;
+  drawKw(); drawSug();
 
-        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-        const storage = firebase.storage();
-        const db = firebase.firestore();
-    </script>
+  $("pType").onchange = e => setAll("type", e.target.value);
+  $("pCat").onchange = e => setAll("category", e.target.value);
+  $("pEd").onchange = e => setAll("editorial", e.target.checked);
+  $("pAi").onchange = e => setAll("ai", e.target.checked);
+  $("pDesc").oninput = e => setAll("desc", e.target.value);
+  $("pTitle").oninput = e => { setAll("title", e.target.value); $("tCnt").textContent = e.target.value.length + "/200"; drawSug(); };
+  p.querySelectorAll("[data-ppl]").forEach(b => b.onclick = () => { setAll("people", b.dataset.ppl === "1"); if (b.dataset.ppl === "0") setAll("release", null); render(); if (b.dataset.ppl === "1") openRel(); });
+  if ($("relBtn")) $("relBtn").onclick = openRel;
 
-    <script src="top-bar.js"></script>
-    <script src="site-footer.js"></script>
+  $("clrBtn").onclick = () => { setAll("title",""); setAll("category",""); setAll("desc",""); chosen().forEach(i => i.kws = []); render(); };
+  $("saveBtn").onclick = () => submit(true);
+  $("subBtn").onclick = () => submit(false);
 
-    <!-- Custom Upload Logic -->
-    <script>
-        let selectedFiles = []; 
-        let activeImageIndex = -1; // কোন ছবিটি সিলেক্ট করা আছে
-        let releaseData = null;
+  $("bulkAddBtn").onclick = () => bulkAddKw();
 
-        // ১. ফাইল সিলেক্ট করলে বাম দিকে থাম্বনেইল দেখানো
-        document.getElementById('fileInput').addEventListener('change', function(e) {
-            const files = Array.from(e.target.files);
-            if (files.length === 0) return;
+  $("bulkKw").onkeydown = e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      bulkAddKw();
+    }
+  };
+}
 
-            selectedFiles = selectedFiles.concat(files); 
-            renderGrid(); 
-            document.getElementById('fileInput').value = ''; 
-            
-            // যদি কোনো ছবি সিলেক্ট করা না থাকে, তবে প্রথম ছবিটি অটো সিলেক্ট হবে
-            if (activeImageIndex === -1 && selectedFiles.length > 0) {
-                selectImage(0);
-            }
-        });
+function bulkAddKw(){
+  const box = $("bulkKw");
+  if (!box) return;
+  const raw = box.value.trim();
+  if (!raw) { toast("কিছু paste করুন আগে", true); return; }
+  const parts = raw.split(/[,\n;]+/).map(s => s.trim()).filter(Boolean);
+  if (!parts.length) { toast("কোনো keyword পাওয়া গেল না", true); return; }
+  let added = 0;
+  chosen().forEach(i => {
+    parts.forEach(k => {
+      k = k.toLowerCase();
+      if (!i.kws.includes(k) && i.kws.length < 50) { i.kws.push(k); added++; }
+    });
+  });
+  box.value = "";
+  drawKw(); drawSug(); renderCounts();
+  toast(added + " keyword added ✓");
+}
 
-        // গ্রিড রেন্ডার করার ফাংশন
-        function renderGrid() {
-            const grid = document.getElementById('imageGrid');
-            const noFilesMsg = document.getElementById('noFilesMsg');
-            
-            if (selectedFiles.length > 0 && noFilesMsg) noFilesMsg.style.display = 'none';
+function setAll(k, v){ chosen().forEach(i => { i[k] = v; i.bad = false; }); }
 
-            grid.innerHTML = '';
-            if(noFilesMsg) grid.appendChild(noFilesMsg);
+function addKw(k){ k = String(k).trim().toLowerCase(); if (!k) return; chosen().forEach(i => { if (!i.kws.includes(k) && i.kws.length < 50) i.kws.push(k); }); }
+function drawKw(){
+  const c = cur(); if (!c) return;
+  $("kCnt").textContent = c.kws.length;
+  $("kwList").innerHTML = c.kws.map((k, n) => `<div class="kw"><span class="n">${n+1}</span><input type="text" value="${esc(k)}" data-old="${esc(k)}"><button data-rm="${esc(k)}"><i class="fas fa-times"></i></button></div>`).join("") +
+    `<div class="kw"><span class="n">${c.kws.length+1}</span><input type="text" id="kwNew" placeholder="Type a keyword, press Enter"></div>`;
+  $("kwNew").onkeydown = e => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addKw(e.target.value); drawKw(); drawSug(); $("kwNew").focus(); renderCounts(); } };
+  $("kwNew").onblur = e => {
+    if (e.target.value.trim()) {
+      if (e.target.value.includes(",")) {
+        e.target.value.split(",").forEach(addKw);
+      } else {
+        addKw(e.target.value);
+      }
+      e.target.value = "";
+      drawKw(); drawSug(); renderCounts();
+    }
+  };
+  $("kwList").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { chosen().forEach(i => i.kws = i.kws.filter(x => x !== b.dataset.rm)); drawKw(); drawSug(); renderCounts(); });
+  $("kwList").querySelectorAll("input[data-old]").forEach(inp => inp.onchange = () => {
+    const nv = inp.value.trim().toLowerCase(), old = inp.dataset.old;
+    chosen().forEach(i => { i.kws = i.kws.map(x => x === old ? nv : x).filter(Boolean); });
+    drawKw(); renderCounts();
+  });
+}
+function renderCounts(){ document.querySelectorAll(".card").forEach(c => { const i = items.find(x => x.id === +c.dataset.id); if (i) c.querySelector(".info span").innerHTML = '<i class="fas fa-tag"></i> ' + i.kws.length; }); }
+function drawSug(){
+  const c = cur(); if (!c) return;
+  const s = new Set();
+  (c.title + " " + c.category).toLowerCase().split(/\s+/).forEach(w => (KWDB[w] || []).forEach(k => { if (!c.kws.includes(k)) s.add(k); }));
+  $("sug").innerHTML = [...s].map(k => `<span data-k="${k}">+ ${k}</span>`).join("");
+  $("sug").querySelectorAll("span").forEach(sp => sp.onclick = () => { addKw(sp.dataset.k); drawKw(); drawSug(); renderCounts(); });
+}
 
-            selectedFiles.forEach((file, index) => {
-                const objectUrl = URL.createObjectURL(file);
-                const card = document.createElement('div');
-                card.className = `image-card ${index === activeImageIndex ? 'selected' : ''}`;
-                card.setAttribute('data-index', index);
-                card.onclick = () => selectImage(index); // ক্লিক করলে সিলেক্ট হবে
-                
-                card.innerHTML = `
-                    <div class="checkmark"><i class="fas fa-check"></i></div>
-                    <div class="image-thumbnail" style="background-image: url('${objectUrl}');"></div>
-                    <div class="image-info">
-                        <span>${file.name.substring(0, 10)}...</span>
-                        <span>📷 Photo</span>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+/* Release modal */
+function openRel(){ if (cur()) $("relModal").style.display = "flex"; }
+$("relCancel").onclick = () => $("relModal").style.display = "none";
+$("relOk").onclick = () => {
+  const name = $("relName").value.trim();
+  if (!name) { toast("Enter a name or ID for the release."); return; }
+  const data = {type: $("relType").value, name, file: $("relFile").files[0] || null};
+  setAll("release", data); setAll("people", true);
+  $("relModal").style.display = "none"; $("relName").value = ""; $("relFile").value = "";
+  toast("Release attached"); render();
+};
+
+/* ================================================================
+   SUBMIT
+   ================================================================ */
+$("submitTop").onclick = () => submit(false);
+
+async function submit(draft){
+  if (tab !== "new") { tab = "new"; render(); }
+
+  const kwi = document.getElementById("kwNew");
+  if (kwi && kwi.value.trim()){
+    if (kwi.value.includes(",")) kwi.value.split(",").forEach(addKw);
+    else addKw(kwi.value);
+    kwi.value = "";
+  }
+  const bulk = document.getElementById("bulkKw");
+  if (bulk && bulk.value.trim()){
+    bulk.value.split(/[,\n;]+/).forEach(addKw);
+    bulk.value = "";
+  }
+  if (cur()) { drawKw(); drawSug(); renderCounts(); }
+
+  let list = chosen().filter(i => i.state === "new");
+  if (!list.length) list = items.filter(i => i.state === "new");
+  if (!list.length) { toast("Add files first.", true); return; }
+
+  const problems = [];
+  list.forEach(i => {
+    const missing = [];
+    if (!i.title.trim()) missing.push("Title");
+    if (!i.category) missing.push("Category");
+    if (!draft && i.kws.length < 5) missing.push("Keywords (" + i.kws.length + "/5)");
+    i.bad = missing.length > 0;
+    if (i.bad) problems.push({ file: i, missing });
+  });
+
+  if (problems.length){
+    sel.clear();
+    problems.forEach(p => sel.add(p.file.id));
+    tab = "new";
+    render();
+    const lines = problems.map(p =>
+      "• " + (p.file.title || p.file.file.name) + "  →  " + p.missing.join(", ")
+    ).join("\n");
+    console.warn("Validation failed:\n" + lines);
+    toast("⚠️ Incomplete file:\n" + lines, true);
+    return;
+  }
+
+  if (typeof firebase === "undefined") { toast("Firebase did not load. Check your connection.", true); return; }
+
+  const db = firebase.firestore();
+  $("overlay").style.display = "flex";
+
+  try {
+    let n = 0;
+    for (const i of list) {
+      $("ovText").textContent = "Uploading " + (++n) + " of " + list.length + "...";
+
+      const res = await uploadToCloudinary(i.file, (p) => {
+        $("ovText").textContent = `Uploading ${n}/${list.length} — ${p}%`;
+      });
+
+      const thumb = res.secure_url.replace("/upload/", "/upload/w_400,q_auto,f_auto/");
+
+      let rel = null;
+      if (i.release) {
+        rel = { type: i.release.type, name: i.release.name, fileUrl: null };
+        if (i.release.file) {
+          const rres = await uploadToCloudinary(i.release.file);
+          rel.fileUrl = rres.secure_url;
         }
+      }
 
-        // ২. ছবিতে ক্লিক করলে অটো টাইটেল এবং ক্যাটাগরি বসানো (Mock AI Scan)
-        function selectImage(index) {
-            activeImageIndex = index;
-            renderGrid(); // আবার রেন্ডার করে সিলেক্টেড বর্ডার দেখানো
+      const u = firebase.auth().currentUser;
+      await db.collection("stockphoto").add({
+        title: i.title.trim(),
+        category: i.category,
+        fileType: i.type,
+        description: i.desc.trim(),
+        keywords: i.kws,
+        imageUrl: res.secure_url,
+        url: res.secure_url,
+        thumb: thumb,
+        width: res.width,
+        height: res.height,
+        bytes: res.bytes,
+        publicId: res.public_id,
+        format: res.format,
+        aiGenerated: i.ai,
+        editorial: i.editorial,
+        recognizable: i.people,
+        releaseAttached: !!rel,
+        releaseInfo: rel,
+        status: draft ? "draft" : "published",
+        uploadedBy: u ? u.uid : "anonymous",
+        ownerId: u ? u.uid : "anonymous",
+        ownerEmail: u ? (u.email || "") : "",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
 
-            const file = selectedFiles[index];
-            const fileName = file.name.split('.').slice(0, -1).join('.'); // এক্সটেনশন বাদ দেওয়া
+      i.state = draft ? "draft" : "review";
+    }
+    sel.clear();
+    toast(draft ? "Saved as draft." : "Submitted successfully ✓");
+  } catch (err) {
+    console.error(err);
+    toast("Upload failed: " + err.message, true);
+  } finally {
+    $("overlay").style.display = "none";
+    render();
+  }
+}
 
-            // অটো টাইটেল সেট করা
-            const titleInput = document.getElementById('title');
-            titleInput.value = fileName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+render();
+</script>
 
-            // মক AI স্ক্যান (ফাইলের নামের উপর ভিত্তি করে ক্যাটাগরি সিলেক্ট করা)
-            simulateAIScan(fileName);
-        }
-
-        function simulateAIScan(fileName) {
-            const lowerName = fileName.toLowerCase();
-            const categorySelect = document.getElementById('category');
-            
-            // সাধারণ কী-ওয়ার্ড ম্যাচিং (আসল AI-এর জন্য API লাগবে)
-            if (lowerName.includes('nature') || lowerName.includes('tree') || lowerName.includes('sky') || lowerName.includes('mountain')) {
-                categorySelect.value = 'Nature';
-            } else if (lowerName.includes('business') || lowerName.includes('office') || lowerName.includes('meeting')) {
-                categorySelect.value = 'Business';
-            } else if (lowerName.includes('food') || lowerName.includes('fruit') || lowerName.includes('cook')) {
-                categorySelect.value = 'Food';
-            } else if (lowerName.includes('tech') || lowerName.includes('computer') || lowerName.includes('code')) {
-                categorySelect.value = 'Technology';
-            } else {
-                // যদি কিছু না মেলে, র‍্যান্ডম একটি সিলেক্ট করে দেবে
-                const options = ['Travel', 'Nature', 'Business', 'Technology', 'Food'];
-                categorySelect.value = options[Math.floor(Math.random() * options.length)];
-            }
-
-            // কীওয়ার্ড সাজেশনও এখানে ট্রিগার করা যেতে পারে
-            suggestKeywords(titleInput.value);
-        }
-
-        // ৩. টাইটেল ইনপুটে টাইপ করলে কীওয়ার্ড সাজেশন দেখানো
-        const titleInput = document.getElementById('title');
-        const suggestionBox = document.getElementById('titleSuggestions');
-        
-        const keywordDatabase = {
-            'road': ['highway', 'asphalt', 'travel', 'landscape', 'sky'],
-            'nature': ['green', 'tree', 'forest', 'outdoor', 'environment'],
-            'business': ['office', 'meeting', 'corporate', 'work', 'professional'],
-            'technology': ['computer', 'digital', 'code', 'innovation', 'future'],
-            'food': ['delicious', 'meal', 'cooking', 'fresh', 'restaurant'],
-            'travel': ['vacation', 'journey', 'destination', 'tourism', 'adventure']
-        };
-
-        titleInput.addEventListener('input', function() {
-            suggestKeywords(this.value);
-        });
-
-        function suggestKeywords(text) {
-            const words = text.toLowerCase().split(' ');
-            let suggestions = new Set();
-            
-            words.forEach(word => {
-                if (keywordDatabase[word]) {
-                    keywordDatabase[word].forEach(k => suggestions.add(k));
-                }
-            });
-
-            if (suggestions.size > 0) {
-                suggestionBox.innerHTML = '';
-                suggestions.forEach(k => {
-                    const div = document.createElement('div');
-                    div.className = 'suggestion-item';
-                    div.textContent = k;
-                    div.onclick = () => {
-                        const keywordInput = document.getElementById('keywords');
-                        const currentKeywords = keywordInput.value ? keywordInput.value.split(',').map(k => k.trim()) : [];
-                        if (!currentKeywords.includes(k)) {
-                            currentKeywords.push(k);
-                            keywordInput.value = currentKeywords.join(', ');
-                        }
-                        suggestionBox.style.display = 'none';
-                    };
-                    suggestionBox.appendChild(div);
-                });
-                suggestionBox.style.display = 'block';
-            } else {
-                suggestionBox.style.display = 'none';
-            }
-        }
-
-        // ক্লিক আউট করলে সাজেশন বক্স লুকানো
-        document.addEventListener('click', function(e) {
-            if (!titleInput.contains(e.target) && !suggestionBox.contains(e.target)) {
-                suggestionBox.style.display = 'none';
-            }
-        });
-
-        // ৪. আপলোড করার মূল ফাংশন
-        async function uploadFiles(isDraft) {
-            if (selectedFiles.length === 0) {
-                alert("Please select at least one image!");
-                return;
-            }
-            
-            const title = document.getElementById('title').value.trim();
-            const category = document.getElementById('category').value;
-            const fileType = document.getElementById('fileType').value;
-            const description = document.getElementById('description').value.trim();
-            const keywordsStr = document.getElementById('keywords').value.trim();
-            
-            if (!title || !category) {
-                alert("Title and Category are required!");
-                return;
-            }
-
-            const keywordsArray = keywordsStr ? keywordsStr.split(',').map(k => k.trim()) : [];
-            const status = isDraft ? 'draft' : 'published';
-
-            const loader = document.getElementById('loaderOverlay');
-            loader.style.display = 'flex';
-
-            try {
-                // এখানে শুধু সিলেক্টেড ছবিটি আপলোড হবে (অথবা চাইলে সবগুলো লুপ করে করা যাবে)
-                // আমরা আপাতত সবগুলো আপলোড করছি
-                const uploadPromises = selectedFiles.map(async (file) => {
-                    const storageRef = storage.ref(`stock_photos/${Date.now()}_${file.name}`);
-                    const snapshot = await storageRef.put(file);
-                    const downloadURL = await snapshot.ref.getDownloadURL();
-
-                    return db.collection('photos').add({
-                        title: title,
-                        category: category,
-                        fileType: fileType,
-                        description: description,
-                        keywords: keywordsArray,
-                        imageUrl: downloadURL,
-                        status: status,
-                        releaseAttached: releaseData ? true : false,
-                        releaseInfo: releaseData,
-                        uploadedBy: firebase.auth().currentUser ? firebase.auth().currentUser.uid : 'anonymous',
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                });
-
-                await Promise.all(uploadPromises);
-                alert(isDraft ? "✅ সফলভাবে ড্রাফট হিসেবে সেভ হয়েছে!" : "✅ সফলভাবে পাবলিশ হয়েছে!");
-                clearForm();
-
-            } catch (error) {
-                console.error("Error uploading: ", error);
-                alert("❌ আপলোড ব্যর্থ: " + error.message);
-            } finally {
-                loader.style.display = 'none';
-            }
-        }
-
-        document.getElementById('saveWorkBtn').addEventListener('click', () => uploadFiles(true));
-        document.getElementById('submitBtn').addEventListener('click', () => uploadFiles(false));
-
-        function clearForm() {
-            selectedFiles = [];
-            activeImageIndex = -1;
-            releaseData = null;
-            document.getElementById('fileInput').value = '';
-            document.getElementById('title').value = '';
-            document.getElementById('category').value = '';
-            document.getElementById('description').value = '';
-            document.getElementById('keywords').value = '';
-            
-            const grid = document.getElementById('imageGrid');
-            grid.innerHTML = '<p style="color: #777; grid-column: 1 / -1; text-align: center; margin-top: 50px;" id="noFilesMsg">No files yet. Upload your first file to get started.</p>';
-        }
-
-        // Release Modal Functions
-        function openReleaseModal() { document.getElementById('releaseModal').style.display = 'flex'; }
-        function closeReleaseModal() { document.getElementById('releaseModal').style.display = 'none'; }
-        function saveReleaseLocally() {
-            const type = document.getElementById('releaseType').value;
-            const name = document.getElementById('releaseName').value.trim();
-            if (!name) { alert("Please enter a name or ID for the release."); return; }
-            releaseData = { type: type, name: name };
-            alert(`✅ Release Attached: ${type} - ${name}`);
-            closeReleaseModal();
-        }
-    </script>
+<script src="site-layout.js"></script>
+<script src="site-footer.js"></script>
 </body>
 </html>

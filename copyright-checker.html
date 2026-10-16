@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copyright Checker — MINAMI STOCK</title>
+<meta name="color-scheme" content="light only">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --ink:#111827;--mute:#6b7280;--line:#e5e7eb;--bg:#fff;--soft:#f7f7f7;
+  --blue:#1473e6;--blue-d:#0d66d0;--ok:#16a34a;--bad:#dc2626;--warn:#f59e0b;
+  --purple:#7c3aed;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#fff}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+  background:#fff;color:#111827;line-height:1.55;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:28px 20px 44px}
+#ms-footer{width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+
+/* PAGE HEAD */
+.page-head{margin-bottom:22px;text-align:center}
+.page-head h1{
+  font-size:28px;font-weight:800;margin-bottom:6px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.page-head h1 i{color:#7c3aed}
+.page-head p{color:#6b7280;font-size:14px;max-width:620px;margin:0 auto}
+
+/* TABS */
+.tabs{
+  display:flex;gap:4px;border-bottom:1px solid #e5e7eb;
+  margin-bottom:22px;overflow-x:auto;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  padding:12px 20px;border:0;background:none;
+  font-size:14px;font-weight:600;color:#6b7280;
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:.15s;display:flex;align-items:center;gap:8px;
+  white-space:nowrap;
+}
+.tab:hover{color:#111827}
+.tab.on{color:#7c3aed;border-bottom-color:#7c3aed}
+.tab i{font-size:13px}
+
+.panel{display:none;animation:fade .25s ease}
+.panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* CARD */
+.card{
+  background:#f7f7f7;border:1px solid #e5e7eb;
+  border-radius:14px;padding:22px;margin-bottom:16px;
+}
+.card.white{background:#fff}
+.card h2{font-size:18px;font-weight:800;margin-bottom:6px}
+.card h2 i{color:#7c3aed;margin-right:6px}
+.card p.sub{color:#6b7280;font-size:13.5px;margin-bottom:18px}
+
+/* FORM */
+.field{margin-bottom:14px}
+.field label{
+  display:block;font-size:12px;font-weight:700;
+  text-transform:uppercase;letter-spacing:.4px;
+  color:#6b7280;margin-bottom:6px;
+}
+.field input,.field textarea,.field select{
+  width:100%;padding:11px 13px;border:1px solid #e5e7eb;
+  border-radius:10px;font:inherit;font-size:14px;
+  background:#fff;color:#111827;transition:.15s;
+  font-family:inherit;
+}
+.field textarea{min-height:100px;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{
+  outline:none;border-color:#7c3aed;
+  box-shadow:0 0 0 3px rgba(124,58,237,.12);
+}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* BUTTONS */
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{
+  border:1px solid #e5e7eb;background:#fff;color:#111827;
+  padding:11px 22px;border-radius:24px;font-weight:700;
+  font-size:14px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:.15s;
+}
+.btn:hover{background:#f7f7f7}
+.btn.primary{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.btn.primary:hover{background:#6d28d9}
+.btn.danger{background:#dc2626;border-color:#dc2626;color:#fff}
+.btn.danger:hover{background:#b91c1c}
+.btn.success{background:#16a34a;border-color:#16a34a;color:#fff}
+.btn.success:hover{background:#15803d}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* RESULT */
+.result{
+  margin-top:18px;padding:18px;border-radius:12px;
+  border-left:4px solid #e5e7eb;background:#fff;
+  display:none;
+}
+.result.show{display:block}
+.result.safe{border-left-color:#16a34a;background:#f0fdf4}
+.result.danger{border-left-color:#dc2626;background:#fef2f2}
+.result.warning{border-left-color:#f59e0b;background:#fffbeb}
+.result h3{
+  font-size:16px;font-weight:800;margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;
+}
+.result .desc{font-size:13.5px;color:#6b7280;margin-bottom:12px}
+.result .matches{margin-top:12px}
+.result .match{
+  padding:12px;border:1px solid #e5e7eb;border-radius:8px;
+  margin-bottom:8px;background:#fff;
+}
+.result .match .title{font-weight:700;font-size:14px;margin-bottom:4px}
+.result .match .meta{font-size:12px;color:#6b7280;display:flex;gap:14px;flex-wrap:wrap}
+.result .match .meta span{display:flex;align-items:center;gap:4px}
+.result .match mark{background:#fef3c7;color:#92400e;padding:1px 4px;border-radius:3px}
+
+/* TABLES / LIST */
+.entries{display:grid;gap:12px}
+.entry{
+  background:#fff;border:1px solid #e5e7eb;
+  border-radius:12px;padding:16px;transition:.15s;
+}
+.entry:hover{border-color:#7c3aed;box-shadow:0 4px 14px rgba(124,58,237,.08)}
+.entry .head{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;gap:12px;margin-bottom:8px;
+}
+.entry .title{font-size:15px;font-weight:800}
+.entry .type{
+  font-size:10px;font-weight:800;padding:3px 10px;
+  border-radius:10px;text-transform:uppercase;
+  letter-spacing:.4px;background:#eaf2fd;color:#1473e6;
+  white-space:nowrap;
+}
+.entry .type.image{background:#fce7f3;color:#db2777}
+.entry .type.video{background:#ede9fe;color:#7c3aed}
+.entry .type.text{background:#fef3c7;color:#d97706}
+.entry .type.audio{background:#d1fae5;color:#059669}
+.entry .type.code{background:#e0e7ff;color:#4338ca}
+.entry .desc{font-size:13.5px;color:#6b7280;margin-bottom:10px;line-height:1.55}
+.entry .meta{
+  font-size:11.5px;color:#6b7280;display:flex;
+  gap:14px;flex-wrap:wrap;border-top:1px solid #e5e7eb;
+  padding-top:10px;
+}
+.entry .meta span{display:flex;align-items:center;gap:4px}
+.entry .actions{display:flex;gap:6px;margin-top:10px}
+.entry .actions button{
+  padding:6px 12px;border:1px solid #e5e7eb;
+  background:#fff;border-radius:6px;font-size:12px;
+  font-weight:600;display:inline-flex;align-items:center;gap:5px;
+  transition:.15s;
+}
+.entry .actions button:hover{background:#f7f7f7}
+.entry .actions button.del{color:#dc2626;border-color:#fecaca}
+.entry .actions button.del:hover{background:#fef2f2}
+
+/* EMPTY / LOADER */
+.empty{
+  text-align:center;padding:60px 20px;color:#6b7280;
+  background:#fff;border:2px dashed #e5e7eb;border-radius:14px;
+}
+.empty i{font-size:48px;color:#cbd5e1;margin-bottom:14px;display:block}
+.empty h3{color:#111827;font-size:17px;margin-bottom:4px}
+.loader{text-align:center;padding:40px;color:#6b7280}
+.loader i{
+  font-size:28px;color:#7c3aed;animation:spin 1s linear infinite;
+  margin-bottom:10px;display:block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* STATS */
+.stats-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;margin-bottom:20px;
+}
+.stat-card{
+  background:#fff;border:1px solid #e5e7eb;border-radius:12px;
+  padding:16px;text-align:center;
+}
+.stat-card b{display:block;font-size:22px;font-weight:800;color:#7c3aed}
+.stat-card span{
+  font-size:11px;color:#6b7280;text-transform:uppercase;
+  letter-spacing:.4px;font-weight:700;
+}
+
+/* TOAST */
+#toast{
+  position:fixed;left:50%;bottom:26px;
+  transform:translateX(-50%) translateY(20px);
+  background:#111827;color:#fff;padding:12px 22px;
+  border-radius:10px;font-size:14px;opacity:0;
+  pointer-events:none;transition:.25s;z-index:99999;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.ok{background:#16a34a}
+#toast.err{background:#dc2626}
+
+@media(max-width:600px){
+  .field-row{grid-template-columns:1fr}
+  .page-head h1{font-size:22px}
+  .tab{padding:10px 14px;font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="site-topbar"></div>
+
+<main>
+
+  <!-- PAGE HEAD -->
+  <div class="page-head">
+    <h1><i class="fas fa-copyright"></i> Copyright Checker</h1>
+    <p>Check if your content matches any registered copyright in our database. Add new entries or file DMCA reports.</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-tab="check"><i class="fas fa-search"></i> Check Copyright</button>
+    <button class="tab" data-tab="register"><i class="fas fa-plus-circle"></i> Register</button>
+    <button class="tab" data-tab="database"><i class="fas fa-database"></i> Database</button>
+    <button class="tab" data-tab="reports"><i class="fas fa-flag"></i> DMCA Reports</button>
+  </div>
+
+  <!-- ============ TAB 1: CHECK ============ -->
+  <section class="panel on" id="check">
+    <div class="card white">
+      <h2><i class="fas fa-search"></i> Check for copyright</h2>
+      <p class="sub">আপনার content এর title বা description লিখুন — Firestore database এ match খুঁজে বের করবে।</p>
+
+      <div class="field">
+        <label for="searchQuery">Title or keyword</label>
+        <input type="text" id="searchQuery" placeholder="e.g. Sunset photography, Logo design..." autocomplete="off">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="searchType">Content type</label>
+          <select id="searchType">
+            <option value="all">All types</option>
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+            <option value="text">Text</option>
+            <option value="audio">Audio</option>
+            <option value="code">Code</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="searchOwner">Owner name (optional)</label>
+          <input type="text" id="searchOwner" placeholder="e.g. John Doe">
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="btn primary" id="checkBtn">
+          <i class="fas fa-search"></i> Check now
+        </button>
+        <button class="btn" id="clearSearch">
+          <i class="fas fa-times"></i> Clear
+        </button>
+      </div>
+
+      <div class="result" id="checkResult"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: REGISTER ============ -->
+  <section class="panel" id="register">
+    <div class="card white">
+      <h2><i class="fas fa-plus-circle"></i> Register new copyright</h2>
+      <p class="sub">আপনার content কে database এ register করুন — অন্যরা check করলে আপনার ownership দেখতে পাবে।</p>
+
+      <div class="field">
+        <label for="regTitle">Title *</label>
+        <input type="text" id="regTitle" placeholder="e.g. Sunset at Cox's Bazar" maxlength="120">
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="regType">Content type *</label>
+          <select id="regType">
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+            <option value="text">Text</option>
+            <option value="audio">Audio</option>
+            <option value="code">Code</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="regOwner">Owner name *</label>
+          <input type="text" id="regOwner" placeholder="Your name or company">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="regEmail">Owner email *</label>
+        <input type="email" id="regEmail" placeholder="you@example.com">
+      </div>
+
+      <div class="field">
+        <label for="regDesc">Description</label>
+        <textarea id="regDesc" placeholder="Short description of your work..." maxlength="500"></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="regUrl">Source URL (optional)</label>
+          <input type="url" id="regUrl" placeholder="https://...">
+        </div>
+        <div class="field">
+          <label for="regTags">Tags (comma separated)</label>
+          <input type="text" id="regTags" placeholder="nature, sunset, warm">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="regLicense">License</label>
+          <select id="regLicense">
+            <option value="all-rights-reserved">All rights reserved</option>
+            <option value="cc-by">Creative Commons BY</option>
+            <option value="cc-by-sa">CC BY-SA</option>
+            <option value="cc0">CC0 (Public Domain)</option>
+            <option value="custom">Custom license</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="regDate">Copyright date</label>
+          <input type="date" id="regDate">
+        </div>
+      </div>
+
+      <div class="btns">
+        <button class="btn primary" id="registerBtn">
+          <i class="fas fa-save"></i> Register copyright
+        </button>
+        <button class="btn" id="resetReg">
+          <i class="fas fa-redo"></i> Reset form
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB 3: DATABASE ============ -->
+  <section class="panel" id="database">
+    <div class="stats-grid">
+      <div class="stat-card"><b id="statTotal">0</b><span>Total entries</span></div>
+      <div class="stat-card"><b id="statImage">0</b><span>Images</span></div>
+      <div class="stat-card"><b id="statVideo">0</b><span>Videos</span></div>
+      <div class="stat-card"><b id="statText">0</b><span>Texts</span></div>
+    </div>
+
+    <div class="card white" style="padding:16px;margin-bottom:14px">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="dbSearch" placeholder="Search database..." style="flex:1;min-width:200px;padding:10px 13px;border:1px solid #e5e7eb;border-radius:10px;font:inherit;font-size:14px">
+        <select id="dbFilter" style="padding:10px 13px;border:1px solid #e5e7eb;border-radius:10px;font:inherit;font-size:14px">
+          <option value="all">All types</option>
+          <option value="image">Images</option>
+          <option value="video">Videos</option>
+          <option value="text">Texts</option>
+          <option value="audio">Audio</option>
+          <option value="code">Code</option>
+        </select>
+        <button class="btn" id="reloadDb"><i class="fas fa-sync"></i> Reload</button>
+      </div>
+    </div>
+
+    <div class="loader" id="dbLoader" style="display:none">
+      <i class="fas fa-circle-notch"></i>
+      Loading database...
+    </div>
+    <div class="entries" id="dbEntries"></div>
+    <div class="empty" id="dbEmpty" style="display:none">
+      <i class="fas fa-database"></i>
+      <h3>No entries yet</h3>
+      <p>Register your first copyright from the "Register" tab.</p>
+    </div>
+  </section>
+
+  <!-- ============ TAB 4: DMCA REPORTS ============ -->
+  <section class="panel" id="reports">
+    <div class="card white">
+      <h2><i class="fas fa-flag"></i> File a DMCA report</h2>
+      <p class="sub">যদি আপনার content কেউ চুরি করে ব্যবহার করে, এই form পূরণ করুন। আমাদের team review করবে।</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="dmcaName">Your name *</label>
+          <input type="text" id="dmcaName" placeholder="Full name">
+        </div>
+        <div class="field">
+          <label for="dmcaEmail">Your email *</label>
+          <input type="email" id="dmcaEmail" placeholder="you@example.com">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="dmcaOriginal">Original content URL *</label>
+        <input type="url" id="dmcaOriginal" placeholder="https://your-site.com/original.jpg">
+      </div>
+
+      <div class="field">
+        <label for="dmcaInfringing">Infringing content URL *</label>
+        <input type="url" id="dmcaInfringing" placeholder="https://infringing-site.com/stolen.jpg">
+      </div>
+
+      <div class="field">
+        <label for="dmcaDesc">Description of the issue *</label>
+        <textarea id="dmcaDesc" placeholder="Explain how your content was used without permission..." maxlength="800"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="chk-line" style="display:flex;align-items:flex-start;gap:8px;text-transform:none;font-weight:500;color:#111827;font-size:13.5px;letter-spacing:0">
+          <input type="checkbox" id="dmcaGoodFaith" style="width:auto;margin-top:3px;accent-color:#7c3aed">
+          <span>I declare under penalty of perjury that the information provided is accurate and I am the copyright owner or authorized agent.</span>
+        </label>
+      </div>
+
+      <div class="btns">
+        <button class="btn danger" id="submitDmca">
+          <i class="fas fa-paper-plane"></i> Submit report
+        </button>
+      </div>
+
+      <div class="result" id="dmcaResult"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<div id="ms-footer"></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ============ FIREBASE SDK ============ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- ============ SHARED SCRIPTS ============ -->
+<script src="top-bar.js"></script>
+<script src="site-footer.js"></script>
+
+<!-- ============ PAGE LOGIC ============ -->
+<script>
+/* ============================================================
+   FIREBASE CONFIG
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
+  authDomain: "creoverse-stock.firebaseapp.com",
+  databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "creoverse-stock",
+  storageBucket: "creoverse-stock.firebasestorage.app",
+  messagingSenderId: "128072247505",
+  appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
+};
+
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const COPYRIGHT_COLLECTION = "copyrights";
+const DMCA_COLLECTION = "dmca_reports";
+
+const $ = id => document.getElementById(id);
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function toast(msg, type = "") {
+  const t = $("toast");
+  t.textContent = msg;
+  t.className = "show " + type;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.className = "", 2400);
+}
+
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.onclick = () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("on"));
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("on"));
+    tab.classList.add("on");
+    const panel = $(tab.dataset.tab);
+    if (panel) panel.classList.add("on");
+    if (tab.dataset.tab === "database") loadDatabase();
+  };
+});
+
+/* ============================================================
+   TAB 1: CHECK COPYRIGHT
+   ============================================================ */
+$("checkBtn").onclick = async () => {
+  const q = $("searchQuery").value.trim();
+  const type = $("searchType").value;
+  const owner = $("searchOwner").value.trim().toLowerCase();
+
+  if (!q && !owner) {
+    toast("Please enter a title or owner name", "err");
+    return;
+  }
+
+  const btn = $("checkBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+
+  const resultBox = $("checkResult");
+  resultBox.classList.remove("show");
+
+  try {
+    // Get all entries (Firestore doesn't support full-text search natively)
+    const snap = await db.collection(COPYRIGHT_COLLECTION).get();
+    const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Client-side filter (case-insensitive)
+    const qLower = q.toLowerCase();
+    const matches = all.filter(item => {
+      // Type filter
+      if (type !== "all" && item.type !== type) return false;
+
+      // Owner filter
+      if (owner && !(item.owner || "").toLowerCase().includes(owner)) return false;
+
+      // Text search across title, description, tags
+      if (!q) return true;
+      const haystack = [
+        item.title || "",
+        item.description || "",
+        item.owner || "",
+        (item.tags || []).join(" ")
+      ].join(" ").toLowerCase();
+
+      return haystack.includes(qLower);
+    });
+
+    // Render result
+    if (matches.length === 0) {
+      resultBox.className = "result show safe";
+      resultBox.innerHTML = `
+        <h3><i class="fas fa-check-circle" style="color:#16a34a"></i> No copyright match found</h3>
+        <p class="desc">
+          " <b>${esc(q)}</b> " — এই keyword দিয়ে database এ কোনো copyright পাওয়া যায়নি।
+          মনে রাখবেন — এটা 100% নিশ্চিত নয়, বাইরের সোর্স এ থাকতে পারে।
+        </p>
+      `;
+      toast("✅ No matches found");
+    } else {
+      resultBox.className = "result show warning";
+      const matchHtml = matches.slice(0, 20).map(m => `
+        <div class="match">
+          <div class="title">${esc(m.title || "Untitled")}</div>
+          <div class="meta">
+            <span><i class="fas fa-user"></i> ${esc(m.owner || "—")}</span>
+            <span><i class="fas fa-tag"></i> ${esc(m.type || "—")}</span>
+            <span><i class="fas fa-copyright"></i> ${esc(m.license || "—")}</span>
+          </div>
+          ${m.description ? `<div style="font-size:12.5px;color:#6b7280;margin-top:6px">${esc(m.description).slice(0,150)}</div>` : ""}
+        </div>
+      `).join("");
+      resultBox.innerHTML = `
+        <h3><i class="fas fa-exclamation-triangle" style="color:#f59e0b"></i> ${matches.length} potential match${matches.length > 1 ? "es" : ""} found</h3>
+        <p class="desc">এই content এর সাথে মিলে এমন ${matches.length}টি entry database এ পাওয়া গেছে। ব্যবহার করার আগে owner এর permission নিন।</p>
+        <div class="matches">${matchHtml}</div>
+      `;
+      toast("⚠️ " + matches.length + " match found");
+    }
+  } catch (e) {
+    console.error(e);
+    toast("Error: " + e.message, "err");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-search"></i> Check now';
+  }
+};
+
+$("clearSearch").onclick = () => {
+  $("searchQuery").value = "";
+  $("searchOwner").value = "";
+  $("searchType").value = "all";
+  $("checkResult").classList.remove("show");
+};
+
+/* ============================================================
+   TAB 2: REGISTER COPYRIGHT
+   ============================================================ */
+$("registerBtn").onclick = async () => {
+  const title = $("regTitle").value.trim();
+  const type = $("regType").value;
+  const owner = $("regOwner").value.trim();
+  const email = $("regEmail").value.trim();
+
+  // Validation
+  if (!title) { toast("Title is required", "err"); $("regTitle").focus(); return; }
+  if (!owner) { toast("Owner name is required", "err"); $("regOwner").focus(); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    toast("Valid email is required", "err"); $("regEmail").focus(); return;
+  }
+
+  const btn = $("registerBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+  try {
+    const tagsRaw = $("regTags").value.trim();
+    const tags = tagsRaw
+      ? tagsRaw.split(",").map(t => t.trim()).filter(Boolean).slice(0, 10)
+      : [];
+
+    const data = {
+      title,
+      type,
+      owner,
+      email,
+      description: $("regDesc").value.trim(),
+      url: $("regUrl").value.trim(),
+      tags,
+      license: $("regLicense").value,
+      copyrightDate: $("regDate").value || new Date().toISOString().split("T")[0],
+      userId: auth.currentUser ? auth.currentUser.uid : null,
+      userEmail: auth.currentUser ? auth.currentUser.email : null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    await db.collection(COPYRIGHT_COLLECTION).add(data);
+
+    toast("✅ Copyright registered successfully");
+    resetRegForm();
+    updateStats();
+  } catch (e) {
+    console.error(e);
+    toast("Error: " + e.message, "err");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-save"></i> Register copyright';
+  }
+};
+
+function resetRegForm() {
+  $("regTitle").value = "";
+  $("regType").value = "image";
+  $("regOwner").value = "";
+  $("regEmail").value = "";
+  $("regDesc").value = "";
+  $("regUrl").value = "";
+  $("regTags").value = "";
+  $("regLicense").value = "all-rights-reserved";
+  $("regDate").value = "";
+}
+
+$("resetReg").onclick = resetRegForm;
+
+/* Auto-fill email if signed in */
+auth.onAuthStateChanged(user => {
+  if (user) {
+    if (!$("regOwner").value && user.displayName) $("regOwner").value = user.displayName;
+    if (!$("regEmail").value && user.email) $("regEmail").value = user.email;
+  }
+});
+
+/* ============================================================
+   TAB 3: DATABASE
+   ============================================================ */
+let dbCache = [];
+
+async function loadDatabase() {
+  $("dbLoader").style.display = "block";
+  $("dbEntries").innerHTML = "";
+  $("dbEmpty").style.display = "none";
+
+  try {
+    let snap;
+    try {
+      snap = await db.collection(COPYRIGHT_COLLECTION)
+        .orderBy("createdAt", "desc")
+        .limit(200)
+        .get();
+    } catch (e) {
+      // Fallback if no index
+      snap = await db.collection(COPYRIGHT_COLLECTION).limit(200).get();
+    }
+
+    dbCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    $("dbLoader").style.display = "none";
+    renderDatabase();
+    updateStats();
+  } catch (e) {
+    console.error(e);
+    $("dbLoader").style.display = "none";
+    $("dbEmpty").style.display = "block";
+    $("dbEmpty").querySelector("h3").textContent = "Could not load";
+    $("dbEmpty").querySelector("p").textContent = e.message;
+  }
+}
+
+function renderDatabase() {
+  const q = $("dbSearch").value.trim().toLowerCase();
+  const filter = $("dbFilter").value;
+
+  let items = dbCache.slice();
+
+  if (filter !== "all") {
+    items = items.filter(i => i.type === filter);
+  }
+  if (q) {
+    items = items.filter(i => {
+      const hay = [i.title, i.description, i.owner, (i.tags || []).join(" ")].join(" ").toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  const box = $("dbEntries");
+  box.innerHTML = "";
+
+  if (!items.length) {
+    $("dbEmpty").style.display = "block";
+    return;
+  }
+  $("dbEmpty").style.display = "none";
+
+  items.forEach(item => {
+    const el = document.createElement("div");
+    el.className = "entry";
+    const typeClass = ["image", "video", "text", "audio", "code"].includes(item.type) ? item.type : "";
+    const date = item.createdAt && item.createdAt.toDate
+      ? item.createdAt.toDate().toLocaleDateString()
+      : (item.copyrightDate || "—");
+
+    el.innerHTML = `
+      <div class="head">
+        <div class="title">${esc(item.title || "Untitled")}</div>
+        <span class="type ${typeClass}">${esc(item.type || "other")}</span>
+      </div>
+      ${item.description ? `<div class="desc">${esc(item.description).slice(0, 180)}</div>` : ""}
+      <div class="meta">
+        <span><i class="fas fa-user"></i> ${esc(item.owner || "—")}</span>
+        <span><i class="fas fa-envelope"></i> ${esc(item.email || "—")}</span>
+        <span><i class="fas fa-copyright"></i> ${esc(item.license || "—")}</span>
+        <span><i class="fas

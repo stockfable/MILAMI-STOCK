@@ -13,31 +13,6 @@ a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;color:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
-/* TOP BAR */
-header.top-nav{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:30}
-.top-nav .in{max-width:1400px;margin:auto;padding:0 20px;height:60px;display:flex;align-items:center;gap:18px}
-.nav-left{display:flex;align-items:center;gap:16px;min-width:0}
-.sidebar-bottom-menu{position:relative}
-.sidebar-trigger{width:38px;height:38px;border-radius:8px;border:1px solid var(--line);background:var(--bg);font-size:16px}
-.sidebar-trigger:hover{background:var(--soft)}
-.sidebar-dropdown{display:none;position:absolute;top:48px;left:0;min-width:220px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 30px rgba(0,0,0,.14);z-index:40}
-.sidebar-dropdown.show{display:block}
-.sidebar-dropdown a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:6px;font-size:14px;font-weight:600}
-.sidebar-dropdown a:hover{background:var(--soft)}
-.sidebar-dropdown i{width:18px;text-align:center;color:var(--mute)}
-.logo-container{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;white-space:nowrap}
-.site-logo{width:34px;height:34px;object-fit:contain}
-.nav-links-top{display:flex;gap:2px;margin-left:6px}
-.nav-links-top a{padding:8px 12px;border-radius:6px;font-size:15px;font-weight:600}
-.nav-links-top a:hover{background:var(--soft)}
-.nav-links-top a i{margin-right:6px;font-size:12px}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.shop-logo-btn{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:20px;font-weight:700;font-size:14px;border:1px solid var(--line)}
-.shop-logo-btn:hover{background:var(--soft)}
-.btn-signin,.btn-signup{border:1px solid var(--ink);background:var(--bg);padding:8px 18px;border-radius:20px;font-weight:700;font-size:14px;display:inline-block;text-align:center}
-.btn-signup{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn-signup:hover{background:var(--blue-d)}
-
 /* TOOLS BAR */
 .tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;scrollbar-width:none}
 .tools-bar::-webkit-scrollbar{display:none}
@@ -146,33 +121,15 @@ main{flex:1;padding:28px 20px}
 .btn.success:hover{background:#0d6b4a}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 
-/* Footer */
-footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margin-top:50px}
-.footer-grid{max-width:1400px;margin:auto;padding:36px 20px 20px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}
-.footer-col h4{font-size:15px;margin-bottom:14px;color:var(--ink)}
-.footer-col a{display:block;font-size:14px;color:var(--mute);padding:5px 0}
-.footer-col a:hover{color:var(--ink);text-decoration:underline}
-.footer-desc{font-size:14px;color:var(--mute);line-height:1.6;max-width:340px}
-.social-icons{display:flex;gap:10px;margin-top:14px}
-.social-icons a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;padding:0;color:var(--ink);transition:.15s}
-.social-icons a:hover{background:var(--ink);color:var(--bg);text-decoration:none}
-.footer-bottom{max-width:1400px;margin:auto;padding:16px 20px 26px;border-top:1px solid var(--line);font-size:13px;color:var(--mute);display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
-.footer-bottom-left{display:flex;flex-wrap:wrap;gap:12px}
-.fbtn{background:none;border:1px solid var(--line);border-radius:16px;padding:6px 14px;font-size:13px;color:var(--ink);display:inline-block}
-.fbtn:hover{background:var(--bg);border-color:var(--ink)}
-
 #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:90}
 #toast.show{opacity:1;transform:translateX(-50%)}
 
 @media(max-width:900px){
-  .nav-links-top,.shop-logo-btn span{display:none}
   .workspace{grid-template-columns:1fr}
   .side{position:static}
   .page-head h1{font-size:22px}
-  .footer-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:600px){
-  .footer-grid{grid-template-columns:1fr}
   .file-item{grid-template-columns:50px 1fr auto;padding:10px 12px;gap:10px}
   .file-thumb{width:50px;height:50px}
 }
@@ -180,37 +137,8 @@ footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margi
 </head>
 <body>
 
-<!-- TOP BAR -->
-<header class="top-nav"><div class="in">
-  <div class="nav-left">
-    <div class="sidebar-bottom-menu" id="sidebarMenu">
-      <button class="sidebar-trigger" id="appsBtn" title="Apps" aria-label="Apps"><i class="fas fa-th"></i></button>
-      <div class="sidebar-dropdown" id="appsDrop">
-        <a href="index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="stock-photo.html"><i class="fas fa-images"></i> Stock Photos</a>
-        <a href="tools.html" class="active"><i class="fas fa-th-large"></i> Tools</a>
-        <a href="about.html"><i class="fas fa-folder"></i> About</a>
-        <a href="shop.html"><i class="fas fa-shopping-bag"></i> Shop</a>
-        <a href="login.html"><i class="fas fa-plus-circle"></i> Login</a>
-        <a href="privacy.html"><i class="fas fa-question-circle"></i> Privacy</a>
-      </div>
-    </div>
-    <a href="index.html" class="logo-container">
-      <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK Logo" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
-      <span>MINAMI STOCK</span>
-    </a>
-    <div class="nav-links-top">
-      <a href="dashboard.html"><i class="fas fa-gauge"></i>Dashboard</a>
-      <a href="upload.html"><i class="fas fa-cloud-arrow-up"></i>Upload</a>
-      <a href="portfolio.html"><i class="fas fa-briefcase"></i>Portfolio</a>
-    </div>
-  </div>
-  <div class="nav-right">
-    <a href="shop.html" class="shop-logo-btn"><i class="fas fa-shopping-bag"></i><span>Shop</span></a>
-    <a href="login.html" class="btn-signin">Sign In</a>
-    <a href="register.html" class="btn-signup">Sign Up</a>
-  </div>
-</div></header>
+<!-- TOP BAR (site-layout.js adds it here) -->
+<div id="site-topbar"></div>
 
 <!-- TOOLS BAR -->
 <nav class="tools-bar"><div class="in">
@@ -344,58 +272,8 @@ footer.main-footer{background:var(--soft);border-top:1px solid var(--line);margi
   </div>
 </main>
 
-<!-- FOOTER -->
-<footer class="main-footer">
-  <div class="footer-grid">
-    <div class="footer-col">
-      <a href="index.html" class="logo-container" style="margin-bottom:12px">
-        <img src="https://i.ibb.co.com/MDW6DpCS/1000032434-removebg-preview.png" alt="MINAMI STOCK" class="site-logo" onerror="this.onerror=null;this.src='logo.png'">
-        <span>MINAMI STOCK</span>
-      </a>
-      <p class="footer-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>
-      <div class="social-icons">
-        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="#" title="Pinterest"><i class="fab fa-pinterest-p"></i></a>
-        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Explore</h4>
-      <a href="index.html">Home</a>
-      <a href="stock-photo.html">Stock Photos</a>
-      <a href="tools.html">Tools</a>
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-    </div>
-    <div class="footer-col">
-      <h4>Tools</h4>
-      <a href="image-resizer.html">Image Resizer</a>
-      <a href="image-cropper.html">Image Cropper</a>
-      <a href="image-compressor.html">Compressor</a>
-      <a href="color-palette.html">Color Palette</a>
-      <a href="bg-remover.html">BG Remover</a>
-    </div>
-    <div class="footer-col">
-      <h4>Legal & Help</h4>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms of Service</a>
-      <a href="dmca.html">DMCA</a>
-      <a href="contact.html">Contact</a>
-      <a href="faq.html">FAQ</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <div>© 2026 MINAMI STOCK · All rights reserved</div>
-    <div class="footer-bottom-left">
-      <a class="fbtn" href="privacy.html">Privacy</a>
-      <a class="fbtn" href="terms.html">Terms</a>
-      <a class="fbtn" href="dmca.html">DMCA</a>
-      <a class="fbtn" href="contact.html">Contact</a>
-    </div>
-  </div>
-</footer>
+<!-- FOOTER (site-footer.js adds it here) -->
+<div id="ms-footer"></div>
 
 <div id="toast"></div>
 
@@ -412,10 +290,6 @@ let maxWidth = null, maxHeight = null;
 function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove("show"),2200); }
 function msg(t, cls){ const m=$("msg"); m.textContent = t || ""; m.className = cls || ""; }
 function fmtBytes(b){ if (!b && b !== 0) return "—"; if (b < 1024) return b + " B"; if (b < 1024*1024) return (b/1024).toFixed(1) + " KB"; return (b/1024/1024).toFixed(2) + " MB"; }
-
-/* Sidebar */
-$("appsBtn").onclick = e => { e.stopPropagation(); $("appsDrop").classList.toggle("show"); };
-document.addEventListener("click", e => { if (!$("sidebarMenu").contains(e.target)) $("appsDrop").classList.remove("show"); });
 
 /* File picker */
 const drop = $("drop"), pick = $("pick");
@@ -690,5 +564,9 @@ $("resetBtn").onclick = () => {
   updateStats();
 };
 </script>
+
+<!-- SITE LAYOUT: top bar + footer -->
+<script src="top-bar.js"></script>
+<script src="site-footer.js"></script>
 </body>
 </html>

@@ -3,102 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bulk Photo Upload - MINAMI STOCK</title>
+<title>Bulk Upload - MINAMI STOCK</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:#fff;color:#222;padding:20px}
-.wrap{max-width:1100px;margin:auto}
+body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:#f7f8fa;color:#222;padding:20px;min-height:100vh}
+.wrap{max-width:1200px;margin:auto}
 h1{font-size:26px;margin-bottom:6px}
 p.sub{color:#6e6e6e;font-size:14px;margin-bottom:18px;line-height:1.5}
-.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px}
+.card{background:#fff;border:1px solid #e1e1e1;border-radius:12px;padding:18px;margin-bottom:16px}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:0}
 label{font-size:13px;font-weight:600;display:block;margin-bottom:4px}
 input[type=text],select{width:100%;padding:10px 12px;border:1px solid #d5d5d5;border-radius:6px;font:inherit;background:#fff}
-.drop{border:2px dashed #b9b9b9;border-radius:10px;padding:26px;text-align:center;cursor:pointer;margin-bottom:14px;background:#fafafa}
-.drop:hover{border-color:#1473e6}
-.drop b{display:block;font-size:16px;margin-bottom:4px}
+input:focus,select:focus{outline:none;border-color:#1473e6}
+.drop{border:2px dashed #b9b9b9;border-radius:12px;padding:34px;text-align:center;cursor:pointer;background:#fafafa;transition:.15s}
+.drop:hover{border-color:#1473e6;background:#f0f7ff}
+.drop b{display:block;font-size:16px;margin-bottom:6px}
 .drop span{font-size:13px;color:#6e6e6e}
-button,.btn{border:1px solid #222;background:#fff;padding:10px 20px;border-radius:20px;font-weight:700;font-size:14px;cursor:pointer;text-decoration:none;color:#222;display:inline-block}
+button,.btn{border:1px solid #222;background:#fff;padding:10px 20px;border-radius:20px;font-weight:700;font-size:14px;cursor:pointer;text-decoration:none;color:#222;display:inline-block;transition:.15s}
 button.fill{background:#1473e6;border-color:#1473e6;color:#fff}
+button.fill:hover:not(:disabled){background:#0d66d0}
 button:disabled{opacity:.45;cursor:not-allowed}
-#msg{font-size:14px;margin:10px 0 14px;min-height:20px}
-#msg.err{color:#c0392b}
-#msg.ok{color:#1a8a4a}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
-.it{border:1px solid #e1e1e1;border-radius:8px;overflow:hidden;background:#fafafa;position:relative}
-.it img{width:100%;display:block;aspect-ratio:4/3;object-fit:cover}
-.it div{padding:8px 10px;font-size:12px;display:flex;flex-direction:column;gap:5px}
-.it input,.it select{width:100%;border:1px solid #e1e1e1;border-radius:4px;padding:5px 7px;font:inherit;font-size:12px;background:#fff}
-.it.done{outline:2px solid #1a8a4a}
-.it.fail{outline:2px solid #c0392b}
-.rm{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;padding:0;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:15px;line-height:1}
-.bk{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
-.badge{display:inline-block;background:#eef4ff;color:#1473e6;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px}
+#msg{font-size:14px;margin:12px 0;padding:10px 14px;border-radius:8px;min-height:20px;display:none}
+#msg.show{display:block}
+#msg.err{background:#fee;color:#c0392b;border:1px solid #f5c6c6}
+#msg.ok{background:#e8f5ee;color:#1a8a4a;border:1px solid #b8e0c8}
+#msg.info{background:#eef4ff;color:#1473e6;border:1px solid #c8d9f5}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+.it{border:1px solid #e1e1e1;border-radius:10px;overflow:hidden;background:#fff;position:relative;transition:.15s}
+.it.done{border-color:#1a8a4a;box-shadow:0 0 0 2px rgba(26,138,74,.15)}
+.it.fail{border-color:#c0392b}
+.it.proc{border-color:#1473e6}
+.it .media{width:100%;aspect-ratio:4/3;background:#000;position:relative;overflow:hidden}
+.it .media img,.it .media video{width:100%;height:100%;object-fit:cover;display:block}
+.it .type-badge{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.75);color:#fff;font-size:10px;font-weight:800;padding:3px 9px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px}
+.it .type-badge.video{background:#e34ba9}
+.it .prog{position:absolute;inset:auto 0 0 0;height:4px;background:rgba(255,255,255,.2)}
+.it .prog > div{height:100%;background:#1473e6;width:0;transition:.15s}
+.it .body{padding:10px 12px;display:flex;flex-direction:column;gap:7px}
+.it input,.it select{width:100%;border:1px solid #e1e1e1;border-radius:5px;padding:6px 8px;font:inherit;font-size:12px;background:#fff}
+.it input:focus,.it select:focus{outline:none;border-color:#1473e6}
+.it .meta{font-size:11px;color:#6e6e6e;display:flex;gap:8px;flex-wrap:wrap}
+.it .badge{display:inline-block;background:#eef4ff;color:#1473e6;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+.it .status{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;display:inline-block}
+.it .status.done{background:#e8f5ee;color:#1a8a4a}
+.it .status.fail{background:#fee;color:#c0392b}
+.it .status.wait{background:#f5f5f5;color:#6e6e6e}
+.it .status.proc{background:#eef4ff;color:#1473e6}
+.rm{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;padding:0;border:0;background:rgba(0,0,0,.7);color:#fff;font-size:16px;line-height:1;cursor:pointer;z-index:2}
+.rm:hover{background:#c0392b}
+.bk{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0;font-size:13px;color:#6e6e6e}
+.stats b{color:#222}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Bulk photo upload</h1>
-  <p class="sub">Choose many photos from your phone or computer. Titles, keywords, category and pixel size are filled automatically — you can still edit them before saving. Signed-in users only.</p>
+  <h1>Bulk Upload (Cloudinary)</h1>
+  <p class="sub">ছবি ও ভিডিও একসাথে সিলেক্ট করুন। Title, category, keywords auto-fill হবে — চাইলে edit করতে পারবেন। Signed-in users only.</p>
 
-  <div class="form">
-    <div><label for="ai">Photo type</label>
-      <select id="ai"><option value="no">Real photo</option><option value="yes">AI generated</option></select></div>
+  <div class="card">
+    <div class="form">
+      <div>
+        <label for="ai">Content type</label>
+        <select id="ai">
+          <option value="no">Real (photo/video)</option>
+          <option value="yes">AI generated</option>
+        </select>
+      </div>
+      <div>
+        <label for="catOverride">Default category (auto-guess হবে যদি খালি রাখেন)</label>
+        <select id="catOverride">
+          <option value="">— Auto —</option>
+          <option>Business</option>
+          <option>Nature</option>
+          <option>People</option>
+          <option>Technology</option>
+          <option>Travel</option>
+          <option>Food</option>
+          <option>Architecture</option>
+          <option>Abstract</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  <div class="drop" id="drop"><b>Tap to choose photos</b><span>JPG, PNG or WEBP. You can pick many at once.</span></div>
-  <input type="file" id="file" accept="image/*" multiple hidden>
+  <div class="drop" id="drop">
+    <b>📁 Tap to choose photos & videos</b>
+    <span>JPG, PNG, WEBP, MP4, MOV, WEBM — একসাথে অনেক ফাইল</span>
+  </div>
+  <input type="file" id="file" accept="image/*,video/*" multiple hidden>
+
+  <div class="stats" id="stats" style="display:none">
+    <span>Total: <b id="statTotal">0</b></span>
+    <span>Uploaded: <b id="statOk">0</b></span>
+    <span>Failed: <b id="statFail">0</b></span>
+  </div>
 
   <div class="grid" id="grid"></div>
-  <div id="msg"></div>
-  <button class="fill" id="save" disabled>Save all to Firestore</button>
 
-  <div class="bk"><a class="btn" href="stock-photo.html">Open Stock Photos</a> <a class="btn" href="index.html">Back to Home</a></div>
+  <div id="msg"></div>
+
+  <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+    <button class="fill" id="save" disabled>☁️ Upload all to Cloudinary</button>
+    <button id="clearBtn">Clear all</button>
+  </div>
+
+  <div class="bk">
+    <a class="btn" href="stock-photo.html">Stock Photos</a>
+    <a class="btn" href="admin.html">Admin panel</a>
+    <a class="btn" href="index.html">Home</a>
+  </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-const app = initializeApp({
+<script>
+/* ================================================================
+   CONFIG
+   ================================================================ */
+const CLOUD_NAME    = "yt1jzpnb";
+const UPLOAD_PRESET = "minami_unsigned";
+const FOLDER        = "minami-stock";
+
+const FB = {
   apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
   authDomain: "creoverse-stock.firebaseapp.com",
-  databaseURL: "https://creoverse-stock-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "creoverse-stock",
   storageBucket: "creoverse-stock.firebasestorage.app",
   messagingSenderId: "128072247505",
   appId: "1:128072247505:web:47e58c3a140f4e858bbdf0"
-});
-const auth = getAuth(app);
-const db = getFirestore(app);
+};
+if (!firebase.apps.length) firebase.initializeApp(FB);
+const auth = firebase.auth();
+const db = firebase.firestore();
 const PHOTO_COLLECTION = "stockphoto";
-const DATA_COLLECTION = "photoData";
-const MAX_SIDE = 6000;          // longest side in pixels (auto resize target)
-const MAX_CHARS = 950000;       // one Firestore document must stay under 1 MB
+
+/* ================================================================
+   STATE
+   ================================================================ */
+let user = null;
+let items = [];
 
 const $ = id => document.getElementById(id);
-let user = null, items = [];
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-/* ---------------- helpers ---------------- */
-function say(t, cls){ const m=$("msg"); m.textContent=t; m.className=cls||""; }
-function refreshSave(){ $("save").disabled = !(user && items.some(i => !i.saved)); }
+function msg(text, cls){
+  const m = $("msg");
+  m.textContent = text;
+  m.className = "show " + (cls || "info");
+}
+function hideMsg(){ $("msg").className = ""; }
 
-/* ---------------- AUTO TITLE ---------------- */
-function autoTitle(name){
-  const t = name.replace(/\.[^.]+$/, "").replace(/[_\-]+/g, " ").replace(/\s+/g, " ").trim();
-  return t ? t.charAt(0).toUpperCase() + t.slice(1) : "Untitled";
+function updateStats(){
+  const total = items.length;
+  const ok = items.filter(i => i.status === "done").length;
+  const fail = items.filter(i => i.status === "fail").length;
+  if (!total){ $("stats").style.display = "none"; return; }
+  $("stats").style.display = "flex";
+  $("statTotal").textContent = total;
+  $("statOk").textContent = ok;
+  $("statFail").textContent = fail;
 }
 
-/* ---------------- AUTO CATEGORY ---------------- */
+function refreshSave(){
+  const pending = items.filter(i => i.status === "wait").length;
+  $("save").disabled = !(user && pending > 0);
+  $("save").textContent = pending > 0
+    ? "☁️ Upload " + pending + " file" + (pending === 1 ? "" : "s") + " to Cloudinary"
+    : "☁️ Upload all to Cloudinary";
+}
+
+/* ================================================================
+   AUTO-FILL
+   ================================================================ */
+function autoTitle(name){
+  const t = name.replace(/\.[^.]+$/, "")
+                .replace(/[_\-]+/g, " ")
+                .replace(/\s+/g, " ")
+                .replace(/^\d+\s*/, "")
+                .trim();
+  if (!t) return "Untitled";
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
 const CATEGORY_MAP = {
-  Business:    ["meeting","office","business","conference","desk","work","corporate","team","startup","finance"],
-  Nature:      ["nature","tree","forest","mountain","flower","sky","river","ocean","beach","sunset","sunrise","leaf","plant","waterfall","cloud"],
-  People:      ["people","person","man","woman","boy","girl","portrait","face","model","family","child","baby","friend"],
-  Technology:  ["tech","computer","laptop","phone","mobile","code","coding","robot","ai","server","gadget","software","hardware","keyboard"],
-  Travel:      ["travel","trip","city","road","airport","tourism","landmark","hotel","beach","vacation","journey","map"],
-  Food:        ["food","meal","pizza","burger","coffee","cake","fruit","drink","restaurant","breakfast","lunch","dinner","vegetable"],
-  Architecture:["building","house","architecture","bridge","tower","interior","construction","window","door","wall"],
-  Abstract:    ["abstract","pattern","texture","color","gradient","background","shape","line","design"]
+  Business:     ["meeting","office","business","conference","desk","work","corporate","team","startup","finance","money","chart"],
+  Nature:       ["nature","tree","forest","mountain","flower","sky","river","ocean","beach","sunset","sunrise","leaf","plant","waterfall","cloud","sea","landscape","garden"],
+  People:       ["people","person","man","woman","boy","girl","portrait","face","model","family","child","baby","friend","couple","smile"],
+  Technology:   ["tech","computer","laptop","phone","mobile","code","coding","robot","ai","server","gadget","software","hardware","keyboard","digital","data"],
+  Travel:       ["travel","trip","city","road","airport","tourism","landmark","hotel","vacation","journey","map","skyline","urban"],
+  Food:         ["food","meal","pizza","burger","coffee","cake","fruit","drink","restaurant","breakfast","lunch","dinner","vegetable","dessert","sushi"],
+  Architecture: ["building","house","architecture","bridge","tower","interior","construction","window","door","wall"],
+  Abstract:     ["abstract","pattern","texture","color","gradient","background","shape","line","design","3d","render","neon","glow"]
 };
 function autoCategory(name){
   const base = name.toLowerCase();
@@ -108,155 +207,303 @@ function autoCategory(name){
   return "Other";
 }
 
-/* ---------------- AUTO KEYWORDS ---------------- */
 function autoKeywords(name, cat){
   const base = name.replace(/\.[^.]+$/, "").toLowerCase();
-  const words = base.split(/[\s_\-\.]+/).filter(w => w.length > 2);
-  const set = new Set([...words, cat.toLowerCase(), "stock", "photo", "minami"]);
-  return [...set];
+  const words = base.split(/[\s_\-.]+/).filter(w => w.length > 2 && !/^\d+$/.test(w));
+  const set = new Set([...words]);
+  set.add(cat.toLowerCase());
+  ["stock","photo","minami","hd","high quality"].forEach(k => set.add(k));
+  return [...set].slice(0, 25);
 }
 
-/* ---------------- IMAGE READ + COMPRESS ---------------- */
-function readImage(file){
-  return new Promise((res, rej) => {
-    const url = URL.createObjectURL(file), img = new Image();
-    img.onload = () => { URL.revokeObjectURL(url); res(img); };
-    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("bad image")); };
-    img.src = url;
+/* ================================================================
+   CLOUDINARY UPLOAD
+   ================================================================ */
+function uploadToCloudinary(file, onProgress){
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("upload_preset", UPLOAD_PRESET);
+    fd.append("folder", FOLDER);
+
+    const type = file.type.startsWith("video/") ? "video"
+               : file.type === "application/pdf" ? "raw"
+               : "image";
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${type}/upload`);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) {
+        onProgress(Math.round(e.loaded / e.total * 100));
+      }
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try { resolve(JSON.parse(xhr.responseText)); }
+        catch (e) { reject(new Error("Invalid response")); }
+      } else {
+        let m = "Upload fail (" + xhr.status + ")";
+        try { m = JSON.parse(xhr.responseText).error.message || m; } catch(e){}
+        reject(new Error(m));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Network error"));
+    xhr.send(fd);
   });
 }
-/* resize/compress until it fits in one Firestore document (target 6000px longest side) */
-function compress(img){
-  let scale = Math.min(1, MAX_SIDE / Math.max(img.width, img.height));
-  let q = 0.82;
-  for (let i = 0; i < 10; i++){
-    const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
-    const c = document.createElement("canvas"); c.width = w; c.height = h;
-    c.getContext("2d").drawImage(img, 0, 0, w, h);
-    const data = c.toDataURL("image/jpeg", q);
-    if (data.length <= MAX_CHARS) return { data, w, h };
-    if (q > 0.5) q -= 0.1; else scale *= 0.8;
-  }
-  return null;
-}
 
-/* ---------------- AUTH ---------------- */
-onAuthStateChanged(auth, u => {
+/* ================================================================
+   AUTH
+   ================================================================ */
+auth.onAuthStateChanged(u => {
   user = u;
-  if (!u) say("You are not signed in. Please sign in first (login.html), then open this page from the same website.", "err");
-  else say("Signed in as " + (u.displayName || u.email) + ".", "");
+  if (!u){
+    msg("⚠️ আপনি login করেননি। আগে login.html থেকে login করুন।", "err");
+  } else {
+    msg("✅ Signed in as " + (u.displayName || u.email), "ok");
+    setTimeout(hideMsg, 2500);
+  }
   refreshSave();
 });
 
-/* ---------------- FILE PICKER ---------------- */
+/* ================================================================
+   FILE PICKER
+   ================================================================ */
 $("drop").onclick = () => $("file").click();
 
-$("file").onchange = async e => {
+$("file").onchange = e => {
   const files = Array.from(e.target.files || []);
   e.target.value = "";
   if (!files.length) return;
-  say("Preparing " + files.length + " photos...", "");
 
+  let added = 0;
   for (const f of files){
-    try{
-      const img = await readImage(f);
-      const out = compress(img);
-      if (!out){ say("Skipped " + f.name + " (too large even after resizing).", "err"); continue; }
+    const isImage = f.type.startsWith("image/");
+    const isVideo = f.type.startsWith("video/");
+    if (!isImage && !isVideo) continue;
 
-      const cat = autoCategory(f.name);
-      const title = autoTitle(f.name);
-      const kws = autoKeywords(f.name, cat);
+    const catOverride = $("catOverride").value;
+    const category = catOverride || autoCategory(f.name);
+    const title = autoTitle(f.name);
+    const keywords = autoKeywords(f.name, category);
+    const previewUrl = URL.createObjectURL(f);
 
-      const it = {
-        title, url: out.data, w: out.w, h: out.h,
-        category: cat, keywords: kws, saved: false
-      };
-      items.push(it);
-
-      const d = document.createElement("div");
-      d.className = "it";
-      d.innerHTML = `
-        <button class="rm" aria-label="Remove">&times;</button>
-        <img alt="">
-        <div>
-          <input type="text" class="t" placeholder="Title">
-          <input type="text" class="k" placeholder="keywords, comma, separated">
-          <select class="c"></select>
-          <div style="font-size:11px;color:#6e6e6e">${out.w} × ${out.h} px <span class="badge">Auto</span></div>
-        </div>`;
-      d.querySelector("img").src = it.url;
-
-      const tInp = d.querySelector(".t");
-      tInp.value = title;
-      tInp.oninput = () => { it.title = tInp.value.trim() || "Untitled"; };
-
-      const kInp = d.querySelector(".k");
-      kInp.value = kws.join(", ");
-      kInp.oninput = () => {
-        it.keywords = kInp.value.split(",").map(s => s.trim()).filter(Boolean);
-      };
-
-      const cSel = d.querySelector(".c");
-      ["Business","Nature","People","Technology","Travel","Food","Architecture","Abstract","Other"]
-        .forEach(o => cSel.add(new Option(o, o)));
-      cSel.value = cat;
-      cSel.onchange = () => { it.category = cSel.value; };
-
-      d.querySelector(".rm").onclick = () => {
-        items = items.filter(x => x !== it);
-        d.remove();
-        refreshSave();
-      };
-
-      $("grid").appendChild(d);
-    }catch(err){
-      say("Could not read " + f.name, "err");
-    }
+    const it = {
+      id: "it_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+      file: f,
+      title, category, keywords,
+      isVideo,
+      previewUrl,
+      status: "wait",
+      progress: 0,
+      el: null
+    };
+    items.push(it);
+    renderCard(it);
+    added++;
   }
-  say(items.length + " photos ready. Titles, keywords, category and pixel size filled automatically.", "");
+
+  if (added){
+    msg("✅ " + added + " file" + (added === 1 ? "" : "s") + " ready। সব ঠিক থাকলে Upload ক্লিক করুন।", "ok");
+  } else {
+    msg("❌ কোনো image বা video পাওয়া গেল না।", "err");
+  }
+  updateStats();
   refreshSave();
 };
 
-/* ---------------- SAVE TO FIRESTORE ---------------- */
-$("save").onclick = async () => {
-  if (!user){ say("Sign in first.", "err"); return; }
-  const ai = $("ai").value === "yes";
-  const author = user.displayName || (user.email || "MINAMI STOCK").split("@")[0];
-  $("save").disabled = true;
+/* ================================================================
+   RENDER CARD
+   ================================================================ */
+function renderCard(it){
+  const d = document.createElement("div");
+  d.className = "it";
+  d.dataset.id = it.id;
 
-  let ok = 0;
-  for (const it of items){
-    if (it.saved){ ok++; continue; }
-    try{
-      const ref = doc(collection(db, PHOTO_COLLECTION));
-      await setDoc(doc(db, DATA_COLLECTION, ref.id), { data: it.url, authorUid: user.uid });
-      await setDoc(ref, {
-        title: it.title,
-        imageId: ref.id,
+  const mediaHTML = it.isVideo
+    ? '<video src="' + it.previewUrl + '" muted preload="metadata"></video>'
+    : '<img src="' + it.previewUrl + '" alt="">';
+
+  d.innerHTML =
+    '<button class="rm" title="Remove">×</button>' +
+    '<div class="media">' +
+      mediaHTML +
+      '<span class="type-badge ' + (it.isVideo ? 'video' : '') + '">' + (it.isVideo ? '🎬 Video' : '📷 Image') + '</span>' +
+      '<div class="prog"><div></div></div>' +
+    '</div>' +
+    '<div class="body">' +
+      '<input type="text" class="t" placeholder="Title" value="' + esc(it.title) + '">' +
+      '<input type="text" class="k" placeholder="keywords, comma, separated" value="' + esc(it.keywords.join(", ")) + '">' +
+      '<select class="c">' +
+        ["Business","Nature","People","Technology","Travel","Food","Architecture","Abstract","Other"]
+          .map(o => '<option ' + (o === it.category ? 'selected' : '') + '>' + o + '</option>').join("") +
+      '</select>' +
+      '<div class="meta">' +
+        '<span class="badge">' + (it.file.size / 1024 / 1024).toFixed(1) + ' MB</span>' +
+        '<span class="status wait">Waiting</span>' +
+      '</div>' +
+    '</div>';
+
+  // bind
+  d.querySelector(".rm").onclick = () => {
+    items = items.filter(x => x.id !== it.id);
+    d.remove();
+    updateStats(); refreshSave();
+  };
+  d.querySelector(".t").oninput = e => { it.title = e.target.value; };
+  d.querySelector(".k").oninput = e => {
+    it.keywords = e.target.value.split(",").map(s => s.trim()).filter(Boolean);
+  };
+  d.querySelector(".c").onchange = e => { it.category = e.target.value; };
+
+  it.el = d;
+  $("grid").appendChild(d);
+}
+
+/* update card UI when status changes */
+function updateCard(it){
+  if (!it.el) return;
+  const d = it.el;
+  d.classList.remove("done", "fail", "proc");
+  if (it.status === "done") d.classList.add("done");
+  else if (it.status === "fail") d.classList.add("fail");
+  else if (it.status === "proc") d.classList.add("proc");
+
+  const st = d.querySelector(".status");
+  if (st) {
+    st.className = "status " + it.status;
+    st.textContent =
+      it.status === "wait" ? "Waiting" :
+      it.status === "proc" ? "Uploading " + it.progress + "%" :
+      it.status === "done" ? "✓ Uploaded" :
+      "✕ Failed";
+  }
+  const bar = d.querySelector(".prog > div");
+  if (bar) bar.style.width = (it.progress || 0) + "%";
+}
+
+/* ================================================================
+   SAVE ALL
+   ================================================================ */
+$("save").onclick = async () => {
+  if (!user){
+    msg("❌ আগে login করুন।", "err");
+    return;
+  }
+  const pending = items.filter(i => i.status === "wait" || i.status === "fail");
+  if (!pending.length){
+    msg("ℹ️ Upload করার মতো কিছু নেই।", "info");
+    return;
+  }
+
+  const aiFlag = $("ai").value === "yes";
+  const u = firebase.auth().currentUser;
+  const author = u.displayName || (u.email || "MINAMI STOCK").split("@")[0];
+
+  $("save").disabled = true;
+  msg("☁️ Uploading " + pending.length + " file(s)...", "info");
+
+  let doneCount = 0, failCount = 0;
+
+  for (const it of pending){
+    it.status = "proc";
+    it.progress = 0;
+    updateCard(it);
+
+    try {
+      const res = await uploadToCloudinary(it.file, (p) => {
+        it.progress = p;
+        updateCard(it);
+      });
+
+      // thumbnail URL
+      let thumb = res.secure_url;
+      if (it.isVideo){
+        thumb = res.secure_url
+          .replace("/upload/", "/upload/so_1,w_500,q_auto,f_auto/")
+          .replace(/\.(mp4|mov|webm|mkv|avi)$/i, ".jpg");
+      } else {
+        thumb = res.secure_url.replace("/upload/", "/upload/w_500,q_auto,f_auto/");
+      }
+
+      // Firestore এ metadata
+      await db.collection(PHOTO_COLLECTION).add({
+        title: it.title.trim() || "Untitled",
         category: it.category,
         keywords: it.keywords,
-        author,
-        authorUid: user.uid,
-        width: it.w,
-        height: it.h,
-        aiGenerated: ai,
+        fileType: it.isVideo ? "Video" : "Photo",
+        contentType: it.isVideo ? "video" : "image",
+        description: "",
+        url: res.secure_url,
+        imageUrl: res.secure_url,
+        thumb: thumb,
+        width: res.width || null,
+        height: res.height || null,
+        duration: res.duration || null,
+        bytes: res.bytes,
+        publicId: res.public_id,
+        format: res.format,
+        aiGenerated: aiFlag,
+        editorial: false,
+        recognizable: false,
+        releaseAttached: false,
+        releaseInfo: null,
+        status: "approved",           // admin panel এ approved by default (bulk upload admin নিজেই)
+        uploadedBy: u.uid,
+        ownerId: u.uid,
+        ownerEmail: u.email || "",
+        author: author,
+        authorUid: u.uid,
         source: "upload",
-        createdAt: serverTimestamp()
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      it.saved = true;
-      ok++;
-      it.el = it.el || null;
-      say("Saved " + ok + " of " + items.length + "...", "");
-    }catch(err){
+
+      it.status = "done";
+      it.progress = 100;
+      doneCount++;
+    } catch (err) {
       console.error(err);
-      say("Save failed: " + (err.code || err.message) + ". Check your Firestore rules for stockphoto and photoData.", "err");
-      refreshSave();
-      return;
+      it.status = "fail";
+      it.error = err.message;
+      failCount++;
     }
+    updateCard(it);
+    updateStats();
+
+    msg("☁️ Progress: " + doneCount + " uploaded, " + failCount + " failed, " +
+        (pending.length - doneCount - failCount) + " remaining...", "info");
   }
-  say("Done. " + ok + " photos saved. Open stock-photo.html to see them.", "ok");
+
+  if (failCount === 0){
+    msg("🎉 সফল! " + doneCount + " file uploaded। stock-photo.html এ দেখুন।", "ok");
+  } else {
+    msg("⚠️ " + doneCount + " uploaded, " + failCount + " failed। Failed card গুলোর দিকে তাকান।", "err");
+  }
+  updateStats();
   refreshSave();
 };
+
+/* ================================================================
+   CLEAR ALL
+   ================================================================ */
+$("clearBtn").onclick = () => {
+  if (!items.length) return;
+  if (!confirm("সব pending file মুছে ফেলবেন?")) return;
+  items.forEach(i => {
+    if (i.status === "wait" || i.status === "fail"){
+      if (i.previewUrl) URL.revokeObjectURL(i.previewUrl);
+      if (i.el) i.el.remove();
+    }
+  });
+  items = items.filter(i => i.status === "done");
+  updateStats();
+  refreshSave();
+};
+
+/* init */
+updateStats();
+refreshSave();
 </script>
 </body>
 </html>

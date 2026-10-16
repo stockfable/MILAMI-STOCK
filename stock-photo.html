@@ -428,6 +428,13 @@ function kwList(p){
     : String(p.keywords || "").split(",").map(s => s.trim()).filter(Boolean);
 }
 
+/* ✅ Cloudinary URL এর জন্য thumbnail transformation */
+function cdnThumb(url, w){
+  if (!url || url.indexOf("res.cloudinary.com") === -1) return url;
+  if (url.indexOf("/upload/w_") !== -1) return url;
+  return url.replace("/upload/", "/upload/w_" + (w || 500) + ",q_auto,f_auto/");
+}
+
 /* year */
 document.getElementById("ftYear").textContent = new Date().getFullYear();
 
@@ -543,17 +550,33 @@ async function fetchPixabayCached(query, count = 30){
 }
 
 /* ============ Load photos ============ */
+/* ✅ CHANGED: orderBy বাদ, imageUrl handle, client-side sort */
 async function load(){
   $("state").hidden = false;
   $("state").innerHTML = "Loading photos…";
 
   let mine = [];
   try {
-    const snap = await db.collection(PHOTO_COLLECTION)
-      .orderBy("createdAt", "desc").limit(300).get();
+    // orderBy বাদ — যেসব doc এ createdAt নেই সেগুলোও আসবে
+    const snap = await db.collection(PHOTO_COLLECTION).limit(500).get();
     mine = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-      .filter(p => p.url || p.imageId)
-      .map(p => ({ ...p, free: false, source: "MINAMI" }));
+      .filter(p => p.url || p.imageUrl || p.imageId)
+      .map(p => ({
+        ...p,
+        // url থাকলে সেটা, নাহলে imageUrl — দুইটাই handle
+        url: p.url || p.imageUrl || "",
+        // Cloudinary thumb থাকলে সেটা preview তে
+        thumb: p.thumb || p.thumbnail || "",
+        free: false,
+        source: "MINAMI"
+      }));
+    // client-side newest first
+    mine.sort((a, b) => {
+      const am = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+      const bm = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+      return bm - am;
+    });
+    console.log("📸 MINAMI docs loaded:", mine.length);
   } catch(e){ console.error("Firebase load error:", e); }
 
   const currentQuery = randomQuery();
@@ -641,13 +664,24 @@ function render(reset){
   $("more").hidden = shown >= view.length;
 }
 
-/* Firebase lazy image loader */
+/* ✅ CHANGED: getImg — url, imageUrl, imageId তিনটাই handle */
 const imgCache = {};
 function getImg(p){
+  // (a) সরাসরি url (Cloudinary)
   if (p.url) return Promise.resolve(p.url);
+  // (b) imageUrl থাকলে সেটাও ব্যবহার
+  if (p.imageUrl) { p.url = p.imageUrl; return Promise.resolve(p.url); }
+  // (c) imageId নেই? কিছু নেই
+  if (!p.imageId) return Promise.resolve("");
+  // (d) পুরনো doc — photoData থেকে base64
   if (!imgCache[p.id]) {
     imgCache[p.id] = db.collection(DATA_COLLECTION).doc(p.imageId).get()
-      .then(d => { p.url = d.exists ? d.data().data : ""; return p.url; })
+      .then(d => {
+        if (!d.exists) { p.url = ""; return ""; }
+        const raw = d.data().data || d.data().url || "";
+        p.url = raw;
+        return p.url;
+      })
       .catch(() => "");
   }
   return imgCache[p.id];
@@ -668,24 +702,26 @@ const io = "IntersectionObserver" in window
     }, { rootMargin: "300px" })
   : null;
 
+/* ✅ CHANGED: cardEl — thumb ব্যবহার করে preview */
 function cardEl(p){
   const d = document.createElement("div");
   d.className = "card"; d.tabIndex = 0;
-  /* justified rows: width follows the photo's shape so rows fill edge to edge */
   const rowH = window.innerWidth < 700 ? 130 : 210;
   const ar = Math.min(2.2, Math.max(0.7, (p.width && p.height) ? p.width / p.height : 1.5));
   d.style.flex = (ar * 100) + " 1 " + Math.round(ar * rowH) + "px";
   const badge = p.free ? '<span class="badge-free">' + esc(p.source || "FREE") + '</span>' : '';
+  // ✅ preview তে ছোট thumb (Cloudinary w_500) — দ্রুত load
+  const previewSrc = p.thumb || cdnThumb(p.url, 500) || "";
   d.innerHTML =
     '<i class="sp" style="padding-bottom:' + (100 / ar).toFixed(2) + '%"></i>'
     + '<img loading="lazy" alt="' + esc(p.title || "Photo") + '"'
-      + (p.url ? ' src="' + esc(p.url) + '"' : '') + '>'
+      + (previewSrc ? ' src="' + esc(previewSrc) + '"' : '') + '>'
     + badge
     + '<div class="tools"><button class="round' + (saved.has(p.id) ? ' saved' : '') + '" title="Save" aria-label="Save">&#9825;</button></div>'
     + '<div class="ov"><b>' + esc(p.title || "Untitled") + '</b><small>' + esc(p.author || "") + '</small></div>';
 
   const im = d.querySelector("img");
-  if (!p.url){
+  if (!previewSrc){
     im._p = p;
     if (io) io.observe(im); else getImg(p).then(u => im.src = u);
   }
@@ -731,7 +767,8 @@ let navList = [];
 function shortId(p){ return String(p.id || "").replace(/^pixabay_/, ""); }
 function fileName(p){
   const base = String(p.title || "minami-stock").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-");
-  return (base || "minami-stock") + ".jpg";
+  const ext = (p.format || "jpg").toLowerCase();
+  return (base || "minami-stock") + "." + ext;
 }
 function setSaveBtn(){
   const on = !!(current && saved.has(current.id));
@@ -744,7 +781,10 @@ function mkThumb(p, big, cls){
   const im = document.createElement("img");
   im.alt = p.title || ""; im.loading = "lazy";
   b.appendChild(im);
-  const direct = big ? (p.url || p.thumb) : (p.thumb || p.url);
+  // ✅ thumb থাকলে সেটা, নাহলে cdnThumb
+  const direct = big
+    ? (p.url || p.thumb)
+    : (p.thumb || cdnThumb(p.url, 300));
   if (direct) im.src = direct;
   else getImg(p).then(u => { if (u) im.src = u; else b.remove(); });
   b.onclick = () => openLb(p);
@@ -752,7 +792,6 @@ function mkThumb(p, big, cls){
 }
 
 function buildRelated(p){
-  /* more from this series = same contributor */
   const series = all.filter(x => x !== p && x.id !== p.id &&
     ((p.authorUid && x.authorUid === p.authorUid) || (!p.authorUid && p.author && x.author === p.author)));
   const sb = $("dvSeries"); sb.innerHTML = "";
@@ -766,7 +805,6 @@ function buildRelated(p){
   }
   $("secSeries").style.display = series.length ? "" : "none";
 
-  /* similar keywords */
   const kws = kwList(p).slice(0, 30);
   const kb = $("lbKw"); kb.innerHTML = "";
   if (!kws.length) kb.innerHTML = '<span style="color:var(--mute);font-size:13px">No keywords</span>';
@@ -777,7 +815,6 @@ function buildRelated(p){
     kb.appendChild(c);
   });
 
-  /* similar photos */
   const kl = kws.map(k => k.toLowerCase());
   const sim = all.filter(x => x.id !== p.id).map(x => ({
     x, s: (x.category && x.category === p.category ? 1 : 0)
@@ -787,7 +824,6 @@ function buildRelated(p){
   sim.forEach(x => sg.appendChild(mkThumb(x, true)));
   $("secSim").style.display = sim.length ? "" : "none";
 
-  /* few matches on a free photo: pull a few more from Pixabay */
   if (sim.length < 8 && p.free){
     const q = kl[0] || p.subCategory || "";
     if (q) fetchPixabayCached(q, 24).then(list => {
@@ -817,18 +853,20 @@ function openLb(p){
   img.classList.remove("zoomed");
   img.alt = p.title || "";
   img.onerror = () => { img.onerror = null; if (p.url && img.getAttribute("src") !== p.url) img.src = p.url; };
-  const first = p.fullUrl || p.url || "";
+  // ✅ fullUrl → url → imageUrl সব try
+  const first = p.fullUrl || p.url || p.imageUrl || "";
   if (first) img.src = first; else img.removeAttribute("src");
-  if (!p.url && !p.fullUrl){
+  if (!first){
     getImg(p).then(u => { if (current === p && u) img.src = u; });
   }
 
   $("lbT").textContent = p.description || p.title || "Untitled";
-  $("lbAuthor").textContent = p.author || "Unknown";
+  $("lbAuthor").textContent = p.author || p.ownerEmail || "Unknown";
   $("lbSource").textContent = p.source || (p.free ? "Free" : "MINAMI");
   $("dvFile").textContent = "FILE #: " + shortId(p);
   $("lbDim").textContent = (p.width && p.height) ? (p.width + " × " + p.height + " px") : "—";
-  $("lbType").textContent = (p.fileType || "JPEG").replace("image/", "").toUpperCase();
+  // ✅ format field handle
+  $("lbType").textContent = (p.format || p.fileType || "JPEG").replace("image/", "").toUpperCase();
   $("lbCat").textContent = p.category || "—";
   setSaveBtn();
 
@@ -836,6 +874,7 @@ function openLb(p){
   $("lbMeta").innerHTML =
       (p.license ? '📄 ' + esc(p.license) + '<br>' : '')
     + (when ? '📅 Added ' + esc(when) + '<br>' : '')
+    + (p.publicId ? '☁️ ' + esc(p.publicId) + '<br>' : '')
     + '🆔 ' + esc(p.id);
 
   const i = navList.indexOf(p);
@@ -893,7 +932,7 @@ async function downloadPhoto(p){
   }
 }
 async function openOriginal(p){
-  let u = p.fullUrl || p.url || await getImg(p);
+  let u = p.fullUrl || p.url || p.imageUrl || await getImg(p);
   if (!u) return;
   if (u.indexOf("data:") === 0){
     try { u = URL.createObjectURL(await (await fetch(u)).blob()); } catch(e){ return; }

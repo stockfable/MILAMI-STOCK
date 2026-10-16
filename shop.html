@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop - STOCK FABLE</title>
+    <title>Shop - MINAMI STOCK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -318,23 +318,14 @@
             .buy-now-btn { font-size: 12px; padding: 9px; }
         }
     </style>
+    <script src="top-bar.js"></script>
 </head>
 <body>
 
     <div class="main-wrapper">
 
-        <!-- ★ NAVBAR ★ -->
-        <nav class="navbar">
-            <a href="index.html" class="nav-logo">
-                <div class="logo-icon"><i class="fas fa-shopping-bag"></i></div>
-                STOCK FABLE
-            </a>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="shop.html" class="active">Shop</a>
-                <a href="add-product.html">Sell Here</a>
-            </div>
-        </nav>
+        <!-- ★ TOP BAR (shared) ★ -->
+        <div id="site-topbar"></div>
 
         <!-- ★ HERO ★ -->
         <section class="hero-section">
@@ -365,11 +356,6 @@
         <button class="lightbox-close" id="lightboxClose" aria-label="Close"><i class="fas fa-times"></i></button>
         <img id="lightboxImg" src="" alt="">
     </div>
-
-    <!-- ★ FOOTER ★ -->
-    <footer class="main-footer">
-        © 2026 <strong>STOCK FABLE</strong> — Affiliate Marketplace. All rights reserved.
-    </footer>
 
     <!-- ★★ Firebase Dynamic Product Loader Script ★★ -->
     <script type="module">
@@ -530,5 +516,7 @@
         window.addEventListener('load', loadDynamicProducts);
     </script>
 
+    <!-- ★ FOOTER (shared) ★ -->
+    <script src="site-layout.js"></script>
 </body>
 </html>

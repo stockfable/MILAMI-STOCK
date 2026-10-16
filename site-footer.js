@@ -22,26 +22,22 @@
 
     /* ---------- Dark/Light অটো ডিটেক্ট ---------- */
     function detectDark() {
-      // 1. body এর background চেক
       var bg = getComputedStyle(document.body).backgroundColor;
       var m = String(bg).match(/[\d.]+/g);
       if (m && m.length >= 3) {
         var lum = (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) / 255;
         if (lum < 0.35) return true;
       }
-      // 2. html এর background চেক
       var hbg = getComputedStyle(document.documentElement).backgroundColor;
       var hm = String(hbg).match(/[\d.]+/g);
       if (hm && hm.length >= 3) {
         var hlum = (0.2126 * hm[0] + 0.7152 * hm[1] + 0.0722 * hm[2]) / 255;
         if (hlum < 0.35) return true;
       }
-      // 3. Class marker চেক
       if (document.documentElement.classList.contains("dark")) return true;
       if (document.body.classList.contains("dark")) return true;
       if (document.documentElement.getAttribute("data-theme") === "dark") return true;
       if (document.body.getAttribute("data-theme") === "dark") return true;
-      // 4. Text color চেক (light text = dark page)
       var tc = getComputedStyle(document.body).color;
       var tm = String(tc).match(/[\d.]+/g);
       if (tm && tm.length >= 3) {
@@ -62,8 +58,8 @@
       /* DARK theme */
       ".msf.msf-dark{background:#0a0f1a;color:#e5e7eb;border-top:1px solid #1f2937;--msf-mute:#94a3b8;--msf-line:#27303f;--msf-btn:#111827}",
 
-      /* Grid */
-      ".msf-cols{max-width:1400px;margin:0 auto;padding:36px 20px 18px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px}",
+      /* Grid — 5 columns for bigger footer */
+      ".msf-cols{max-width:1400px;margin:0 auto;padding:36px 20px 18px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr 1fr;gap:28px}",
       ".msf h4{font-size:15px;font-weight:700;margin:0 0 12px;color:inherit}",
       ".msf-cols a{display:block;font-size:14px;color:var(--msf-mute);padding:5px 0;text-decoration:none;transition:.15s}",
       ".msf-cols a:hover{color:inherit;text-decoration:underline}",
@@ -101,6 +97,7 @@
       "html.msf-inv img,html.msf-inv video,html.msf-inv canvas,html.msf-inv iframe{filter:invert(1) hue-rotate(180deg)}",
 
       /* Responsive */
+      "@media(max-width:1100px){.msf-cols{grid-template-columns:1fr 1fr 1fr}.msf-brand{grid-column:1/-1}}",
       "@media(max-width:900px){.msf-cols{grid-template-columns:1fr 1fr}}",
       "@media(max-width:520px){.msf-cols{grid-template-columns:1fr}}"
     ].join("\n");
@@ -113,7 +110,7 @@
       '<div class="msf-cols">' +
 
         /* Column 1: Brand */
-        '<div><h4>MINAMI STOCK</h4>' +
+        '<div class="msf-brand"><h4>MINAMI STOCK</h4>' +
           '<p class="msf-desc">Free stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>' +
           '<div class="msf-social">' +
             '<a href="#" data-noop aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>' +
@@ -128,18 +125,26 @@
         '<div><h4>Explore</h4>' +
           '<a href="index.html">Home</a>' +
           '<a href="stock-photo.html">Stock Photos</a>' +
+          '<a href="portfolio.html">Portfolio</a>' +
           '<a href="tools.html">Tools</a>' +
           '<a href="shop.html">Shop</a>' +
-          '<a href="about.html">About</a>' +
+          '<a href="about.html">About Us</a>' +
         '</div>' +
 
         /* Column 3: Tools */
         '<div><h4>Tools</h4>' +
           '<a href="image-resizer.html">Image Resizer</a>' +
-          '<a href="image.cropper.html">Image Cropper</a>' +
-          '<a href="image-compressor.html">Compressor</a>' +
+          '<a href="image-cropper.html">Image Cropper</a>' +
+          '<a href="image-compressor.html">Image Compressor</a>' +
           '<a href="bg-remove.html">BG Remover</a>' +
-          '<a href="upscaler.html">Upscaler</a>' +
+          '<a href="image-enhancer.html">Image Enhancer</a>' +
+          '<a href="upscaler.html">Image Upscaler</a>' +
+          '<a href="image-to-pdf.html">Image to PDF</a>' +
+          '<a href="text-to-pdf.html">Text to PDF</a>' +
+          '<a href="qr-code.html">QR Code</a>' +
+          '<a href="calculator.html">Calculator</a>' +
+          '<a href="converter.html">Converter</a>' +
+          '<a href="word-counter.html">Word Counter</a>' +
         '</div>' +
 
         /* Column 4: Legal & Help */
@@ -147,8 +152,22 @@
           '<a href="privacy.html">Privacy Policy</a>' +
           '<a href="terms.html">Terms of Service</a>' +
           '<a href="dmca.html">DMCA</a>' +
-          '<a href="contact.html">Contact</a>' +
+          '<a href="cookies.html">Cookie Policy</a>' +
+          '<a href="refund.html">Refund Policy</a>' +
+          '<a href="license.html">License Agreement</a>' +
+          '<a href="contact.html">Contact Us</a>' +
           '<a href="faq.html">FAQ</a>' +
+          '<a href="about.html">About Us</a>' +
+        '</div>' +
+
+        /* Column 5: Account */
+        '<div><h4>Account</h4>' +
+          '<a href="login.html">Login</a>' +
+          '<a href="register.html">Register</a>' +
+          '<a href="account.html">My Account</a>' +
+          '<a href="dashboard.html">Dashboard</a>' +
+          '<a href="upload.html">Upload</a>' +
+          '<a href="portfolio.html">Portfolio</a>' +
         '</div>' +
 
       '</div>' +
@@ -185,7 +204,7 @@
         '<h3>License Terms</h3>' +
         '<p>Photos and files on MINAMI STOCK can be used in websites, social media, print and advertising, within the projects your license covers.</p>' +
         '<p>You may not resell or redistribute a file as-is, and you may not claim it as your own work. Contributors keep the copyright to what they upload.</p>' +
-        '<p>More details: <a href="privacy.html">Privacy Policy</a> &middot; <a href="terms.html">Terms of Service</a></p>' +
+        '<p>More details: <a href="privacy.html">Privacy Policy</a> &middot; <a href="terms.html">Terms of Service</a> &middot; <a href="license.html">License Agreement</a></p>' +
         '<div class="row"><button type="button" data-close>Close</button></div>' +
       '</div></div>' +
 

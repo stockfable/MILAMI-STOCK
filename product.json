@@ -1,0 +1,73 @@
+[
+  {
+    "id": 1,
+    "title": "Himalaya Dark Spot Turmeric Face Wash 100ml (Buy 1 Get 1 Free)",
+    "image": "https://i.ibb.co.com/HTsTMmvp/70fafce1212ef615cb579392a795d264-png-1.jpg",
+    "price": "৳223",
+    "oldPrice": "৳230",
+    "discount": "Buy 1 Get 1",
+    "commission": "Hot Deal",
+    "rating": "4.6",
+    "sold": "8.5k+ Sold",
+    "brand": "Daraz",
+    "link": "https://s.daraz.com.bd/s.YcVuy?cc",
+    "shortDesc": "Hey, come check out this great beauty product! Enriched with Turmeric to reduce dark spots...",
+    "fullDesc": "Enriched with Turmeric & natural herbal extracts to visibly reduce dark spots. Gently cleanses while brightening dull, uneven skin tone. Suitable for all skin types. Special Offer: Buy 1 Get 1 Free!",
+    "category": "beauty"
+  },
+  {
+    "id": 2,
+    "title": "HTC AT 538 Rechargeable Hair and Beard Trimmer for Men",
+    "image": "https://i.ibb.co.com/FLZWyh4g/a4007df7645694c01110fec91e0baa40-png.jpg",
+    "price": "৳599",
+    "oldPrice": "৳1,000",
+    "discount": "-40%",
+    "commission": "Hot Deal",
+    "rating": "4.5",
+    "sold": "2.3k+ Sold",
+    "brand": "Daraz",
+    "link": "https://s.daraz.com.bd/s.Yc4gd?cc",
+    "shortDesc": "Hey, come check out this great grooming product! Rechargeable hair & beard trimmer...",
+    "fullDesc": "Rechargeable & cordless — perfect for home & travel use. Sharp stainless steel blades for precise trimming. Special Offer: Save ৳401!",
+    "category": "grooming"
+  },
+  {
+    "id": 3,
+    "title": "Summer Ready Three Pieces Button Design Linen Kurti Shalwar Kameez",
+    "image": "https://i.ibb.co.com/5X2fSTBv/88215747661cc083bdf464668639f46d.jpg",
+    "images": [
+      "https://i.ibb.co.com/5X2fSTBv/88215747661cc083bdf464668639f46d.jpg",
+      "https://i.ibb.co.com/WWnSSrSJ/4a130337b16111e4ddb0bad6ed9e2450.jpg",
+      "https://i.ibb.co.com/pBP879f5/bdc0fbb50d1d26676b4a3e0030903ad4.jpg",
+      "https://i.ibb.co.com/wNYmztyh/cd821561d8405f75f355b79cd935875b.jpg",
+      "https://i.ibb.co.com/YTk0SWvG/1d237027b31eaa068ae39b2cda0c29bf.jpg"
+    ],
+    "price": "৳599",
+    "oldPrice": "৳990",
+    "discount": "-40%",
+    "commission": "Hot Deal",
+    "rating": "4.7",
+    "sold": "1.8k+ Sold",
+    "brand": "Daraz",
+    "link": "https://s.daraz.com.bd/s.Yc49L?cc",
+    "shortDesc": "I found this great deal on Daraz! Premium linen 3-piece set...",
+    "fullDesc": "Premium quality Linen fabric — soft, breathable & perfect for summer. Complete 3-piece set: Kurti + Shalwar + Dupatta.",
+    "category": "fashion"
+  },
+  {
+    "id": 4,
+    "title": "Hoco EQ34 Plus Rima True Wireless Earbuds - ANC + ENC Bluetooth 5.4",
+    "image": "https://i.postimg.cc/XYZ9wNtB/2828d8bba0587a552823566e2dbec9ed-png-(1).jpg",
+    "price": "৳819",
+    "oldPrice": "৳1,500",
+    "discount": "-45%",
+    "commission": "Hot Deal",
+    "rating": "4.7",
+    "sold": "2.5k+ Sold",
+    "brand": "Daraz",
+    "link": "https://s.daraz.com.bd/s.YcgP2?cc",
+    "shortDesc": "I found this great deal on Daraz! Hoco EQ34 Plus TWS earbuds...",
+    "fullDesc": "ANC + ENC — clear calls & noise cancellation. Bluetooth 5.4 — fast & stable connection. 7h playback.",
+    "category": "audio"
+  }
+]
