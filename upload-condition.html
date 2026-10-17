@@ -1,250 +1,230 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Upload Conditions - MINAMI STOCK</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-  :root {
-    --ink: #2c2c2c;
-    --mute: #6e6e6e;
-    --line: #e1e1e1;
-    --soft: #f5f5f5;
-    --blue: #378ef0;
-    --blue-d: #0d66d0;
-    --green: #2d9d78;
-    --bad: #d7373f;
-  }
-  
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  
-  body {
-    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
-    background: #f7f8fa;
-    color: var(--ink);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    line-height: 1.6;
+/* ================================================================
+   site-footer.js — MINAMI STOCK Clean Footer
+   ================================================================ */
+(function () {
+  if (window.__msFooterLoaded) return;
+  window.__msFooterLoaded = true;
+
+  function ready(fn) {
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
   }
 
-  a { color: inherit; text-decoration: none; }
-
-  /* Main Container */
-  .container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
-    flex: 1;
-    width: 100%;
-  }
-
-  /* Header */
-  .page-header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .page-header h1 {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: 10px;
-  }
-  .page-header p {
-    color: var(--mute);
-    font-size: 16px;
-  }
-
-  /* Rules Grid */
-  .rules-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-
-  /* Individual Card */
-  .rule-card {
-    background: #ffffff;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .rule-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  }
-
-  .rule-card h3 {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--ink);
-    border-bottom: 1px solid var(--soft);
-    padding-bottom: 12px;
-  }
-  .rule-card h3 i {
-    color: var(--blue);
-    font-size: 20px;
-  }
-
-  .rule-card ul {
-    list-style: none;
-  }
-  .rule-card ul li {
-    font-size: 14.5px;
-    color: #4a4a4a;
-    margin-bottom: 12px;
-    padding-left: 24px;
-    position: relative;
-  }
-  .rule-card ul li::before {
-    content: "•";
-    color: var(--blue);
-    font-size: 20px;
-    position: absolute;
-    left: 4px;
-    top: -2px;
-  }
-
-  .rule-card ul li strong {
-    color: var(--ink);
-  }
-
-  .highlight {
-    color: var(--bad);
-    font-weight: 700;
-    background: #fdeaea;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 13.5px;
-  }
-
-  /* Bottom Action Area */
-  .action-area {
-    text-align: center;
-    background: #ffffff;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 40px;
-  }
-  .action-area p {
-    color: var(--mute);
-    font-size: 15px;
-    margin-bottom: 20px;
-  }
-  .btn-agree {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--green);
-    color: #fff;
-    font-weight: 700;
-    font-size: 16px;
-    padding: 14px 32px;
-    border-radius: 30px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-  }
-  .btn-agree:hover {
-    background: #268e6c;
-    transform: scale(1.02);
-  }
-  .btn-agree i {
-    font-size: 18px;
-  }
-
-  @media (max-width: 600px) {
-    .rules-grid {
-      grid-template-columns: 1fr;
+  ready(function () {
+    /* Font Awesome লোড */
+    if (!document.querySelector('link[href*="font-awesome"]')) {
+      var fa = document.createElement("link");
+      fa.rel = "stylesheet";
+      fa.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
+      document.head.appendChild(fa);
     }
-    .page-header h1 {
-      font-size: 26px;
-    }
-    .rule-card {
-      padding: 20px;
-    }
-  }
-</style>
-</head>
-<body>
 
-<!-- Top Bar Placeholder -->
-<div id="site-topbar"></div>
+    /* ---------- CSS ---------- */
+    var css = [
+      ".msf{font-family:'Inter','Segoe UI',system-ui,sans-serif;width:100%;background:#0a0a0a;color:#94a3b8;line-height:1.6;text-align:left;border-top:1px solid #222;margin-top:40px;position:relative;z-index:5;}",
+      ".msf *{box-sizing:border-box}",
+      
+      /* Grid - 5 Columns */
+      ".msf-cols{max-width:1400px;margin:0 auto;padding:50px 24px 40px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr 1fr;gap:32px}",
+      
+      /* Typography */
+      ".msf h4{font-size:15px;font-weight:700;color:#fff;margin:0 0 16px}",
+      ".msf-desc{font-size:13.5px;color:#94a3b8;margin:0 0 20px;max-width:280px;line-height:1.7}",
+      
+      /* Links */
+      ".msf-cols a{display:block;font-size:13.5px;color:#94a3b8;padding:6px 0;text-decoration:none;transition:.2s;}",
+      ".msf-cols a:hover{color:#fbbf24;}",
+      
+      /* Social Icons */
+      ".msf-social{display:flex;gap:12px;flex-wrap:wrap}",
+      ".msf-social a{width:36px;height:36px;border-radius:50%;border:1px solid #333;display:flex;align-items:center;justify-content:center;padding:0;color:#94a3b8;}",
+      ".msf-social a:hover{background:#fbbf24;color:#000;border-color:#fbbf24;}",
 
-<div class="container">
-  
-  <div class="page-header">
-    <h1>Upload Guidelines & Conditions</h1>
-    <p>Please read the following rules carefully before uploading your content to MINAMI STOCK.</p>
-  </div>
+      /* Bottom Bar */
+      ".msf-bottom{max-width:1400px;margin:0 auto;padding:20px 24px;border-top:1px solid #222;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;font-size:13px;}",
+      ".msf-btns{display:flex;gap:12px;flex-wrap:wrap;}",
+      ".msf-btn{background:#111;border:1px solid #333;border-radius:20px;padding:8px 16px;color:#cbd5e1;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:.2s;}",
+      ".msf-btn:hover{border-color:#fbbf24;color:#fbbf24;}",
 
-  <div class="rules-grid">
+      /* Popups */
+      ".msf-pop{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}",
+      ".msf-pop.open{display:flex}",
+      ".msf-box{background:#111;border:1px solid #333;color:#fff;border-radius:12px;max-width:420px;width:100%;padding:24px;max-height:90vh;overflow:auto;}",
+      ".msf-box h3{font-size:18px;margin:0 0 12px;color:#fbbf24;}",
+      ".msf-box p{font-size:13.5px;line-height:1.6;color:#94a3b8;margin:0 0 12px}",
+      ".msf-box select{width:100%;padding:11px;border:1px solid #333;border-radius:8px;font:inherit;margin-bottom:16px;background:#000;color:#fff;outline:none;}",
+      ".msf-box .row{display:flex;gap:10px}",
+      ".msf-box button{border:1px solid #333;background:#222;color:#fff;padding:10px 20px;border-radius:20px;font-weight:600;font-size:14px;cursor:pointer}",
+      ".msf-box button.fill{background:#fbbf24;border-color:#fbbf24;color:#000}",
+      
+      "#msf-toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#fff;color:#000;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s;z-index:100000}",
+      "#msf-toast.show{opacity:1}",
+
+      /* Responsive */
+      "@media(max-width:1100px){.msf-cols{grid-template-columns:1fr 1fr 1fr;gap:24px}}",
+      "@media(max-width:900px){.msf-cols{grid-template-columns:1fr 1fr}.msf-brand{grid-column:1/-1}}",
+      "@media(max-width:600px){.msf-cols{grid-template-columns:1fr}.msf-bottom{flex-direction:column;text-align:center}}"
+    ].join("\n");
     
-    <!-- Card 1: Technical Requirements -->
-    <div class="rule-card">
-      <h3><i class="fas fa-file-image"></i> Technical Requirements</h3>
-      <ul>
-        <li><strong>File Size:</strong> Minimum size is <span class="highlight">2 MB</span>. Files smaller than this will be automatically rejected.</li>
-        <li><strong>Resolution:</strong> Minimum dimensions must be <span class="highlight">2000 x 2000 pixels</span> (both Width and Height).</li>
-        <li><strong>Format:</strong> Only JPG, PNG, and WebP formats are accepted.</li>
-      </ul>
-    </div>
+    var st = document.createElement("style");
+    st.textContent = css;
+    document.head.appendChild(st);
 
-    <!-- Card 2: Metadata & Keywords -->
-    <div class="rule-card">
-      <h3><i class="fas fa-tags"></i> Metadata & Keywords</h3>
-      <ul>
-        <li><strong>Title:</strong> A clear, descriptive title is mandatory for every upload.</li>
-        <li><strong>Category:</strong> You must select the most relevant category from the dropdown.</li>
-        <li><strong>Keywords:</strong> Provide between <strong>5 and 50</strong> relevant keywords. Separate them with commas.</li>
-      </ul>
-    </div>
+    /* ---------- HTML MARKUP ---------- */
+    var html =
+      '<div class="msf-cols">' +
 
-    <!-- Card 3: Content Rules -->
-    <div class="rule-card">
-      <h3><i class="fas fa-robot"></i> Content Rules</h3>
-      <ul>
-        <li><strong>AI Generated:</strong> If your image is created by AI tools (Midjourney, DALL-E, etc.), you must check the "AI Generated" box.</li>
-        <li><strong>People & Property:</strong> If a recognizable person or private property is in the image, you must attach a valid Release Document.</li>
-      </ul>
-    </div>
+        /* Column 1: Brand */
+        '<div class="msf-brand">' +
+          '<h4 style="font-size:18px;letter-spacing:0.5px;">MINAMI STOCK</h4>' +
+          '<p class="msf-desc">Free and premium stock photos, illustrations, videos and creative tools. Copyright-free content for your projects.</p>' +
+          '<div class="msf-social">' +
+            '<a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>' +
+            '<a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>' +
+            '<a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>' +
+            '<a href="#" aria-label="Pinterest"><i class="fab fa-pinterest-p"></i></a>' +
+            '<a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>' +
+          '</div>' +
+        '</div>' +
 
-    <!-- Card 4: Copyright & Legal -->
-    <div class="rule-card">
-      <h3><i class="fas fa-copyright"></i> Copyright & Legal</h3>
-      <ul>
-        <li><strong>Ownership:</strong> You must own the full commercial rights to the image.</li>
-        <li><strong>Strict Policy:</strong> Uploading copyrighted content, stolen images, or illegal material will result in an immediate account ban.</li>
-      </ul>
-    </div>
+        /* Column 2: Explore */
+        '<div>' +
+          '<h4>Explore</h4>' +
+          '<a href="index.html">Home</a>' +
+          '<a href="stock-photo.html">Stock Photos</a>' +
+          '<a href="portfolio.html">Portfolio</a>' +
+          '<a href="tools.html">Tools</a>' +
+          '<a href="shop.html">Shop</a>' +
+          '<a href="about.html">About Us</a>' +
+        '</div>' +
 
-  </div>
+        /* Column 3: Tools */
+        '<div>' +
+          '<h4>Tools</h4>' +
+          '<a href="image-resizer.html">Image Resizer</a>' +
+          '<a href="image-cropper.html">Image Cropper</a>' +
+          '<a href="image-compressor.html">Image Compressor</a>' +
+          '<a href="bg-remove.html">BG Remover</a>' +
+          '<a href="image-enhancer.html">Image Enhancer</a>' +
+          '<a href="upscaler.html">Image Upscaler</a>' +
+          '<a href="image-to-pdf.html">Image to PDF</a>' +
+          '<a href="text-to-pdf.html">Text to PDF</a>' +
+          '<a href="qr-code.html">QR Code</a>' +
+          '<a href="calculator.html">Calculator</a>' +
+          '<a href="converter.html">Converter</a>' +
+          '<a href="word-counter.html">Word Counter</a>' +
+        '</div>' +
 
-  <!-- Action Area -->
-  <div class="action-area">
-    <p>By clicking "I Understand & Agree", you confirm that your uploads comply with all the rules above.</p>
-    <button class="btn-agree" onclick="window.location.href='upload.html'">
-      <i class="fas fa-check-circle"></i> I Understand & Agree
-    </button>
-  </div>
+        /* Column 4: Legal & Help */
+        '<div>' +
+          '<h4>Legal & Help</h4>' +
+          '<a href="privacy.html">Privacy Policy</a>' +
+          '<a href="terms.html">Terms of Service</a>' +
+          '<a href="dmca.html">DMCA</a>' +
+          '<a href="cookies.html">Cookie Policy</a>' +
+          '<a href="refund.html">Refund Policy</a>' +
+          '<a href="license.html">License Agreement</a>' +
+          '<a href="upload-condition.html">Upload Conditions</a>' +
+          '<a href="contact.html">Contact Us</a>' +
+          '<a href="faq.html">FAQ</a>' +
+          '<a href="about.html">About Us</a>' +
+        '</div>' +
 
-</div>
+        /* Column 5: Account */
+        '<div>' +
+          '<h4>Account</h4>' +
+          '<a href="login.html">Login</a>' +
+          '<a href="register.html">Register</a>' +
+          '<a href="account.html">My Account</a>' +
+          '<a href="dashboard.html">Dashboard</a>' +
+          '<a href="upload.html">Upload</a>' +
+          '<a href="portfolio.html">Portfolio</a>' +
+        '</div>' +
 
-<!-- Footer Placeholder -->
-<div id="ms-footer"></div>
+      '</div>' +
 
-<!-- Scripts for Top Bar and Footer -->
-<script src="top-bar.js"></script>
-<script src="site-footer.js"></script>
+      /* Bottom Bar */
+      '<div class="msf-bottom">' +
+        '<div class="msf-btns">' +
+          '<button type="button" class="msf-btn" data-act="region"><i class="fas fa-globe"></i> Change region</button>' +
+          '<button type="button" class="msf-btn" data-act="license"><i class="fas fa-balance-scale"></i> License Terms</button>' +
+        '</div>' +
+        '<div style="color:#64748b;">&copy; 2026 MINAMI STOCK &middot; All rights reserved</div>' +
+      '</div>';
 
-</body>
-</html>
+    var foot = document.createElement("footer");
+    foot.className = "msf";
+    foot.innerHTML = html;
+
+    var slot = document.getElementById("ms-footer");
+    if (slot) { slot.innerHTML = ""; slot.appendChild(foot); }
+    else document.body.appendChild(foot);
+
+    /* ---------- Popups ---------- */
+    var regions = ["Bangladesh","India","Pakistan","Nepal","Sri Lanka","United States","United Kingdom","Canada","Australia","Other"];
+    var pops = document.createElement("div");
+    pops.innerHTML =
+      '<div class="msf-pop" id="msf-region"><div class="msf-box">' +
+        '<h3>Change region</h3><select id="msf-region-sel">' +
+        regions.map(function (r) { return "<option>" + r + "</option>"; }).join("") +
+        '</select><div class="row"><button type="button" class="fill" id="msf-region-save">Save region</button><button type="button" data-close>Cancel</button></div>' +
+      '</div></div>' +
+
+      '<div class="msf-pop" id="msf-license"><div class="msf-box">' +
+        '<h3>License Terms</h3>' +
+        '<p>Photos and files on MINAMI STOCK can be used in websites, social media, print and advertising, within the projects your license covers.</p>' +
+        '<p>You may not resell or redistribute a file as-is, and you may not claim it as your own work. Contributors keep the copyright to what they upload.</p>' +
+        '<div class="row" style="margin-top:20px;"><button type="button" data-close>Close</button></div>' +
+      '</div></div>' +
+
+      '<div id="msf-toast"></div>';
+    document.body.appendChild(pops);
+
+    /* ---------- Helpers ---------- */
+    function $(id) { return document.getElementById(id); }
+    function toast(t) {
+      var el = $("msf-toast");
+      el.textContent = t;
+      el.classList.add("show");
+      clearTimeout(toast.t);
+      toast.t = setTimeout(function () { el.classList.remove("show"); }, 2200);
+    }
+    function closePops() {
+      $("msf-region").classList.remove("open");
+      $("msf-license").classList.remove("open");
+    }
+
+    /* ---------- Region ---------- */
+    function store(k, v) {
+      try {
+        if (v === undefined) return localStorage.getItem(k);
+        localStorage.setItem(k, v);
+      } catch (e) {}
+    }
+    var savedRegion = store("ms_region");
+    if (savedRegion) $("msf-region-sel").value = savedRegion;
+
+    /* ---------- Clicks ---------- */
+    foot.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-act]");
+      if (!b) return;
+      var act = b.getAttribute("data-act");
+      if (act === "region") $("msf-region").classList.add("open");
+      else if (act === "license") $("msf-license").classList.add("open");
+    });
+
+    $("msf-region-save").onclick = function () {
+      store("ms_region", $("msf-region-sel").value);
+      closePops();
+      toast("Region set to " + $("msf-region-sel").value);
+    };
+
+    pops.addEventListener("click", function (e) {
+      if (e.target.hasAttribute("data-close") || e.target.classList.contains("msf-pop")) closePops();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closePops();
+    });
+  });
+})();

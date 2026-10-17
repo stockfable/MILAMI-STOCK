@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Blog - MINAMI STOCK</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: #000; color: #f8fafc; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+
+    /* TOP ACTION ROW (Search Bar) */
+    .top-action-row {
+        display: flex;
+        justify-content: center;
+        margin: 30px auto 20px;
+        width: 100%;
+        max-width: 800px;
+        padding: 0 20px;
+    }
+    .search-wrapper { 
+        display: flex; 
+        align-items: center; 
+        background: #0f172a; 
+        border: 1px solid #1e293b; 
+        border-radius: 30px; 
+        padding: 5px 5px 5px 20px; 
+        flex: 1; 
+        height: 52px;
+    }
+    .search-wrapper i { color: #fbbf24; font-size: 16px; }
+    .search-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-size: 15px; padding: 10px 15px; min-width: 50px; }
+    .search-wrapper input::placeholder { color: #64748b; }
+    .search-wrapper button { background: #fbbf24; color: #0a1628; border: none; padding: 10px 25px; border-radius: 25px; font-weight: 700; cursor: pointer; height: 100%; white-space: nowrap; transition: 0.2s; }
+    .search-wrapper button:hover { background: #f59e0b; }
+
+    /* KEYWORDS ROW */
+    .keywords-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 0 20px;
+        margin-bottom: 40px;
+    }
+    .keyword-chip {
+        background: #111;
+        color: #94a3b8;
+        border: 1px solid #333;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+    .keyword-chip:hover {
+        background: rgba(251, 191, 36, 0.1);
+        border-color: #fbbf24;
+        color: #fbbf24;
+    }
+
+    /* HERO SECTION */
+    .hero { padding: 20px 20px 40px; text-align: center; }
+    .hero h1 { font-size: clamp(28px, 4vw, 42px); font-weight: 800; margin-bottom: 12px; letter-spacing: -0.5px; }
+    .hero h1 .highlight { background: linear-gradient(135deg, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 15px; color: #94a3b8; max-width: 600px; margin: 0 auto; }
+
+    /* EMPTY STATE (Where Videos will appear) */
+    .video-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        flex: 1;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .empty-state {
+        text-align: center;
+        background: #0a0a0a;
+        border: 2px dashed #222;
+        border-radius: 20px;
+        padding: 60px 40px;
+        max-width: 600px;
+        width: 100%;
+        transition: 0.3s;
+    }
+    .empty-state:hover {
+        border-color: rgba(251, 191, 36, 0.4);
+        background: #111;
+    }
+    .empty-state .icon-wrapper {
+        width: 80px; height: 80px;
+        background: rgba(251, 191, 36, 0.1);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 24px;
+    }
+    .empty-state i { font-size: 36px; color: #fbbf24; }
+    .empty-state h2 { font-size: 24px; color: #fff; margin-bottom: 12px; font-weight: 700; }
+    .empty-state p { font-size: 15px; color: #64748b; line-height: 1.6; margin-bottom: 24px; }
+
+    /* সেলারদের জন্য ড্যাশবোর্ড বাটন */
+    .btn-seller {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fbbf24;
+        color: #000;
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: 0.2s;
+    }
+    .btn-seller:hover { background: #f59e0b; transform: translateY(-2px); }
+
+    /* (Optional) Cloudinary Video Grid CSS - ভবিষ্যতে ভিডিও আসলে ব্যবহার হবে */
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; width: 100%; }
+    .video-card { background: #111; border-radius: 12px; overflow: hidden; border: 1px solid #222; }
+    .video-card video { width: 100%; height: auto; display: block; }
+
+</style>
+</head>
+<body>
+
+    <!-- TOP BAR (site-layout.js injects) -->
+    <div id="site-topbar"></div>
+
+    <!-- SEARCH BAR (Connected to Stock Photo Search) -->
+    <div class="top-action-row">
+        <div class="search-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="globalSearchInput" placeholder="Search stock photos by keyword...">
+            <button type="button" onclick="performSearch()">Search</button>
+        </div>
+    </div>
+
+    <!-- POPULAR KEYWORDS (Click to search) -->
+    <div class="keywords-row">
+        <a href="stock-photo.html?q=nature" class="keyword-chip">Nature</a>
+        <a href="stock-photo.html?q=business" class="keyword-chip">Business</a>
+        <a href="stock-photo.html?q=technology" class="keyword-chip">Technology</a>
+        <a href="stock-photo.html?q=people" class="keyword-chip">People</a>
+        <a href="stock-photo.html?q=ai+generated" class="keyword-chip">AI Generated</a>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>MINAMI <span class="highlight">Video Blog</span></h1>
+        <p>Explore high-quality stock videos for your next project. Sellers can manage their video uploads directly.</p>
+    </section>
+
+    <!-- MAIN VIDEO CONTAINER -->
+    <div class="video-container" id="videoContainer">
+        
+        <!-- Empty State (ভিডিও খালি থাকা অবস্থায় এটি দেখাবে) -->
+        <div class="empty-state" id="emptyState">
+            <div class="icon-wrapper">
+                <i class="fas fa-video-slash"></i>
+            </div>
+            <h2>No Videos Available Yet</h2>
+            <p>We are currently curating high-quality stock videos. If you are a seller, you can start uploading your videos to Cloudinary and they will appear here.</p>
+            
+            <!-- সেলার ড্যাশবোর্ডে যাওয়ার লিংক -->
+            <a href="upload.html" class="btn-seller">
+                <i class="fas fa-cloud-upload-alt"></i> Upload Video (Seller)
+            </a>
+        </div>
+
+        <!-- =====================================================================
+             Cloudinary Video Grid (ভবিষ্যতে ভিডিও আপলোড করলে এই ডিভ-এ দেখাবে)
+             
+             কীভাবে কানেক্ট করবেন?
+             আপনার Firebase/Cloudinary থেকে ভিডিও ডেটা এনে এই ডিভ-এর ভেতরে 
+             JavaScript দিয়ে <video> ট্যাগ বা <iframe> ইনজেক্ট করবেন।
+        ====================================================================== -->
+        <div class="video-grid" id="videoGrid" style="display: none;">
+            <!-- Video Cards will go here -->
+        </div>
+
+    </div>
+
+    <!-- FOOTER (site-footer.js injects) -->
+    <div id="ms-footer"></div>
+
+    <!-- SHARED SCRIPTS -->
+    <script src="top-bar.js"></script>
+    <script src="site-footer.js"></script>
+
+    <!-- SEARCH LOGIC -->
+    <script>
+        function performSearch() {
+            const q = document.getElementById('globalSearchInput').value.trim();
+            if (q) {
+                window.location.href = 'stock-photo.html?q=' + encodeURIComponent(q);
+            }
+        }
+
+        // Enter চাপলে সার্চ হবে
+        document.getElementById('globalSearchInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        /* =====================================================================
+           CLOUDINARY INTEGRATION PLACEHOLDER
+           =====================================================================
+           নিচের কোডটি ভবিষ্যতে ব্যবহার করবেন যখন আপনার কাছে ভিডিও থাকবে।
+           
+           উদাহরণ: যদি Firebase থেকে ভিডিও ডেটা আনেন, তবে সেটি এভাবে রেন্ডার করবেন।
+           
+           function renderVideos(videoList) {
+               const grid = document.getElementById('videoGrid');
+               const emptyState = document.getElementById('emptyState');
+               
+               if (videoList.length > 0) {
+                   emptyState.style.display = 'none';
+                   grid.style.display = 'grid';
+                   
+                   grid.innerHTML = videoList.map(vid => `
+                       <div class="video-card">
+                           <video controls poster="${vid.thumbnailUrl}">
+                               <source src="${vid.cloudinaryUrl}" type="video/mp4">
+                           </video>
+                           <div style="padding: 10px;">
+                               <h4 style="color: #fff;">${vid.title}</h4>
+                           </div>
+                       </div>
+                   `).join('');
+               }
+           }
+           
+           // Firebase থেকে ডেটা এনে renderVideos(myVideos) কল করবেন।
+        ===================================================================== */
+    </script>
+
+</body>
+</html>

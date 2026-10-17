@@ -3,91 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Upload - MINAMI STOCK</title>
+<title>Dashboard - MINAMI STOCK</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <style>
-:root{--ink:#2c2c2c;--mute:#6e6e6e;--line:#e1e1e1;--soft:#f5f5f5;--blue:#378ef0;--green:#2d9d78;--green-d:#268e6c;--bad:#d7373f}
+:root{--ink:#222;--mute:#6e6e6e;--line:#333;--soft:#111;--blue:#378ef0;--green:#2d9d78;--green-d:#268e6c;--bad:#d7373f;--gold:#fbbf24}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:#fff;color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;background:#000;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column}
 button{font:inherit;cursor:pointer;color:inherit;background:none;border:0}
 input,select,textarea{font:inherit;color:inherit}
-.tabs{display:flex;gap:26px;padding:0 24px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+
+/* TABS */
+.tabs{display:flex;gap:26px;padding:0 24px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;background:#000;margin-top:10px}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:16px 0 13px;font-size:14px;font-weight:600;color:var(--mute);border-bottom:3px solid transparent;white-space:nowrap}
-.tab.on{color:var(--ink);border-color:var(--blue)}
-.tab small{margin-left:6px;font-size:11px;border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.tab.on{color:#fff;border-color:var(--gold)}
+.tab small{margin-left:6px;font-size:11px;border:1px solid #444;border-radius:4px;padding:1px 6px;color:#fff}
 .tabs .sp{flex:1}
 .btn-submit{align-self:center;background:var(--green);color:#fff;font-weight:700;font-size:14px;padding:9px 20px;border-radius:5px;white-space:nowrap;margin:6px 0}
 .btn-submit:hover{background:var(--green-d)}
-.layout{flex:1;display:grid;grid-template-columns:1fr 380px;align-items:stretch;min-height:calc(100vh - 115px)}
-.left{padding:14px 24px 40px;min-width:0;border-right:1px solid var(--line);min-height:calc(100vh - 115px)}
-.toolbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-bottom:14px}
+
+/* LAYOUT */
+.layout{flex:1;display:grid;grid-template-columns:1fr 380px;align-items:stretch;min-height:calc(100vh - 150px)}
+.left{padding:14px 24px 40px;min-width:0;border-right:1px solid var(--line)}
+.toolbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;font-size:12px;color:#94a3b8;margin-bottom:14px}
 .toolbar .sp{flex:1}
 .toolbar label{display:flex;align-items:center;gap:6px;cursor:pointer}
-.toolbar select{border:1px solid var(--line);border-radius:4px;padding:4px 6px;font-size:12px;background:#fff}
-.add-btn{border:1px solid var(--blue);color:var(--blue);font-weight:700;border-radius:5px;padding:6px 14px;font-size:13px}
-.add-btn:hover{background:var(--blue);color:#fff}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;min-height:calc(100vh - 260px);align-content:start}
-.card{position:relative;background:var(--soft);border:3px solid transparent;border-radius:2px;cursor:pointer;overflow:hidden}
-.card.sel{border-color:var(--blue)}
-.card .th{aspect-ratio:1/1;background-size:cover;background-position:center}
-.card .chk{position:absolute;top:8px;left:8px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.85);border:1px solid #bbb;display:grid;place-items:center;font-size:11px;color:#fff}
-.card.sel .chk{background:var(--green);border-color:var(--green)}
-.card .info{position:absolute;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;padding:6px 8px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font-size:11px}
-.card .info .t{margin-left:auto}
+.toolbar select{border:1px solid #333;border-radius:4px;padding:4px 6px;font-size:12px;background:#111;color:#fff}
+.add-btn{border:1px solid var(--gold);color:var(--gold);font-weight:700;border-radius:5px;padding:6px 14px;font-size:13px;transition:.2s}
+.add-btn:hover{background:var(--gold);color:#000}
+
+/* DENSE GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:4px;align-content:start;min-height:calc(100vh - 280px)}
+.card{position:relative;background:#111;border:2px solid transparent;border-radius:4px;cursor:pointer;overflow:hidden;aspect-ratio:16/10}
+.card.sel{border-color:var(--gold)}
+.card .th{width:100%;height:100%;background-size:cover;background-position:center;position:relative}
+.card .chk{position:absolute;top:6px;left:6px;width:20px;height:20px;border-radius:4px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);display:grid;place-items:center;font-size:10px;color:#fff;backdrop-filter:blur(2px);z-index:3}
+.card.sel .chk{background:var(--gold);border-color:var(--gold);color:#000}
 .card.bad{border-color:var(--bad)}
-.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:70px 10px;font-size:14px}
-.empty i{font-size:38px;color:#c9c9c9;display:block;margin-bottom:12px}
-.panel{padding:18px 22px 40px;position:sticky;top:70px;max-height:calc(100vh - 80px);overflow-y:auto}
+.card .badge{position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.8);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;z-index:2;backdrop-filter:blur(2px);display:flex;align-items:center;gap:4px}
+.card .badge i{font-size:8px;color:var(--gold)}
+.card .play-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;background:rgba(0,0,0,.6);border:2px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;z-index:2;pointer-events:none}
+.empty{grid-column:1/-1;text-align:center;color:#64748b;padding:70px 10px;font-size:14px}
+.empty i{font-size:38px;color:#333;display:block;margin-bottom:12px}
+
+/* PANEL */
+.panel{padding:18px 22px 40px;position:sticky;top:70px;max-height:calc(100vh - 80px);overflow-y:auto;background:#0a0a0a}
 .f{margin-bottom:16px}
-.f>label,.f .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--mute);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
-.f select,.f input[type=text],.f textarea{width:100%;border:1px solid var(--line);border-radius:4px;padding:9px 10px;font-size:14px;background:#fff}
+.f>label,.f .lab{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#94a3b8;margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
+.f select,.f input[type=text],.f textarea{width:100%;border:1px solid #333;border-radius:4px;padding:9px 10px;font-size:14px;background:#111;color:#fff}
 .f textarea{resize:vertical;min-height:70px}
-.f select:focus,.f input:focus,.f textarea:focus{outline:none;border-color:var(--blue)}
-.chk-row{display:flex;align-items:center;gap:9px;font-size:13px;margin-bottom:14px;cursor:pointer}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
-.seg button{padding:7px 18px;font-size:13px;font-weight:600;color:var(--mute)}
-.seg button.on{background:var(--blue);color:#fff}
+.f select:focus,.f input:focus,.f textarea:focus{outline:none;border-color:var(--gold)}
+.chk-row{display:flex;align-items:center;gap:9px;font-size:13px;margin-bottom:14px;cursor:pointer;color:#cbd5e1}
+.seg{display:inline-flex;border:1px solid #333;border-radius:4px;overflow:hidden}
+.seg button{padding:7px 18px;font-size:13px;font-weight:600;color:#94a3b8}
+.seg button.on{background:var(--gold);color:#000}
 .kw{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.kw .n{width:24px;height:24px;border-radius:50%;border:1px solid var(--blue);color:var(--blue);font-size:12px;display:grid;place-items:center;flex:none}
-.kw input{flex:1;border:1px solid var(--line);border-radius:4px;padding:7px 9px;font-size:14px;min-width:0}
-.kw button{color:var(--mute);font-size:13px;padding:4px}
+.kw .n{width:24px;height:24px;border-radius:50%;border:1px solid var(--gold);color:var(--gold);font-size:12px;display:grid;place-items:center;flex:none}
+.kw input{flex:1;border:1px solid #333;border-radius:4px;padding:7px 9px;font-size:14px;min-width:0;background:#111;color:#fff}
+.kw button{color:#94a3b8;font-size:13px;padding:4px}
 .kw button:hover{color:var(--bad)}
 .sug{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.sug span{font-size:12px;border:1px solid var(--line);border-radius:14px;padding:3px 10px;cursor:pointer;color:var(--mute)}
-.sug span:hover{border-color:var(--blue);color:var(--blue)}
-.link{color:var(--blue);font-size:12px;font-weight:600}
-.bulk-kw{width:100%;border:1px dashed var(--blue);border-radius:6px;padding:10px;font-size:13px;background:#f7fbff;resize:vertical;min-height:60px;margin-top:8px}
-.bulk-kw:focus{outline:none;border-color:var(--blue);background:#fff}
-.bulk-hint{font-size:11px;color:var(--mute);margin-top:4px;display:flex;justify-content:space-between;align-items:center}
-.bulk-add-btn{padding:6px 14px;background:var(--blue);color:#fff;border-radius:5px;font-weight:700;font-size:12px;cursor:pointer}
-.bulk-add-btn:hover{background:#0d66d0}
+.sug span{font-size:12px;border:1px solid #333;border-radius:14px;padding:3px 10px;cursor:pointer;color:#94a3b8}
+.sug span:hover{border-color:var(--gold);color:var(--gold)}
+.link{color:var(--gold);font-size:12px;font-weight:600}
+.bulk-kw{width:100%;border:1px dashed var(--gold);border-radius:6px;padding:10px;font-size:13px;background:rgba(251,191,36,0.05);resize:vertical;min-height:60px;margin-top:8px;color:#fff}
+.bulk-kw:focus{outline:none;border-color:var(--gold)}
+.bulk-hint{font-size:11px;color:#64748b;margin-top:4px;display:flex;justify-content:space-between;align-items:center}
+.bulk-add-btn{padding:6px 14px;background:var(--gold);color:#000;border-radius:5px;font-weight:700;font-size:12px;cursor:pointer}
 .actions{display:flex;gap:10px;margin-top:20px}
-.actions button{flex:1;padding:11px;border-radius:5px;font-weight:700;font-size:14px;border:1px solid var(--line)}
+.actions button{flex:1;padding:11px;border-radius:5px;font-weight:700;font-size:14px;border:1px solid #333;background:#111;color:#fff}
 .actions .primary{background:var(--green);border-color:var(--green);color:#fff}
-.actions button:hover{background:var(--soft)}
+.actions button:hover{background:#222;}
 .actions .primary:hover{background:var(--green-d)}
-.nosel{color:var(--mute);font-size:14px;text-align:center;padding:50px 10px}
-.overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:2000;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-weight:700}
-.spin{width:44px;height:44px;border:4px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:sp 1s linear infinite}
+.nosel{color:#64748b;font-size:14px;text-align:center;padding:50px 10px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-weight:700;color:#fff}
+.spin{width:44px;height:44px;border:4px solid #333;border-top-color:var(--gold);border-radius:50%;animation:sp 1s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2100;align-items:center;justify-content:center;padding:16px}
-.box{background:#fff;border-radius:8px;padding:22px;width:100%;max-width:420px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:2100;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.box{background:#111;border:1px solid #333;border-radius:8px;padding:22px;width:100%;max-width:420px;color:#fff}
 .box h3{margin-bottom:8px}
-.box p{font-size:13px;color:var(--mute);margin-bottom:14px}
-#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:3000;max-width:90vw;text-align:center;white-space:pre-line}
+.box p{font-size:13px;color:#94a3b8;margin-bottom:14px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#fff;color:#000;padding:11px 20px;border-radius:6px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;z-index:3000;max-width:90vw;text-align:center;white-space:pre-line}
 #toast.show{opacity:1;transform:translateX(-50%)}
-#toast.err{background:#b91c1c;font-weight:700}
+#toast.err{background:var(--bad);color:#fff}
 @media(max-width:900px){
-  .layout{grid-template-columns:1fr;min-height:auto}
+  .layout{grid-template-columns:1fr}
   .left{border-right:0;min-height:auto}
   .panel{position:static;max-height:none;border-top:1px solid var(--line)}
-  .tabs{padding:0 14px}
-  .left{padding:14px}
-  .grid{min-height:auto}
+  .grid{min-height:auto;grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
 }
 </style>
 </head>
@@ -95,29 +101,30 @@ input,select,textarea{font:inherit;color:inherit}
 
 <div id="site-topbar"></div>
 
+<!-- ট্যাবসমূহ (নতুন টেক্সট) -->
 <div class="tabs" id="tabs">
-  <button class="tab on" data-tab="new">New <small id="cNew">0</small></button>
-  <button class="tab" data-tab="review">In review <small id="cRev">0</small></button>
-  <button class="tab" data-tab="reminder">Reminder</button>
-  <button class="tab" data-tab="rejected">Rejected</button>
-  <button class="tab" data-tab="releases">Releases <small id="cRel">0</small></button>
+  <button class="tab on" data-tab="new">Drafts <small id="cNew">0</small></button>
+  <button class="tab" data-tab="review">Awaiting Review <small id="cRev">0</small></button>
+  <button class="tab" data-tab="reminder">Action Needed</button>
+  <button class="tab" data-tab="rejected">Declined</button>
+  <button class="tab" data-tab="releases">Documents <small id="cRel">0</small></button>
   <span class="sp"></span>
-  <button class="btn-submit" id="submitTop">Submit file</button>
+  <button class="btn-submit" id="submitTop">Publish Asset</button>
 </div>
 
 <div class="layout">
   <div class="left">
     <div class="toolbar">
-      <span>File types: All</span>
-      <label><input type="checkbox" id="selAll"> Select all</label>
+      <span>Media Type: All</span>
+      <label><input type="checkbox" id="selAll"> Check all</label>
       <span class="sp"></span>
-      <button class="add-btn" id="addBtn"><i class="fas fa-plus"></i> Add files</button>
-      <label>Sort by
-        <select id="sortBy"><option value="date">Upload date</option><option value="title">Title</option></select>
+      <button class="add-btn" id="addBtn"><i class="fas fa-plus"></i> Add Media</button>
+      <label>Order by
+        <select id="sortBy"><option value="date">Date Added</option><option value="title">Asset Name</option></select>
       </label>
     </div>
     <div class="grid" id="grid"></div>
-    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    <input type="file" id="fileInput" accept="image/*,video/*" multiple hidden>
   </div>
 
   <aside class="panel" id="panel"></aside>
@@ -129,12 +136,12 @@ input,select,textarea{font:inherit;color:inherit}
 
 <div class="modal" id="relModal">
   <div class="box">
-    <h3>Add release document</h3>
-    <p>If your image contains a recognizable person or property, attach a signed release.</p>
-    <div class="f"><label>Release type</label>
-      <select id="relType"><option value="Model">Model release</option><option value="Property">Property release</option></select></div>
-    <div class="f"><label>Document name / ID</label><input type="text" id="relName" placeholder="e.g. Jane Doe - signed 2026"></div>
-    <div class="f"><label>Release file (PDF or image)</label><input type="file" id="relFile" accept=".pdf,image/*"></div>
+    <h3>Attach Document</h3>
+    <p>If your file contains identifiable people or property, please attach a signed release document.</p>
+    <div class="f"><label>Document Type</label>
+      <select id="relType"><option value="Model">Model Release</option><option value="Property">Property Release</option></select></div>
+    <div class="f"><label>Document Name / ID</label><input type="text" id="relName" placeholder="e.g. John Doe - 2026"></div>
+    <div class="f"><label>Upload File (PDF or Image)</label><input type="file" id="relFile" accept=".pdf,image/*" style="color:#fff"></div>
     <div class="actions"><button id="relCancel">Cancel</button><button class="primary" id="relOk">Attach</button></div>
   </div>
 </div>
@@ -142,14 +149,10 @@ input,select,textarea{font:inherit;color:inherit}
 <div id="toast"></div>
 
 <script>
-/* ================================================================
-   ✅ CLOUDINARY CONFIG
-   ================================================================ */
 const CLOUD_NAME    = "yt1jzpnb";
 const UPLOAD_PRESET = "minami_unsigned";
 const FOLDER        = "minami-stock";
 
-/* ---------- Cloudinary upload helper ---------- */
 function uploadToCloudinary(file, onProgress){
   return new Promise((resolve, reject) => {
     const fd = new FormData();
@@ -184,9 +187,6 @@ function uploadToCloudinary(file, onProgress){
   });
 }
 
-/* ================================================================
-   FIREBASE
-   ================================================================ */
 const FB = {
   apiKey: "AIzaSyAzWwbk-Dh1Kzzp9CvNyqC28ToCWXw41Qs",
   authDomain: "creoverse-stock.firebaseapp.com",
@@ -215,58 +215,41 @@ function toast(m, isErr){
 const cur = () => items.find(i => sel.has(i.id));
 const chosen = () => items.filter(i => sel.has(i.id));
 
-/* ================================================================
-   🚨 FILE VALIDATION & ADD FILES
-   Minimum Size: 2 MB
-   Minimum Resolution: 2000 x 2000 px
-   ================================================================ */
 $("addBtn").onclick = () => $("fileInput").click();
-
 $("fileInput").onchange = async e => {
-  const files = Array.from(e.target.files).filter(f => f.type.startsWith("image/"));
-  e.target.value = ""; // Reset input
-  
+  const files = Array.from(e.target.files);
+  e.target.value = ""; 
   if (!files.length) return;
 
-  const MIN_SIZE_MB = 2;
-  const MIN_SIZE_BYTES = MIN_SIZE_MB * 1024 * 1024;
-  const MIN_DIMENSION = 2000; // 2000 px width & height
-
   let addedCount = 0;
-  let rejectedCount = 0;
 
   for (const file of files) {
-    // 1. Check File Size
-    if (file.size < MIN_SIZE_BYTES) {
-      toast(`❌ Rejected: ${file.name}\nSize < ${MIN_SIZE_MB}MB`, true);
-      rejectedCount++;
-      continue;
+    const isVideo = file.type.startsWith("video/");
+    const isImage = file.type.startsWith("image/");
+    if (!isVideo && !isImage) continue;
+
+    if (isImage) {
+      const MIN_SIZE = 2 * 1024 * 1024;
+      if (file.size < MIN_SIZE) {
+        toast(`❌ Rejected: ${file.name}\nFile size must be at least 2MB`, true);
+        continue;
+      }
+
+      const MIN_DIMENSION = 2000;
+      const img = new Image();
+      const objUrl = URL.createObjectURL(file);
+      const isValidDim = await new Promise((resolve) => {
+        img.onload = () => { URL.revokeObjectURL(objUrl); resolve(img.width >= MIN_DIMENSION && img.height >= MIN_DIMENSION); };
+        img.onerror = () => { URL.revokeObjectURL(objUrl); resolve(false); };
+        img.src = objUrl;
+      });
+
+      if (!isValidDim) {
+        toast(`❌ Rejected: ${file.name}\nMinimum resolution is 2000x2000px`, true);
+        continue;
+      }
     }
 
-    // 2. Check Image Dimensions (Async)
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-    
-    const isValidDimension = await new Promise((resolve) => {
-      img.onload = () => {
-        URL.revokeObjectURL(objectUrl);
-        // Require both width AND height to be at least 2000px
-        resolve(img.width >= MIN_DIMENSION && img.height >= MIN_DIMENSION);
-      };
-      img.onerror = () => {
-        URL.revokeObjectURL(objectUrl);
-        resolve(false);
-      };
-      img.src = objectUrl;
-    });
-
-    if (!isValidDimension) {
-      toast(`❌ Rejected: ${file.name}\nResolution < ${MIN_DIMENSION}x${MIN_DIMENSION}px`, true);
-      rejectedCount++;
-      continue;
-    }
-
-    // 3. Valid File -> Add to List
     const base = file.name.replace(/\.[^.]+$/, "");
     const low = base.toLowerCase();
     const g = GUESS.find(x => x[1].some(k => low.includes(k)));
@@ -277,7 +260,7 @@ $("fileInput").onchange = async e => {
       url: URL.createObjectURL(file), 
       title: base.replace(/[-_]+/g," ").replace(/\b\w/g,l=>l.toUpperCase()),
       category: g ? g[0] : "", 
-      type: "Photo", 
+      type: isVideo ? "Video" : "Photo", 
       desc: "", 
       kws: [], 
       ai: false, 
@@ -290,10 +273,6 @@ $("fileInput").onchange = async e => {
     addedCount++;
   }
 
-  if (rejectedCount > 0) {
-    console.warn(`[Upload] ${rejectedCount} file(s) rejected due to size/resolution limits.`);
-  }
-
   if (addedCount > 0) {
     tab = "new";
     if (!sel.size && items.length) sel.add(items.find(i => i.state === "new").id);
@@ -301,7 +280,6 @@ $("fileInput").onchange = async e => {
   }
 };
 
-/* Tabs / toolbar */
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; tab = b.dataset.tab; sel.clear(); render(); };
 $("sortBy").onchange = render;
 $("selAll").onchange = e => { sel.clear(); if (e.target.checked) visible().forEach(i => sel.add(i.id)); render(); };
@@ -318,12 +296,22 @@ function render(){
   $("cRev").textContent = items.filter(i => i.state !== "new").length;
   $("cRel").textContent = items.filter(i => i.release).length;
   const v = visible(), g = $("grid");
+  
   if (!v.length) {
-    g.innerHTML = '<div class="empty"><i class="far fa-images"></i>' + (tab === "new" ? "No files yet. Click Add files to get started." : "Nothing here yet.") + "</div>";
+    g.innerHTML = '<div class="empty"><i class="far fa-images"></i>' + (tab === "new" ? "No drafts yet. Click Add Media to get started." : "Nothing here yet.") + "</div>";
   } else {
-    g.innerHTML = v.map(i => `<div class="card ${sel.has(i.id) ? "sel" : ""} ${i.bad ? "bad" : ""}" data-id="${i.id}">
-      <div class="th" style="background-image:url('${i.url}')"></div><div class="chk" data-chk="${i.id}"><i class="fas fa-check"></i></div>
-      <div class="info"><span><i class="fas fa-tag"></i> ${i.kws.length}</span><span><i class="fas fa-user"></i> ${i.release ? 1 : 0}</span><span class="t">${i.type}${i.state === "draft" ? " · draft" : ""}</span></div></div>`).join("");
+    g.innerHTML = v.map(i => `
+      <div class="card ${sel.has(i.id) ? "sel" : ""} ${i.bad ? "bad" : ""}" data-id="${i.id}">
+        <div class="th" style="background-image:url('${i.url}')">
+          ${i.type === "Video" ? '<div class="play-icon"><i class="fas fa-play"></i></div>' : ''}
+          <div class="badge">
+            <i class="fas ${i.type === "Video" ? "fa-video" : "fa-image"}"></i> 
+            ${i.type === "Video" ? "Video" : "Photo"}
+          </div>
+        </div>
+        <div class="chk" data-chk="${i.id}"><i class="fas fa-check"></i></div>
+      </div>
+    `).join("");
   }
   $("selAll").checked = v.length > 0 && v.every(i => sel.has(i.id));
   renderPanel();
@@ -337,36 +325,34 @@ $("grid").onclick = e => {
   render();
 };
 
-/* Panel */
 function renderPanel(){
   const p = $("panel"), c = cur();
-  if (!c || tab !== "new") { p.innerHTML = '<div class="nosel"><i class="far fa-hand-pointer" style="font-size:28px;display:block;margin-bottom:10px;color:#c9c9c9"></i>' + (tab === "new" ? "Select a file to edit its details." : "Files you submit appear here.") + "</div>"; return; }
+  if (!c || tab !== "new") { p.innerHTML = '<div class="nosel"><i class="far fa-hand-pointer" style="font-size:28px;display:block;margin-bottom:10px;color:#333"></i>' + (tab === "new" ? "Select an asset to edit its details." : "Submitted assets will appear here.") + "</div>"; return; }
   const many = sel.size > 1;
   p.innerHTML = `
-  ${many ? `<div class="f" style="font-size:13px;color:var(--blue);font-weight:600">${sel.size} files selected. Changes apply to all of them.</div>` : ""}
-  <div class="f"><label>File type</label><select id="pType">${["Photo","Illustration","Vector"].map(t => `<option ${c.type===t?"selected":""}>${t}</option>`).join("")}</select></div>
-  <div class="f"><label>Category *</label><select id="pCat"><option value="">Select category</option>${CATS.map(t => `<option ${c.category===t?"selected":""}>${t}</option>`).join("")}</select></div>
-  <label class="chk-row"><input type="checkbox" id="pEd" ${c.editorial?"checked":""}> This is illustrative editorial content</label>
-  <label class="chk-row"><input type="checkbox" id="pAi" ${c.ai?"checked":""}> This image is AI generated</label>
-  <div class="f"><span class="lab">Recognizable people or property?</span>
+  ${many ? `<div class="f" style="font-size:13px;color:var(--gold);font-weight:600">${sel.size} assets selected. Changes apply to all.</div>` : ""}
+  <div class="f"><label>Media Type</label><select id="pType">${["Photo","Video","Illustration","Vector"].map(t => `<option ${c.type===t?"selected":""}>${t}</option>`).join("")}</select></div>
+  <div class="f"><label>Collection *</label><select id="pCat"><option value="">Select collection</option>${CATS.map(t => `<option ${c.category===t?"selected":""}>${t}</option>`).join("")}</select></div>
+  <label class="chk-row"><input type="checkbox" id="pEd" ${c.editorial?"checked":""}> For editorial use only</label>
+  <label class="chk-row"><input type="checkbox" id="pAi" ${c.ai?"checked":""}> AI-generated content</label>
+  <div class="f"><span class="lab">Contains identifiable people/property?</span>
     <div class="seg"><button data-ppl="1" class="${c.people?"on":""}">Yes</button><button data-ppl="0" class="${c.people?"":"on"}">No</button></div>
-    ${c.people ? `<div style="margin-top:8px"><button class="link" id="relBtn"><i class="fas fa-file-signature"></i> ${c.release ? "Release: " + esc(c.release.name) : "Add release document"}</button></div>` : ""}</div>
-  <div class="f"><label>Title * <span id="tCnt">${c.title.length}/200</span></label><textarea id="pTitle" maxlength="200">${esc(c.title)}</textarea></div>
-  <div class="f"><label>Description</label><textarea id="pDesc">${esc(c.desc)}</textarea></div>
+    ${c.people ? `<div style="margin-top:8px"><button class="link" id="relBtn"><i class="fas fa-file-signature"></i> ${c.release ? "Document: " + esc(c.release.name) : "Attach release document"}</button></div>` : ""}</div>
+  <div class="f"><label>Asset Title * <span id="tCnt">${c.title.length}/200</span></label><textarea id="pTitle" maxlength="200">${esc(c.title)}</textarea></div>
+  <div class="f"><label>About this asset</label><textarea id="pDesc">${esc(c.desc)}</textarea></div>
 
-  <div class="f"><span class="lab"><span>Keywords (min 5, max 50)</span><span id="kCnt">${c.kws.length}</span></span>
+  <div class="f"><span class="lab"><span>Tags / Keywords (5-50)</span><span id="kCnt">${c.kws.length}</span></span>
     <div id="kwList"></div>
     <div class="sug" id="sug"></div>
-
-    <textarea id="bulkKw" class="bulk-kw"
-      placeholder="💡 Paste many keywords here (comma separated), e.g.:&#10;room, interior, cozy, sofa, window, light, furniture, home"></textarea>
+    <textarea id="bulkKw" class="bulk-kw" placeholder="💡 Paste many keywords here (comma separated)..."></textarea>
     <div class="bulk-hint">
-      <span>Comma বা Enter দিয়ে আলাদা করুন · একসাথে সব add হবে</span>
+      <span>Separate by comma or Enter</span>
       <button type="button" class="bulk-add-btn" id="bulkAddBtn">+ Add all</button>
     </div>
   </div>
 
-  <div class="actions"><button id="clrBtn">Clear</button><button id="saveBtn">Save work</button><button class="primary" id="subBtn">Submit file</button></div>`;
+  <div class="actions"><button id="clrBtn">Clear</button><button id="saveBtn">Save Draft</button><button class="primary" id="subBtn">Publish</button></div>`;
+  
   drawKw(); drawSug();
 
   $("pType").onchange = e => setAll("type", e.target.value);
@@ -383,22 +369,13 @@ function renderPanel(){
   $("subBtn").onclick = () => submit(false);
 
   $("bulkAddBtn").onclick = () => bulkAddKw();
-
-  $("bulkKw").onkeydown = e => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      bulkAddKw();
-    }
-  };
+  $("bulkKw").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); bulkAddKw(); } };
 }
 
 function bulkAddKw(){
-  const box = $("bulkKw");
-  if (!box) return;
-  const raw = box.value.trim();
-  if (!raw) { toast("কিছু paste করুন আগে", true); return; }
+  const box = $("bulkKw"); if (!box) return;
+  const raw = box.value.trim(); if (!raw) return;
   const parts = raw.split(/[,\n;]+/).map(s => s.trim()).filter(Boolean);
-  if (!parts.length) { toast("কোনো keyword পাওয়া গেল না", true); return; }
   let added = 0;
   chosen().forEach(i => {
     parts.forEach(k => {
@@ -408,12 +385,12 @@ function bulkAddKw(){
   });
   box.value = "";
   drawKw(); drawSug(); renderCounts();
-  toast(added + " keyword added ✓");
+  toast(added + " keywords added ✓");
 }
 
 function setAll(k, v){ chosen().forEach(i => { i[k] = v; i.bad = false; }); }
-
 function addKw(k){ k = String(k).trim().toLowerCase(); if (!k) return; chosen().forEach(i => { if (!i.kws.includes(k) && i.kws.length < 50) i.kws.push(k); }); }
+
 function drawKw(){
   const c = cur(); if (!c) return;
   $("kCnt").textContent = c.kws.length;
@@ -422,23 +399,15 @@ function drawKw(){
   $("kwNew").onkeydown = e => { if (e.key === "Enter" || e.key === ",") { e.preventDefault(); addKw(e.target.value); drawKw(); drawSug(); $("kwNew").focus(); renderCounts(); } };
   $("kwNew").onblur = e => {
     if (e.target.value.trim()) {
-      if (e.target.value.includes(",")) {
-        e.target.value.split(",").forEach(addKw);
-      } else {
-        addKw(e.target.value);
-      }
-      e.target.value = "";
-      drawKw(); drawSug(); renderCounts();
+      if (e.target.value.includes(",")) e.target.value.split(",").forEach(addKw);
+      else addKw(e.target.value);
+      e.target.value = ""; drawKw(); drawSug(); renderCounts();
     }
   };
   $("kwList").querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { chosen().forEach(i => i.kws = i.kws.filter(x => x !== b.dataset.rm)); drawKw(); drawSug(); renderCounts(); });
-  $("kwList").querySelectorAll("input[data-old]").forEach(inp => inp.onchange = () => {
-    const nv = inp.value.trim().toLowerCase(), old = inp.dataset.old;
-    chosen().forEach(i => { i.kws = i.kws.map(x => x === old ? nv : x).filter(Boolean); });
-    drawKw(); renderCounts();
-  });
 }
 function renderCounts(){ document.querySelectorAll(".card").forEach(c => { const i = items.find(x => x.id === +c.dataset.id); if (i) c.querySelector(".info span").innerHTML = '<i class="fas fa-tag"></i> ' + i.kws.length; }); }
+
 function drawSug(){
   const c = cur(); if (!c) return;
   const s = new Set();
@@ -447,21 +416,17 @@ function drawSug(){
   $("sug").querySelectorAll("span").forEach(sp => sp.onclick = () => { addKw(sp.dataset.k); drawKw(); drawSug(); renderCounts(); });
 }
 
-/* Release modal */
 function openRel(){ if (cur()) $("relModal").style.display = "flex"; }
 $("relCancel").onclick = () => $("relModal").style.display = "none";
 $("relOk").onclick = () => {
   const name = $("relName").value.trim();
-  if (!name) { toast("Enter a name or ID for the release."); return; }
+  if (!name) { toast("Enter a name or ID for the document."); return; }
   const data = {type: $("relType").value, name, file: $("relFile").files[0] || null};
   setAll("release", data); setAll("people", true);
   $("relModal").style.display = "none"; $("relName").value = ""; $("relFile").value = "";
-  toast("Release attached"); render();
+  toast("Document attached"); render();
 };
 
-/* ================================================================
-   SUBMIT
-   ================================================================ */
 $("submitTop").onclick = () => submit(false);
 
 async function submit(draft){
@@ -488,8 +453,8 @@ async function submit(draft){
   list.forEach(i => {
     const missing = [];
     if (!i.title.trim()) missing.push("Title");
-    if (!i.category) missing.push("Category");
-    if (!draft && i.kws.length < 5) missing.push("Keywords (" + i.kws.length + "/5)");
+    if (!i.category) missing.push("Collection");
+    if (!draft && i.kws.length < 5) missing.push("Tags (" + i.kws.length + "/5)");
     i.bad = missing.length > 0;
     if (i.bad) problems.push({ file: i, missing });
   });
@@ -499,15 +464,12 @@ async function submit(draft){
     problems.forEach(p => sel.add(p.file.id));
     tab = "new";
     render();
-    const lines = problems.map(p =>
-      "• " + (p.file.title || p.file.file.name) + "  →  " + p.missing.join(", ")
-    ).join("\n");
-    console.warn("Validation failed:\n" + lines);
-    toast("⚠️ Incomplete file:\n" + lines, true);
+    const lines = problems.map(p => "• " + (p.file.title || p.file.file.name) + "  →  " + p.missing.join(", ")).join("\n");
+    toast("⚠️ Incomplete asset:\n" + lines, true);
     return;
   }
 
-  if (typeof firebase === "undefined") { toast("Firebase did not load. Check your connection.", true); return; }
+  if (typeof firebase === "undefined") { toast("Firebase error.", true); return; }
 
   const db = firebase.firestore();
   $("overlay").style.display = "flex";
@@ -521,7 +483,13 @@ async function submit(draft){
         $("ovText").textContent = `Uploading ${n}/${list.length} — ${p}%`;
       });
 
-      const thumb = res.secure_url.replace("/upload/", "/upload/w_400,q_auto,f_auto/");
+      const isVid = res.resource_type === "video";
+      let thumb = res.secure_url;
+      if (isVid) {
+        thumb = res.secure_url.replace("/upload/", "/upload/so_1,w_400,q_auto,f_auto/").replace(/\.[^.]+$/, ".jpg");
+      } else {
+        thumb = res.secure_url.replace("/upload/", "/upload/w_400,q_auto,f_auto/");
+      }
 
       let rel = null;
       if (i.release) {
@@ -533,17 +501,19 @@ async function submit(draft){
       }
 
       const u = firebase.auth().currentUser;
+      
       await db.collection("stockphoto").add({
         title: i.title.trim(),
         category: i.category,
         fileType: i.type,
         description: i.desc.trim(),
         keywords: i.kws,
-        imageUrl: res.secure_url,
+        imageUrl: res.secure_url, 
         url: res.secure_url,
         thumb: thumb,
-        width: res.width,
-        height: res.height,
+        width: res.width || null,
+        height: res.height || null,
+        duration: res.duration || null,
         bytes: res.bytes,
         publicId: res.public_id,
         format: res.format,
@@ -562,7 +532,7 @@ async function submit(draft){
       i.state = draft ? "draft" : "review";
     }
     sel.clear();
-    toast(draft ? "Saved as draft." : "Submitted successfully ✓");
+    toast(draft ? "Saved as draft." : "Published successfully ✓");
   } catch (err) {
     console.error(err);
     toast("Upload failed: " + err.message, true);

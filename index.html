@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Firebase v8 (top-bar2.js auto-load করে, এখানে রাখা optional) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
@@ -15,7 +14,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #000; font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif; color: #e2e8f0; }
 
-        /* ================= MAIN CONTENT ================= */
         .main-wrapper{max-width:1400px;margin:0 auto;padding:0 20px}
         main.center-content{padding:0 0 40px}
 
@@ -66,15 +64,29 @@
         .home-shop-header .view-all-link { color: #fbbf24; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
         .home-shop-header .view-all-link:hover { text-decoration: underline; }
 
-        /* Stock Photos Grid */
-        .home-photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-        .home-photo-card { position: relative; display: block; border-radius: 12px; overflow: hidden; background: #1e293b; aspect-ratio: 4 / 3; text-decoration: none; }
+        /* =========================================
+           Stock Photos Grid (FIXED: 2x2 Layout)
+           ========================================= */
+        .home-photo-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); /* ২টি কলাম */
+            gap: 16px; 
+        }
+        .home-photo-card { 
+            position: relative; 
+            display: block; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            background: #1e293b; 
+            aspect-ratio: 16 / 10; /* ছবির সাইজ বড় দেখাবে */
+            text-decoration: none; 
+        }
         .home-photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
         .home-photo-card:hover img { transform: scale(1.06); }
         .home-photo-card .hp-info { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 12px 10px; background: linear-gradient(transparent, rgba(0,0,0,0.75)); color: #fff; opacity: 0; transition: opacity 0.25s; }
         .home-photo-card:hover .hp-info { opacity: 1; }
-        .home-photo-card .hp-info b { display: block; font-size: 13px; }
-        .home-photo-card .hp-info small { font-size: 11px; opacity: 0.8; }
+        .home-photo-card .hp-info b { display: block; font-size: 14px; }
+        .home-photo-card .hp-info small { font-size: 12px; opacity: 0.8; }
 
         /* Products */
         .home-shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; align-items: stretch; }
@@ -153,64 +165,34 @@
         .all-pages-dropdown a:hover { background: #f0f7ff; color: #2563eb; }
         .all-pages-dropdown a i { width: 22px; text-align: center; font-size: 15px; color: #3b82f6; }
 
-        /* ============ SCROLL FIX (keyword + sub-bar) ============ */
-        .nav-row-sub{
-            overflow-x: auto !important;
-            overflow-y: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-            scroll-behavior: smooth !important;
-            padding-bottom: 12px !important;
-        }
+        /* Scroll Fix */
+        .nav-row-sub{ overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch !important; scroll-behavior: smooth !important; padding-bottom: 12px !important; }
         .nav-row-sub::-webkit-scrollbar{ height:4px; display:block; }
         .nav-row-sub::-webkit-scrollbar-track{ background:rgba(255,255,255,0.05); border-radius:4px; }
         .nav-row-sub::-webkit-scrollbar-thumb{ background:#fbbf24; border-radius:4px; }
-
-        .keyword-list{
-            max-height: 220px !important;
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-            padding-right: 4px !important;
-        }
+        .keyword-list{ max-height: 220px !important; overflow-y: auto !important; overflow-x: hidden !important; -webkit-overflow-scrolling: touch !important; padding-right: 4px !important; }
         .keyword-list::-webkit-scrollbar{ width:6px; }
         .keyword-list::-webkit-scrollbar-track{ background:rgba(255,255,255,0.05); border-radius:6px; }
         .keyword-list::-webkit-scrollbar-thumb{ background:#fbbf24; border-radius:6px; }
-
-        .suggestion-box{
-            max-height: 200px !important;
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-        }
+        .suggestion-box{ max-height: 200px !important; overflow-y: auto !important; overflow-x: hidden !important; -webkit-overflow-scrolling: touch !important; }
         .suggestion-box::-webkit-scrollbar{ width:6px; }
         .suggestion-box::-webkit-scrollbar-thumb{ background:#fbbf24; border-radius:6px; }
 
         /* Responsive */
         @media (max-width: 640px) {
-            .home-photo-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .home-photo-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .home-shop-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .collections-grid { grid-template-columns: 1fr; }
             .category-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-            .nav-row-sub{
-                padding-bottom: 14px !important;
-                scroll-snap-type: x proximity;
-            }
-            .nav-row-sub .sub-link{
-                scroll-snap-align: start;
-            }
+            .nav-row-sub{ padding-bottom: 14px !important; scroll-snap-type: x proximity; }
+            .nav-row-sub .sub-link{ scroll-snap-align: start; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================ -->
-    <!-- ★★★ TOP BAR (site-layout.js এখানে ইনজেক্ট করবে) ★★★ -->
-    <!-- ============================================ -->
     <div id="site-topbar"></div>
 
-    <!-- ============================================ -->
-    <!-- ★★★ MAIN CONTENT ★★★ -->
-    <!-- ============================================ -->
     <div class="main-wrapper">
         <main class="center-content">
 
@@ -262,6 +244,7 @@
                 <div class="home-photo-grid" id="homePhotoGrid">
                     <p class="home-shop-empty">Loading photos...</p>
                 </div>
+                <!-- Show more বাটনটি হাইড করা হলো, কারণ আমরা ৪টি ফিক্সড দেখাবো -->
                 <button type="button" class="home-more-btn" id="homePhotoMore" hidden>Show more</button>
             </section>
 
@@ -349,16 +332,8 @@
         </main>
     </div>
 
-    <!-- ============================================ -->
-    <!-- ★★★ FOOTER (site-footer.js ইনজেক্ট করবে) ★★★ -->
-    <!-- ============================================ -->
     <div id="ms-footer"></div>
 
-    <!-- ============================================ -->
-    <!-- ★★★ FIREBASE + SCRIPTS ★★★ -->
-    <!-- ============================================ -->
-
-    <!-- UI Functions -->
     <script>
         function toggleFaq(el) {
             const item = el.parentElement;
@@ -394,7 +369,6 @@
         });
     </script>
 
-    <!-- Firebase v10 Data Loading -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, limit, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -487,9 +461,11 @@
             }
         }
 
-        // STOCK PHOTOS
+        // =========================================
+        // STOCK PHOTOS (FIXED: Strictly 4 Photos)
+        // =========================================
         let homePhotoList = [], homePhotoShown = 0;
-        const HOME_PHOTO_STEP = 8;
+        const HOME_PHOTO_STEP = 4; // We want exactly 4
 
         function photoCardHtml(p) {
             return '<a class="home-photo-card" href="stock-photo.html#photo=' + encodeURIComponent(p.id) + '">' +
@@ -500,10 +476,9 @@
 
         async function showMorePhotos() {
             const grid = document.getElementById('homePhotoGrid');
-            const btn = document.getElementById('homePhotoMore');
             const next = homePhotoList.slice(homePhotoShown, homePhotoShown + HOME_PHOTO_STEP);
-            btn.disabled = true;
-
+            
+            // Resolve missing images
             await Promise.all(next.map(async function(p) {
                 if (p.url && (p.url.startsWith('http') || p.url.startsWith('data:') || p.url.startsWith('blob:'))) return;
                 try {
@@ -519,32 +494,36 @@
             const validNext = next.filter(p => p.url);
             grid.insertAdjacentHTML('beforeend', validNext.map(photoCardHtml).join(''));
             homePhotoShown += next.length;
-            btn.disabled = false;
-            btn.hidden = homePhotoShown >= homePhotoList.length;
         }
 
         async function loadHomePhotos() {
             const grid = document.getElementById('homePhotoGrid');
             if (!grid) return;
             try {
-                const snap = await getDocs(query(collection(db, "stockphoto"), limit(80)));
-                const list = [];
+                // Fetch 50 to ensure we get at least 4 valid images
+                const snap = await getDocs(query(collection(db, "stockphoto"), limit(50))); 
+                let list = [];
                 snap.forEach(function(d) {
                     const p = d.data();
                     p.id = d.id;
                     if (p.url || p.imageId || p.image_id || p.photoId) list.push(p);
                 });
+                
                 if (!list.length) {
                     grid.innerHTML = '<p class="home-shop-empty">📷 No photos yet. <a href="upload.html" style="color:#fbbf24;">Upload the first one!</a></p>';
                     return;
                 }
+                
                 const ms = function(p) { return p.createdAt && p.createdAt.toMillis ? p.createdAt.toMillis() : 0; };
                 list.sort(function(a, b) { return ms(b) - ms(a); });
-                homePhotoList = list;
+                
+                // Take ONLY the first 4 valid photos
+                homePhotoList = list.slice(0, 4);
                 homePhotoShown = 0;
                 grid.innerHTML = '';
-                document.getElementById('homePhotoMore').onclick = showMorePhotos;
+                
                 await showMorePhotos();
+                
             } catch (error) {
                 console.error("Photos error:", error);
                 grid.innerHTML = '<p class="home-shop-empty">⚠️ Failed to load photos.</p>';
@@ -639,9 +618,6 @@
         });
     </script>
 
-    <!-- ============================================ -->
-    <!-- ★★★ TOP-BAR 2 & FOOTER (সবার শেষে) ★★★ -->
-    <!-- ============================================ -->
     <script src="top-bar.js"></script>
     <script src="sites-layout.js"></script>
 

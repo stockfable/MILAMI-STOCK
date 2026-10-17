@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Professional Image Enhancer - MINAMI STOCK</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -18,8 +16,6 @@
   --gold: #f59e0b;
   --gold-hover: #d97706;
   --gold-light: #fef3c7;
-  --blue: #3b82f6;
-  --green: #10b981;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;overflow-x:hidden}
@@ -61,7 +57,8 @@ nav.top-nav{padding:16px 24px;display:flex;align-items:center;justify-content:sp
 /* BEFORE/AFTER SLIDER */
 .slider-wrapper{position:relative;max-width:900px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.1);background:#000;aspect-ratio:16/9;user-select:none}
 .slider-wrapper img, .slider-wrapper canvas{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;display:block}
-.slider-wrapper canvas{clip-path:polygon(0 0, 50% 0, 50% 100%, 0 100%)}
+/* Canvas is on top, but clipped to show only right side */
+.slider-wrapper canvas{clip-path:polygon(50% 0, 100% 0, 100% 100%, 50% 100%)}
 .slider-handle{position:absolute;top:0;bottom:0;left:50%;width:4px;background:#fff;cursor:ew-resize;transform:translateX(-50%);z-index:10}
 .slider-handle::after{content:'\f337';font-family:'Font Awesome 6 Free';font-weight:900;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:var(--gold);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
 .slider-label{position:absolute;top:16px;padding:6px 14px;background:rgba(0,0,0,0.7);color:#fff;font-size:12px;font-weight:700;border-radius:20px;letter-spacing:1px;z-index:5;backdrop-filter:blur(4px)}
@@ -120,18 +117,15 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;height:6px}
 </head>
 <body>
 
-<!-- TOP BAR (Auto-loaded by JS if present, but here is a mock nav for the landing page feel) -->
 <div id="site-topbar"></div>
 
 <div class="container">
 
-  <!-- HERO -->
   <section class="hero" id="hero-section">
     <h1>Make Your Images <span style="color:var(--gold)">Perfect</span></h1>
     <p>Enhance colors, sharpen details, and fix lighting instantly with our AI-powered image enhancer.</p>
   </section>
 
-  <!-- UPLOAD AREA -->
   <div class="upload-area" id="upload-area">
     <input type="file" id="file-input" accept="image/*" hidden>
     <i class="fas fa-cloud-upload-alt"></i>
@@ -139,16 +133,17 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;height:6px}
     <p>or click to browse from your device (JPG, PNG, WebP)</p>
   </div>
 
-  <!-- WORKSPACE -->
   <div id="workspace">
     <div class="tool-header">
       <h2><i class="fas fa-check-circle"></i> Enhancement Complete!</h2>
-      <p>Drag the slider to compare the Original and Enhanced version.</p>
+      <p>Drag the slider to compare the Original (Left) and Enhanced (Right) version.</p>
     </div>
 
-    <!-- SLIDER -->
     <div class="slider-wrapper" id="slider-wrapper">
-      <img id="original-img" src="" alt="Original">
+      <!-- Original Image (Bottom Layer) -->
+      <img id="original-img" src="" alt="Original" crossorigin="anonymous">
+      
+      <!-- Enhanced Image (Top Layer, Clipped) -->
       <canvas id="enhanced-canvas"></canvas>
       
       <div class="slider-label label-original">ORIGINAL</div>
@@ -157,7 +152,6 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;height:6px}
       <div class="slider-handle" id="slider-handle"></div>
     </div>
 
-    <!-- CONTROLS -->
     <div class="controls">
       <div class="control-group">
         <div class="control-header">
@@ -184,7 +178,6 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;height:6px}
       </div>
     </div>
 
-    <!-- ACTION BUTTONS -->
     <div class="action-buttons">
       <button class="btn btn-primary" id="downloadBtn"><i class="fas fa-download"></i> Download Enhanced Image</button>
       <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-undo"></i> Try Another Image</button>
@@ -259,11 +252,9 @@ input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer;height:6px}
 
 </div>
 
-<!-- FOOTER -->
 <div id="ms-footer"></div>
 <div id="toast"></div>
 
-<!-- SCRIPTS -->
 <script src="top-bar.js"></script>
 <script src="site-footer.js"></script>
 
@@ -318,24 +309,23 @@ function handleFile(file) {
   img.onload = () => {
     originalImage = img;
     
-    // Set Image
     originalImg.src = url;
     
-    // Set Canvas dimensions
+    // Set canvas size
     enhancedCanvas.width = img.naturalWidth;
     enhancedCanvas.height = img.naturalHeight;
     
-    // Show workspace, hide upload
     uploadArea.style.display = "none";
     heroSection.style.display = "none";
     workspace.classList.add("show");
     
-    // Reset sliders to Auto-Enhance defaults
+    // Reset sliders
     controls.brightness.value = 110;
     controls.contrast.value = 110;
     controls.saturation.value = 120;
     
     applyEnhancement();
+    resetSliderPosition();
   };
   img.src = url;
 }
@@ -344,13 +334,12 @@ function handleFile(file) {
 function applyEnhancement() {
   if (!originalImage) return;
 
-  // Update labels
   labels.brightness.textContent = controls.brightness.value + "%";
   labels.contrast.textContent = controls.contrast.value + "%";
   labels.saturation.textContent = controls.saturation.value + "%";
 
-  // Draw on canvas with CSS filters
   ctx.clearRect(0, 0, enhancedCanvas.width, enhancedCanvas.height);
+  // Apply CSS filters to the canvas drawing
   ctx.filter = `brightness(${controls.brightness.value}%) contrast(${controls.contrast.value}%) saturate(${controls.saturation.value}%)`;
   ctx.drawImage(originalImage, 0, 0);
   ctx.filter = "none";
@@ -364,20 +353,29 @@ Object.values(controls).forEach(slider => {
 // Before/After Drag Logic
 let isDragging = false;
 
+function updateSlider(percent) {
+  percent = Math.max(0, Math.min(100, percent));
+  sliderHandle.style.left = percent + "%";
+  // Canvas is on top. We clip it from the LEFT side so only the RIGHT side shows.
+  // polygon(x1 y1, x2 y2, x3 y3, x4 y4)
+  // Top-left: percent, Top-right: 100%, Bottom-right: 100%, Bottom-left: percent
+  enhancedCanvas.style.clipPath = `polygon(${percent}% 0, 100% 0, 100% 100%, ${percent}% 100%)`;
+}
+
+function resetSliderPosition() {
+  updateSlider(50);
+}
+
 sliderHandle.addEventListener("mousedown", () => isDragging = true);
 window.addEventListener("mouseup", () => isDragging = false);
 window.addEventListener("mousemove", (e) => {
   if (!isDragging) return;
   const rect = sliderWrapper.getBoundingClientRect();
   let x = e.clientX - rect.left;
-  x = Math.max(0, Math.min(x, rect.width));
-  const percent = (x / rect.width) * 100;
-  
-  sliderHandle.style.left = percent + "%";
-  enhancedCanvas.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+  updateSlider((x / rect.width) * 100);
 });
 
-// Touch support for mobile
+// Touch support
 sliderHandle.addEventListener("touchstart", () => isDragging = true);
 window.addEventListener("touchend", () => isDragging = false);
 window.addEventListener("touchmove", (e) => {
@@ -385,11 +383,7 @@ window.addEventListener("touchmove", (e) => {
   const rect = sliderWrapper.getBoundingClientRect();
   const touch = e.touches[0];
   let x = touch.clientX - rect.left;
-  x = Math.max(0, Math.min(x, rect.width));
-  const percent = (x / rect.width) * 100;
-  
-  sliderHandle.style.left = percent + "%";
-  enhancedCanvas.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+  updateSlider((x / rect.width) * 100);
 }, { passive: false });
 
 // Download Logic
@@ -413,15 +407,14 @@ $("downloadBtn").onclick = () => {
   }, "image/jpeg", 0.95);
 };
 
-// Reset / Try Another
+// Reset
 $("resetBtn").onclick = () => {
   workspace.classList.remove("show");
   uploadArea.style.display = "block";
   heroSection.style.display = "block";
   originalImage = null;
   originalFile = null;
-  sliderHandle.style.left = "50%";
-  enhancedCanvas.style.clipPath = "polygon(0 0, 50% 0, 50% 100%, 0 100%)";
+  resetSliderPosition();
 };
 
 function toast(m) {
