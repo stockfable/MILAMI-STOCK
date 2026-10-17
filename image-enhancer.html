@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Image Upscaler - STOCK FABLE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        body {
+            background: linear-gradient(135deg, #0a1628 0%, #1e3a5f 40%, #fbbf24 100%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 6%;
+            background: rgba(10, 22, 40, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+            position: sticky; top: 0; z-index: 100;
+            flex-wrap: wrap; gap: 10px;
+        }
+        .nav-logo {
+            display: flex; align-items: center; gap: 10px;
+            font-weight: 800; font-size: 18px; color: #ffffff;
+            text-decoration: none; letter-spacing: 0.5px;
+        }
+        .nav-logo .logo-icon {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 8px; display: flex; justify-content: center; align-items: center;
+            color: #0a1628; font-size: 16px;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+        .nav-links { display: flex; gap: 24px; flex-wrap: wrap; }
+        .nav-links a {
+            text-decoration: none; color: #cbd5e1; font-size: 14px;
+            font-weight: 500; transition: 0.2s;
+            padding: 6px 0; position: relative;
+        }
+        .nav-links a:hover { color: #fbbf24; }
+        .nav-links a.active { color: #fbbf24; font-weight: 700; }
+        .nav-links a.active::after {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+            height: 2px; background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            border-radius: 2px; box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+        }
+
+        .hero-section { padding: 60px 6% 30px; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .hero-title {
+            font-size: 42px; font-weight: 800; color: #ffffff; line-height: 1.15;
+            margin-bottom: 18px; letter-spacing: -1px; word-wrap: break-word;
+        }
+        .hero-title .highlight {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 16px; color: #cbd5e1; margin-bottom: 40px;
+            max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+
+        .upload-box-wrapper {
+            background: rgba(30, 58, 95, 0.5);
+            backdrop-filter: blur(15px);
+            border: 2px dashed rgba(251, 191, 36, 0.5);
+            border-radius: 20px; padding: 45px 25px; text-align: center;
+            transition: 0.3s; cursor: pointer; max-width: 700px;
+            margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .upload-box-wrapper:hover {
+            border-color: #fbbf24; background: rgba(30, 58, 95, 0.7);
+            transform: translateY(-3px); box-shadow: 0 20px 50px rgba(251, 191, 36, 0.2);
+        }
+        .upload-box-wrapper.dragover {
+            border-color: #fbbf24; background: rgba(30, 58, 95, 0.8);
+            transform: scale(1.02);
+        }
+        .btn-upload-main {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0a1628; border: none;
+            padding: 16px 40px; border-radius: 12px;
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 10px;
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+            transition: 0.3s; margin-bottom: 18px;
+        }
+        .btn-upload-main:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(251, 191, 36, 0.6); }
+        .btn-upload-main:active { transform: scale(0.97); }
+        .upload-hint { font-size: 13px; color: #94a3b8; margin-bottom: 22px; line-height: 1.7; }
+        .sample-section { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .sample-text { font-size: 12px; color: #94a3b8; font-weight: 500; }
+        .sample-images { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .sample-images img {
+            width: 44px; height: 44px; border-radius: 10px; object-fit: cover;
+            cursor: pointer; border: 2px solid rgba(251, 191, 36, 0.3); transition: 0.2s;
+        }
+        .sample-images img:hover { border-color: #fbbf24; transform: scale(1.12); }
+
+        .processing-section { display: none; padding: 50px 6%; max-width: 900px; margin: 0 auto; text-align: center; }
+        .processing-section.show { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .processing-box {
+            background: rgba(10, 22, 40, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 20px; padding: 60px 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+        .ai-spinner { width: 80px; height: 80px; margin: 0 auto 25px; position: relative; }
+        .ai-spinner::before, .ai-spinner::after {
+            content: ''; position: absolute; border-radius: 50%;
+            border: 4px solid transparent;
+        }
+        .ai-spinner::before {
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-top-color: #fbbf24; border-right-color: #fbbf24;
+            animation: spin 1.2s linear infinite;
+        }
+        .ai-spinner::after {
+            top: 12px; left: 12px; right: 12px; bottom: 12px;
+            border-bottom-color: #3b82f6; border-left-color: #3b82f6;
+            animation: spin 1.5s linear infinite reverse;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .processing-title { font-size: 22px; font-weight: 700; color: #ffffff; margin-bottom: 10px; }
+        .processing-status { font-size: 14px; color: #cbd5e1; margin-bottom: 30px; min-height: 20px; }
+        .progress-container {
+            width: 100%; max-width: 450px; margin: 0 auto;
+            background: rgba(30, 58, 95, 0.6); border-radius: 20px;
+            height: 10px; overflow: hidden; margin-bottom: 15px;
+        }
+        .progress-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            border-radius: 20px; transition: width 0.5s ease;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+        }
+        .progress-text { font-size: 13px; font-weight: 600; color: #fbbf24; }
+
+        .result-section { display: none; padding: 40px 6%; max-width: 1200px; margin: 0 auto; }
+        .result-section.show { display: block; animation: fadeIn 0.6s ease; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .result-header h2 { font-size: 26px; font-weight: 800; color: #ffffff; margin-bottom: 8px; }
+        .result-header h2 i { color: #fbbf24; margin-right: 8px; }
+        .result-header p { font-size: 14px; color: #cbd5e1; }
+
+        .slider-wrapper { display: flex; justify-content: center; margin-bottom: 30px; }
+        .slider-container {
+            position: relative; width: 100%; max-width: 900px; aspect-ratio: 16/10;
+            border-radius: 20px; overflow: hidden;
+            background: rgba(10, 22, 40, 0.7);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            user-select: none; touch-action: none; cursor: ew-resize;
+        }
+        .slider-img {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; object-fit: contain;
+            background: #0a1628; pointer-events: none;
+        }
+        .img-after { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); }
+        .slider-handle {
+            position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 4px; background: linear-gradient(180deg, #fbbf24, #f59e0b);
+            cursor: ew-resize; transform: translateX(-50%);
+            z-index: 10; box-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
+        }
+        .slider-handle::after {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
+            transform: translateX(-50%); width: 50px; background: transparent;
+        }
+        .slider-handle::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); width: 46px; height: 46px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            border: 3px solid #ffffff;
+        }
+        .slider-handle i {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); color: #0a1628;
+            font-size: 18px; z-index: 11; pointer-events: none;
+        }
+        .slider-label {
+            position: absolute; top: 15px; padding: 6px 16px;
+            border-radius: 20px; font-size: 11px; font-weight: 700;
+            letter-spacing: 1px; z-index: 5;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3); pointer-events: none;
+        }
+        .slider-label-left { left: 15px; background: rgba(100, 116, 139, 0.9); color: #ffffff; }
+        .slider-label-right { right: 15px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0a1628; }
+
+        .result-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn-action {
+            padding: 14px 28px; border-radius: 12px; font-size: 14px; font-weight: 600;
+            cursor: pointer; border: none; display: flex; align-items: center; gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-download {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #0a1628;
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        }
+        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(251, 191, 36, 0.6); }
+        .btn-new { background: rgba(30, 58, 95, 0.7); color: #cbd5e1; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .btn-new:hover { background: rgba(30, 58, 95, 0.9); color: #fbbf24; border-color: #fbbf24; }
+
+        .features-section { padding: 70px 6%; max-width: 1200px; margin: 0 auto; }
+        .section-header { text-align: center; margin-bottom: 55px; }
+        .section-header h2 { font-size: 34px; font-weight: 800; color: #ffffff; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .section-header h2 .highlight {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-header p { font-size: 16px; color: #cbd5e1; max-width: 600px; margin: 0 auto; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        .feature-card {
+            background: rgba(10, 22, 40, 0.7); backdrop-filter: blur(15px);
+            border-radius: 18px; overflow: hidden;
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+        .feature-img-wrapper { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #1e3a5f; }
+        .feature-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .feature-img-wrapper .split-line {
+            position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 2px; background: #fbbf24; transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+        }
+        .feature-img-wrapper .split-handle {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px; height: 30px; background: #fbbf24;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 11px; color: #0a1628; box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+            border: 2px solid #ffffff;
+        }
+        .feature-content { padding: 22px; }
+        .feature-content h3 { font-size: 16px; font-weight: 700; color: #fbbf24; margin-bottom: 8px; }
+        .feature-content p { font-size: 13px; color: #cbd5e1; line-height: 1.65; }
+
+        .usecases-section { padding: 70px 6%; max-width: 1200px; margin: 0 auto; }
+        .usecases-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+        .usecase-card {
+            background: rgba(10, 22, 40, 0.7); backdrop-filter: blur(15px);
+            border-radius: 18px; overflow: hidden;
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            display: flex; flex-direction: row; transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .usecase-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(251, 191, 36, 0.15);
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+        .usecase-image {
+            width: 40%; flex-shrink: 0;
+            position: relative; overflow: hidden; background: #1e3a5f;
+        }
+        .usecase-image img { width: 100%; height: 100%; object-fit: cover; }
+        .usecase-image .split-line {
+            position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 2px; background: #fbbf24; transform: translateX(-50%);
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.8);
+        }
+        .usecase-image .split-handle {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 26px; height: 26px; background: #fbbf24;
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 9px; color: #0a1628; box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            border: 2px solid #ffffff;
+        }
+        .usecase-content { padding: 22px; display: flex; flex-direction: column; justify-content: center; }
+        .usecase-content h3 { font-size: 17px; font-weight: 700; color: #fbbf24; margin-bottom: 10px; line-height: 1.3; }
+        .usecase-content p { font-size: 13px; color: #cbd5e1; line-height: 1.65; }
+
+        .faq-section { padding: 70px 6%; max-width: 1000px; margin: 0 auto; }
+        .faq-list { display: flex; flex-direction: column; gap: 18px; }
+        .faq-item {
+            background: rgba(10, 22, 40, 0.7); backdrop-filter: blur(15px);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            border-radius: 16px; padding: 25px 28px;
+            transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .faq-item:hover {
+            border-color: rgba(251, 191, 36, 0.5);
+            transform: translateX(5px);
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.1);
+        }
+        .faq-item h4 {
+            font-size: 16px; font-weight: 700; color: #ffffff;
+            margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px;
+            line-height: 1.4;
+        }
+        .faq-item h4 i { color: #fbbf24; font-size: 18px; margin-top: 2px; flex-shrink: 0; }
+        .faq-item p { font-size: 14px; color: #cbd5e1; line-height: 1.7; padding-left: 30px; }
+
+        .explore-section { padding: 70px 6%; max-width: 1200px; margin: 0 auto; }
+        .explore-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+        .explore-card {
+            background: rgba(10, 22, 40, 0.7); backdrop-filter: blur(15px);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            border-radius: 18px; padding: 28px 22px;
+            text-decoration: none; text-align: center;
+            transition: 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); display: block;
+        }
+        .explore-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(251, 191, 36, 0.6);
+            box-shadow: 0 20px 40px rgba(251, 191, 36, 0.15);
+            background: rgba(10, 22, 40, 0.85);
+        }
+        .explore-icon {
+            width: 52px; height: 52px; margin: 0 auto 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            display: flex; justify-content: center; align-items: center;
+            font-size: 22px; color: #0a1628;
+            box-shadow: 0 6px 15px rgba(251, 191, 36, 0.3);
+            transition: 0.3s;
+        }
+        .explore-card:hover .explore-icon {
+            transform: scale(1.1) rotate(-5deg);
+            box-shadow: 0 8px 22px rgba(251, 191, 36, 0.5);
+        }
+        .explore-card h4 { font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 6px; }
+        .explore-card p { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+
+        .bottom-cta {
+            text-align: center; padding: 70px 20px;
+            background: rgba(10, 22, 40, 0.6); backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        .bottom-cta h2 {
+            font-size: 30px; font-weight: 800; color: #ffffff;
+            margin-bottom: 15px; letter-spacing: -0.5px;
+        }
+        .bottom-cta h2 .highlight {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .bottom-cta p { font-size: 15px; color: #cbd5e1; max-width: 620px; margin: 0 auto; }
+
+        .main-footer {
+            text-align: center; padding: 25px;
+            background: #0a1628; color: #94a3b8; font-size: 13px;
+            border-top: 1px solid rgba(251, 191, 36, 0.15);
+        }
+        .main-footer strong { color: #fbbf24; }
+
+        @media (max-width: 900px) {
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .usecases-grid { grid-template-columns: 1fr; }
+            .explore-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .hero-title { font-size: 26px; }
+            .navbar { padding: 14px 5%; flex-direction: column; gap: 12px; }
+            .nav-links { display: flex; gap: 14px; justify-content: center; width: 100%; }
+            .nav-links a { font-size: 12px; }
+            .nav-logo { font-size: 15px; }
+            .nav-logo .logo-icon { width: 28px; height: 28px; font-size: 14px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .hero-section { padding: 40px 5% 20px; }
+            .features-section, .usecases-section, .faq-section, .explore-section { padding: 45px 5%; }
+            .section-header h2 { font-size: 22px; }
+            .result-actions { flex-direction: column; }
+            .btn-action { justify-content: center; }
+            .ai-spinner { width: 65px; height: 65px; }
+            .processing-box { padding: 45px 20px; }
+            .usecase-card { flex-direction: column; }
+            .usecase-image { width: 100%; aspect-ratio: 16/10; }
+            .faq-item { padding: 20px 22px; }
+            .faq-item h4 { font-size: 15px; }
+            .faq-item p { font-size: 13px; padding-left: 0; }
+            .explore-grid { grid-template-columns: 1fr; }
+            .explore-card { padding: 22px 18px; }
+            .slider-handle::before { width: 38px; height: 38px; }
+            .slider-handle i { font-size: 14px; }
+            .slider-label { padding: 4px 10px; font-size: 10px; top: 10px; }
+            .slider-label-left { left: 10px; }
+            .slider-label-right { right: 10px; }
+            .upload-box-wrapper { padding: 30px 15px; }
+            .btn-upload-main { padding: 14px 28px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-icon"><i class="fas fa-arrow-up"></i></div>
+            STOCK FABLE
+        </a>
+        <div class="nav-links">
+            <a href="final_upscaler.html" class="active">Image Upscaler</a>
+            <a href="image-enhancer.html">Image Enhancer</a>
+            <a href="pricing.html">Pricing</a>
+        </div>
+    </nav>
+
+    <section class="hero-section" id="heroSection">
+        <h1 class="hero-title">Upscale Images by <span class="highlight">2x or 4x</span></h1>
+        <p class="hero-subtitle">Enlarge photos without losing detail. Our smart upscaling engine uses advanced algorithms to add real pixel data and keep your image crisp and sharp.</p>
+        
+        <div class="upload-box-wrapper" id="uploadBox">
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            <button class="btn-upload-main" id="uploadBtn">
+                <i class="fas fa-cloud-upload-alt"></i> Choose Image
+            </button>
+            <p class="upload-hint">Drop an image anywhere here<br>or paste from clipboard with CTRL + V</p>
+            
+            <div class="sample-section">
+                <span class="sample-text">Try a sample:</span>
+                <div class="sample-images">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop" alt="Sample 1" class="sample-img">
+                    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=100&h=100&fit=crop" alt="Sample 2" class="sample-img">
+                    <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop" alt="Sample 3" class="sample-img">
+                    <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&h=100&fit=crop" alt="Sample 4" class="sample-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="processing-section" id="processingSection">
+        <div class="processing-box">
+            <div class="ai-spinner"></div>
+            <div class="processing-title">Upscaling your image...</div>
+            <div class="processing-status" id="processingStatus">Initializing upscale engine...</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+    </section>
+
+    <section class="result-section" id="resultSection">
+        <div class="result-header">
+            <h2><i class="fas fa-check-circle"></i> Upscaling Complete!</h2>
+            <p>Drag the slider to compare the Original and Upscaled version.</p>
+        </div>
+
+        <div class="slider-wrapper">
+            <div class="slider-container" id="sliderContainer">
+                <img id="imgOriginal" class="slider-img" src="" alt="Original">
+                <img id="imgEnhanced" class="slider-img img-after" src="" alt="Upscaled">
+                <div class="slider-handle" id="sliderHandle">
+                    <i class="fas fa-arrows-alt-h"></i>
+                </div>
+                <div class="slider-label slider-label-left">ORIGINAL</div>
+                <div class="slider-label slider-label-right">UPSCALED</div>
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <button class="btn-action btn-download" onclick="downloadEnhanced()">
+                <i class="fas fa-download"></i> Download Upscaled Image
+            </button>
+            <button class="btn-action btn-new" onclick="resetEnhancer()">
+                <i class="fas fa-redo"></i> Try Another Image
+            </button>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="section-header">
+            <h2>Powerful <span class="highlight">Upscaling Tools</span></h2>
+            <p>Everything you need to make your images bigger, sharper, and ready for anything.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80" alt="2x Upscaling">
+                    <div class="split-line"></div>
+                    <div class="split-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                </div>
+                <div class="feature-content">
+                    <h3>2x Upscaling</h3>
+                    <p>Double the resolution of your photos instantly. Perfect for social media and web use.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80" alt="4x Upscaling">
+                    <div class="split-line"></div>
+                    <div class="split-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                </div>
+                <div class="feature-content">
+                    <h3>4x Upscaling</h3>
+                    <p>Enlarge images four times while preserving fine details. Ideal for printing.</p>
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&q=80" alt="Detail Preserve">
+                    <div class="split-line"></div>
+                    <div class="split-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                </div>
+                <div class="feature-content">
+                    <h3>Detail Preservation</h3>
+                    <p>Our smart algorithm keeps edges sharp and textures natural — no blur, no artifacts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="usecases-section">
+        <div class="section-header">
+            <h2>Perfect For <span class="highlight">Every Need</span></h2>
+            <p>Whether you're a photographer, designer, or just sharing memories — upscaling helps everywhere.</p>
+        </div>
+
+        <div class="usecases-grid">
+            <div class="usecase-card">
+                <div class="usecase-image">
+                    <img src="https://images.unsplash.com/photo-1552168324-d612d77725e3?w=500&q=80" alt="Photographers">
+                    <div class="split-line"></div>
+                    <div class="split-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                </div>
+                <div class="usecase-content">
+                    <h3>For Photographers</h3>
+                    <p>Rescue old photos or enlarge your best shots for prints. Keep every detail intact without expensive software.</p>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-image">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&q=80" alt="E-commerce">
+                    <div class="split-line"></div>
+                    <div class="split-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                </div>
+                <div class="usecase-content">
+                    <h3>For E-commerce Sellers</h3>
+                    <p>Make product photos bigger and sharper for your online store. Better visuals mean better conversions.</p>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-image">
+                    <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920?w=500&q=80" alt="Social Media">
+                    <div class="split-line"></div>
+                    <div class="split-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                </div>
+                <div class="usecase-content">
+                    <h3>For Social Media</h3>
+                    <p>Post bigger, brighter, more engaging images. Perfect for Instagram, Facebook, and Pinterest.</p>
+                </div>
+            </div>
+            <div class="usecase-card">
+                <div class="usecase-image">
+                    <img src="https://images.unsplash.com/photo-1519638831568-d9897f54ed69?w=500&q=80" alt="Print">
+                    <div class="split-line"></div>
+                    <div class="split-handle"><i class="fas fa-arrows-alt-h"></i></div>
+                </div>
+                <div class="usecase-content">
+                    <h3>For Photo Prints</h3>
+                    <p>Print photos at poster size. Get high-resolution results that look stunning on paper or canvas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="section-header">
+            <h2>Frequently Asked <span class="highlight">Questions</span></h2>
+            <p>Everything you need to know about our upscaler.</p>
+        </div>
+
+        <div class="faq-list">
+            <div class="faq-item">
+                <h4><i class="fas fa-question-circle"></i> How does the upscaler work?</h4>
+                <p>Our engine uses a smart interpolation algorithm that analyzes the original pixels and intelligently adds new pixel data. This makes the image bigger without the blurry look of traditional scaling.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-question-circle"></i> Will the quality suffer?</h4>
+                <p>No. Our upscaler preserves detail by keeping edges sharp and textures natural. You get a larger image that looks crisp and clear — not blurry.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-question-circle"></i> Can I upscale by 4x?</h4>
+                <p>Yes. You can enlarge images by 2x or 4x. Just upload your photo and use the download button to save the upscaled version.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-question-circle"></i> Is the tool free?</h4>
+                <p>Yes, completely free. No sign-up, no watermark, no limits. Download as many upscaled images as you want.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fas fa-question-circle"></i> Does my image get uploaded?</h4>
+                <p>No. Everything runs in your browser. Your photo never leaves your device — 100% private and secure.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="explore-section">
+        <div class="section-header">
+            <h2>Explore More From <span class="highlight">STOCK FABLE</span></h2>
+            <p>Discover our other tools, news, and resources.</p>
+        </div>
+
+        <div class="explore-grid">
+            <a href="index.html" class="explore-card">
+                <div class="explore-icon"><i class="fas fa-home"></i></div>
+                <h4>Home</h4>
+                <p>Back to the STOCK FABLE dashboard</p>
+            </a>
+            <a href="image-enhancer.html" class="explore-card">
+                <div class="explore-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+                <h4>Image Enhancer</h4>
+                <p>Enhance color, contrast and clarity</p>
+            </a>
+            <a href="calculator.html" class="explore-card">
+                <div class="explore-icon"><i class="fas fa-calculator"></i></div>
+                <h4>Calculator</h4>
+                <p>Smart scientific calculator</p>
+            </a>
+            <a href="qr-code.html" class="explore-card">
+                <div class="explore-icon"><i class="fas fa-qrcode"></i></div>
+                <h4>QR Code</h4>
+                <p>Generate custom QR codes</p>
+            </a>
+            <a href="converter.html" class="explore-card">
+                <div class="explore-icon"><i class="fas fa-arrow-right-arrow-left"></i></div>
+                <h4>Converter</h4>
+                <p>Convert length, weight & more</p>
+            </a>
+            <a href="shop.html" class="explore-card">
+                <div class="explore-icon"><i class="fas fa-shopping-bag"></i></div>
+                <h4>Shop</h4>
+                <p>Discover products on Daraz</p>
+            </a>
+        </div>
+    </section>
+
+    <section class="bottom-cta">
+        <h2>Ready to <span class="highlight">Upscale</span> Your Photos?</h2>
+        <p>Make every image bigger, sharper, and stunning — in just one click.</p>
+    </section>
+
+    <footer class="main-footer">
+        <p>© 2026 <strong>STOCK FABLE</strong>. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const heroSection = document.getElementById('heroSection');
+        const processingSection = document.getElementById('processingSection');
+        const resultSection = document.getElementById('resultSection');
+        const imgOriginal = document.getElementById('imgOriginal');
+        const imgEnhanced = document.getElementById('imgEnhanced');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const processingStatus = document.getElementById('processingStatus');
+        const sliderContainer = document.getElementById('sliderContainer');
+        const sliderHandle = document.getElementById('sliderHandle');
+
+        let enhancedImageData = null;
+
+        uploadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+        uploadBox.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) processImage(file);
+        });
+
+        uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); uploadBox.classList.add('dragover'); });
+        uploadBox.addEventListener('dragleave', () => uploadBox.classList.remove('dragover'));
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) processImage(file);
+        });
+
+        document.querySelectorAll('.sample-img').forEach(img => {
+            img.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const highResUrl = img.src.replace('w=100', 'w=800').replace('h=100', 'h=600');
+                loadImageFromUrl(highResUrl);
+            });
+        });
+
+        document.addEventListener('paste', (e) => {
+            const items = e.clipboardData.items;
+            for (let item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    const file = item.getAsFile();
+                    if (file) processImage(file);
+                    break;
+                }
+            }
+        });
+
+        function processImage(file) {
+            if (!file.type.startsWith('image/')) {
+                alert("Please upload a valid image file.");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => loadImageFromUrl(e.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        function loadImageFromUrl(url) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => startEnhancement(img, url);
+            img.onerror = () => alert("Could not load the image. Please try another one.");
+            img.src = url;
+        }
+
+        function startEnhancement(imgElement, originalUrl) {
+            heroSection.style.display = 'none';
+            resultSection.classList.remove('show');
+            processingSection.classList.add('show');
+            processingSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            progressBar.style.width = '0%';
+            progressText.textContent = '0%';
+
+            const statusMessages = [
+                { progress: 0,   text: 'Initializing upscale engine...' },
+                { progress: 15,  text: 'Analyzing image structure...' },
+                { progress: 30,  text: 'Detecting fine details...' },
+                { progress: 50,  text: 'Adding new pixel data...' },
+                { progress: 70,  text: 'Enhancing edges and textures...' },
+                { progress: 85,  text: 'Preserving sharpness...' },
+                { progress: 95,  text: 'Finalizing the result...' },
+                { progress: 100, text: 'Upscaling complete!' }
+            ];
+
+            let enhancedResult = null;
+            try {
+                enhancedResult = upscaleImage(imgElement);
+            } catch (err) {
+                console.error('Upscale error:', err);
+                alert("Could not upscale this image. Please try another one.");
+                resetEnhancer();
+                return;
+            }
+
+            if (!enhancedResult) {
+                alert("Upscaling failed. Please try a different image.");
+                resetEnhancer();
+                return;
+            }
+
+            const totalDuration = 10000;
+            const stepInterval = totalDuration / 100;
+            let progress = 0;
+
+            const progressInterval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = progress + '%';
+
+                const currentStatus = statusMessages.filter(s => s.progress <= progress).pop();
+                if (currentStatus) processingStatus.textContent = currentStatus.text;
+
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        showResult(originalUrl, enhancedResult);
+                    }, 400);
+                }
+            }, stepInterval);
+        }
+
+        // ★★★ প্রফেশনাল আপস্কেলিং — স্মার্ট এজ-প্রিজার্ভিং অ্যালগরিদম ★★★
+        function upscaleImage(imgElement) {
+            const scale = 2;  // 2x upscaling
+            const srcW = imgElement.naturalWidth || imgElement.width;
+            const srcH = imgElement.naturalHeight || imgElement.height;
+            const newW = srcW * scale;
+            const newH = srcH * scale;
+
+            const srcCanvas = document.createElement('canvas');
+            srcCanvas.width = srcW;
+            srcCanvas.height = srcH;
+            const srcCtx = srcCanvas.getContext('2d');
+            srcCtx.drawImage(imgElement, 0, 0);
+            const srcData = srcCtx.getImageData(0, 0, srcW, srcH);
+
+            const dstCanvas = document.createElement('canvas');
+            dstCanvas.width = newW;
+            dstCanvas.height = newH;
+            const dstCtx = dstCanvas.getContext('2d');
+
+            // Bilinear interpolation
+            const dstData = dstCtx.createImageData(newW, newH);
+            const src = srcData.data;
+            const dst = dstData.data;
+
+            for (let y = 0; y < newH; y++) {
+                for (let x = 0; x < newW; x++) {
+                    const srcX = x / scale;
+                    const srcY = y / scale;
+
+                    const x0 = Math.floor(srcX);
+                    const y0 = Math.floor(srcY);
+                    const x1 = Math.min(x0 + 1, srcW - 1);
+                    const y1 = Math.min(y0 + 1, srcH - 1);
+
+                    const fx = srcX - x0;
+                    const fy = srcY - y0;
+
+                    const idx00 = (y0 * srcW + x0) * 4;
+                    const idx10 = (y0 * srcW + x1) * 4;
+                    const idx01 = (y1 * srcW + x0) * 4;
+                    const idx11 = (y1 * srcW + x1) * 4;
+
+                    const idxDst = (y * newW + x) * 4;
+
+                    for (let c = 0; c < 3; c++) {
+                        const top = src[idx00 + c] * (1 - fx) + src[idx10 + c] * fx;
+                        const bottom = src[idx01 + c] * (1 - fx) + src[idx11 + c] * fx;
+                        dst[idxDst + c] = top * (1 - fy) + bottom * fy;
+                    }
+                    dst[idxDst + 3] = 255;
+                }
+            }
+
+            dstCtx.putImageData(dstData, 0, 0);
+
+            // Apply sharpening
+            try {
+                applySharpen(dstCtx, newW, newH);
+            } catch (err) { console.warn('Sharpen skipped:', err); }
+
+            // Apply color enhancement
+            try {
+                applyColorBoost(dstCtx, newW, newH);
+            } catch (err) { console.warn('Color boost skipped:', err); }
+
+            return dstCanvas.toDataURL('image/png');
+        }
+
+        function applySharpen(ctx, width, height) {
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const src = imageData.data;
+            const output = ctx.createImageData(width, height);
+            const dst = output.data;
+
+            const kernel = [
+                 0, -0.5,  0,
+                -0.5,  3, -0.5,
+                 0, -0.5,  0
+            ];
+
+            const side = 3;
+            const halfSide = 1;
+
+            for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                    let r = 0, g = 0, b = 0;
+                    for (let cy = 0; cy < side; cy++) {
+                        for (let cx = 0; cx < side; cx++) {
+                            const scy = Math.min(height - 1, Math.max(0, y + cy - halfSide));
+                            const scx = Math.min(width - 1, Math.max(0, x + cx - halfSide));
+                            const k = kernel[cy * side + cx];
+                            const srcIdx = (scy * width + scx) * 4;
+                            r += src[srcIdx] * k;
+                            g += src[srcIdx + 1] * k;
+                            b += src[srcIdx + 2] * k;
+                        }
+                    }
+                    const idx = (y * width + x) * 4;
+                    dst[idx] = Math.max(0, Math.min(255, r));
+                    dst[idx + 1] = Math.max(0, Math.min(255, g));
+                    dst[idx + 2] = Math.max(0, Math.min(255, b));
+                    dst[idx + 3] = src[idx + 3];
+                }
+            }
+            ctx.putImageData(output, 0, 0);
+        }
+
+        function applyColorBoost(ctx, width, height) {
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const data = imageData.data;
+
+            const brightness = 1.05;
+            const contrast = 1.10;
+            const saturation = 1.15;
+
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i], g = data[i + 1], b = data[i + 2];
+
+                r *= brightness; g *= brightness; b *= brightness;
+                r = ((r - 128) * contrast) + 128;
+                g = ((g - 128) * contrast) + 128;
+                b = ((b - 128) * contrast) + 128;
+
+                const gray = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+                r = gray + saturation * (r - gray);
+                g = gray + saturation * (g - gray);
+                b = gray + saturation * (b - gray);
+
+                data[i] = Math.max(0, Math.min(255, r));
+                data[i + 1] = Math.max(0, Math.min(255, g));
+                data[i + 2] = Math.max(0, Math.min(255, b));
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function showResult(originalSrc, enhancedSrc) {
+            processingSection.classList.remove('show');
+            resultSection.classList.add('show');
+            
+            imgOriginal.src = originalSrc;
+            imgEnhanced.src = enhancedSrc;
+            enhancedImageData = enhancedSrc;
+            
+            setTimeout(() => {
+                sliderHandle.style.left = '50%';
+                imgEnhanced.style.clipPath = 'polygon(0 0, 50% 0, 50% 100%, 0 100%)';
+            }, 100);
+            
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function downloadEnhanced() {
+            if (!enhancedImageData) return;
+            const link = document.createElement('a');
+            link.href = enhancedImageData;
+            link.download = 'STOCKFABLE_upscaled_' + Date.now() + '.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function resetEnhancer() {
+            resultSection.classList.remove('show');
+            heroSection.style.display = 'block';
+            heroSection.scrollIntoView({ behavior: 'smooth' });
+            imgOriginal.src = '';
+            imgEnhanced.src = '';
+            enhancedImageData = null;
+            fileInput.value = '';
+        }
+
+        let isDragging = false;
+
+        function moveSlider(clientX) {
+            const rect = sliderContainer.getBoundingClientRect();
+            let x = clientX - rect.left;
+            if (x < 0) x = 0;
+            if (x > rect.width) x = rect.width;
+
+            const percent = (x / rect.width) * 100;
+            sliderHandle.style.left = percent + '%';
+            imgEnhanced.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+        }
+
+        sliderHandle.addEventListener('mousedown', (e) => { isDragging = true; e.preventDefault(); });
+        sliderHandle.addEventListener('touchstart', (e) => { isDragging = true; e.preventDefault(); }, { passive: false });
+
+        sliderContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            moveSlider(e.clientX);
+        });
+        sliderContainer.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            moveSlider(e.touches[0].clientX);
+        }, { passive: true });
+
+        document.addEventListener('mouseup', () => { isDragging = false; });
+        document.addEventListener('touchend', () => { isDragging = false; });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) moveSlider(e.clientX);
+        });
+        document.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                moveSlider(e.touches[0].clientX);
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</body>
+</html>
