@@ -902,6 +902,30 @@ function openFromHash(){
   if (p) openLb(p);
 }
 
+/* ============ BROWSER WATERMARK (for images that are not on Cloudinary) ============ */
+function watermarkBlob(src){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    if (src.indexOf("data:") !== 0) img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const w = img.naturalWidth, h = img.naturalHeight;
+        const c = document.createElement("canvas"); c.width = w; c.height = h;
+        const x = c.getContext("2d"); x.drawImage(img, 0, 0);
+        const fs = Math.max(26, Math.round(Math.min(w, h) / 9));
+        x.font = "800 " + fs + "px Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+        x.lineWidth = Math.max(2, fs / 12);
+        x.lineJoin = "round";
+        x.strokeStyle = "rgba(0,0,0,.30)"; x.strokeText("MINAMI STOCK", w / 2, h / 2);
+        x.fillStyle = "rgba(255,255,255,.55)"; x.fillText("MINAMI STOCK", w / 2, h / 2);
+        c.toBlob(b => b ? res(b) : rej(new Error("toBlob failed")), "image/jpeg", 0.92);
+      } catch (e) { rej(e); }
+    };
+    img.onerror = () => rej(new Error("image load failed"));
+    img.src = src;
+  });
+}
+
 /* ============ DOWNLOAD WITH CLOUDINARY WATERMARK ============ */
 async function downloadPhoto(p){
   const lic = document.querySelector('input[name="lic"]:checked');
@@ -916,28 +940,12 @@ async function downloadPhoto(p){
 
   if (u.indexOf("res.cloudinary.com") !== -1) {
     // Cloudinary URL — add server-side watermark
-    // Layer 1: center big
-    // Layer 2: top-left
-    // Layer 3: bottom-right
+    // one watermark in the middle
     const wm = [
       "l_text:Arial_120:MINAMI%20STOCK",
       "co_rgb:FFFFFF",
       "o_40",
       "g_center",
-      "fl_layer_apply",
-      "l_text:Arial_90:MINAMI%20STOCK",
-      "co_rgb:FFFFFF",
-      "o_25",
-      "g_north_west",
-      "x_150",
-      "y_150",
-      "fl_layer_apply",
-      "l_text:Arial_90:MINAMI%20STOCK",
-      "co_rgb:FFFFFF",
-      "o_25",
-      "g_south_east",
-      "x_150",
-      "y_150",
       "fl_layer_apply"
     ].join(",");
 
@@ -945,7 +953,20 @@ async function downloadPhoto(p){
     downloadUrl = u.replace("/upload/", "/upload/" + wm + "/");
     console.log("Cloudinary watermark URL:", downloadUrl);
   } else {
-    console.log("Non-Cloudinary image (Pixabay?), no server watermark:", u);
+    // Firebase Storage / Pixabay / data: images - watermark in the browser, no clean file is ever given
+    try {
+      const blob = await watermarkBlob(u);
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = href; a.download = fileName(p);
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(href), 5000);
+      toast("Download started \u2713");
+    } catch (e) {
+      console.warn("Watermark failed:", e);
+      toast("Could not prepare the download. Please try again later.");
+    }
+    return;
   }
 
   // Trigger download

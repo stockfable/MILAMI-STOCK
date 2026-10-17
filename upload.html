@@ -143,7 +143,7 @@ input,select,textarea{font:inherit;color:inherit}
 
 <script>
 /* ================================================================
-   ✅ CLOUDINARY CONFIG  —  Cloud name ঠিক করা হয়েছে
+   ✅ CLOUDINARY CONFIG
    ================================================================ */
 const CLOUD_NAME    = "yt1jzpnb";
 const UPLOAD_PRESET = "minami_unsigned";
@@ -215,20 +215,90 @@ function toast(m, isErr){
 const cur = () => items.find(i => sel.has(i.id));
 const chosen = () => items.filter(i => sel.has(i.id));
 
-/* Add files */
+/* ================================================================
+   🚨 FILE VALIDATION & ADD FILES
+   Minimum Size: 2 MB
+   Minimum Resolution: 2000 x 2000 px
+   ================================================================ */
 $("addBtn").onclick = () => $("fileInput").click();
-$("fileInput").onchange = e => {
-  Array.from(e.target.files).filter(f => f.type.startsWith("image/")).forEach(file => {
+
+$("fileInput").onchange = async e => {
+  const files = Array.from(e.target.files).filter(f => f.type.startsWith("image/"));
+  e.target.value = ""; // Reset input
+  
+  if (!files.length) return;
+
+  const MIN_SIZE_MB = 2;
+  const MIN_SIZE_BYTES = MIN_SIZE_MB * 1024 * 1024;
+  const MIN_DIMENSION = 2000; // 2000 px width & height
+
+  let addedCount = 0;
+  let rejectedCount = 0;
+
+  for (const file of files) {
+    // 1. Check File Size
+    if (file.size < MIN_SIZE_BYTES) {
+      toast(`❌ Rejected: ${file.name}\nSize < ${MIN_SIZE_MB}MB`, true);
+      rejectedCount++;
+      continue;
+    }
+
+    // 2. Check Image Dimensions (Async)
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    
+    const isValidDimension = await new Promise((resolve) => {
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        // Require both width AND height to be at least 2000px
+        resolve(img.width >= MIN_DIMENSION && img.height >= MIN_DIMENSION);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(false);
+      };
+      img.src = objectUrl;
+    });
+
+    if (!isValidDimension) {
+      toast(`❌ Rejected: ${file.name}\nResolution < ${MIN_DIMENSION}x${MIN_DIMENSION}px`, true);
+      rejectedCount++;
+      continue;
+    }
+
+    // 3. Valid File -> Add to List
     const base = file.name.replace(/\.[^.]+$/, "");
     const low = base.toLowerCase();
     const g = GUESS.find(x => x[1].some(k => low.includes(k)));
-    items.push({id: nextId++, file, url: URL.createObjectURL(file), title: base.replace(/[-_]+/g," ").replace(/\b\w/g,l=>l.toUpperCase()),
-      category: g ? g[0] : "", type: "Photo", desc: "", kws: [], ai: false, editorial: false, people: false, release: null, state: "new", bad: false});
-  });
-  e.target.value = "";
-  tab = "new";
-  if (!sel.size && items.length) sel.add(items.find(i => i.state === "new").id);
-  render();
+    
+    items.push({
+      id: nextId++, 
+      file, 
+      url: URL.createObjectURL(file), 
+      title: base.replace(/[-_]+/g," ").replace(/\b\w/g,l=>l.toUpperCase()),
+      category: g ? g[0] : "", 
+      type: "Photo", 
+      desc: "", 
+      kws: [], 
+      ai: false, 
+      editorial: false, 
+      people: false, 
+      release: null, 
+      state: "new", 
+      bad: false
+    });
+    addedCount++;
+  }
+
+  if (rejectedCount > 0) {
+    console.warn(`[Upload] ${rejectedCount} file(s) rejected due to size/resolution limits.`);
+  }
+
+  if (addedCount > 0) {
+    tab = "new";
+    if (!sel.size && items.length) sel.add(items.find(i => i.state === "new").id);
+    render();
+  }
 };
 
 /* Tabs / toolbar */
@@ -505,7 +575,7 @@ async function submit(draft){
 render();
 </script>
 
-<script src="site-layout.js"></script>
+<script src="top-bar.js"></script>
 <script src="site-footer.js"></script>
 </body>
 </html>

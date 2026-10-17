@@ -1,5 +1,32 @@
 /* MINAMI STOCK - top-bar.js (4 line top bar + dot menu + Firebase)
    Page-e:  <div id="site-topbar"></div>  ar  <script src="top-bar.js"></script>  */
+/* ===== DEBUG: page-er link-er shesh-e ?debug=1 likhle niche status box dekhabe ===== */
+(function () {
+  if (!/[?&]debug/.test(location.search)) return;
+  var d;
+  function box(msg, bad) {
+    if (!d) {
+      d = document.createElement("div");
+      d.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:2147483647;padding:8px 12px;font:12px/1.5 monospace;color:#fff;background:#166534;max-height:40vh;overflow:auto";
+      (document.body || document.documentElement).appendChild(d);
+    }
+    if (bad) d.style.background = "#991b1b";
+    d.innerHTML += msg + "<br>";
+  }
+  window.addEventListener("error", function (e) { box("ERROR: " + e.message + " (" + (e.filename || "").split("/").pop() + ":" + e.lineno + ")", true); });
+  document.addEventListener("click", function (e) {
+    var t = e.target;
+    box("click -> " + t.tagName + "." + (t.className && t.className.baseVal === undefined ? t.className : "") + " | appsDrop show: " + (document.getElementById("appsDrop") ? document.getElementById("appsDrop").classList.contains("show") : "NO appsDrop"));
+  }, true);
+  document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+      box("top-bar.js chalu | .top-nav: " + document.querySelectorAll(".top-nav").length + " | #appsBtn: " + document.querySelectorAll("#appsBtn").length +
+          " | #appsDrop: " + document.querySelectorAll("#appsDrop").length + " | scripts: " +
+          Array.prototype.map.call(document.scripts, function (x) { return (x.src || "").split("/").pop(); }).filter(function (x) { return /top-bar|site-layout|layout-part/.test(x); }).join(", "));
+    }, 1200);
+  });
+})();
+
 (function () {
   "use strict";
 
@@ -21,7 +48,7 @@
     } catch { return ""; }
   };
 
-  const LOGO = "https://i.ibb.co.com/xK8nP7KD/1000031217-removebg-preview.png";
+  const LOGO = "https://i.ibb.co.com/N51GvDS/1000032434-removebg-preview.png";
   const current = (location.pathname.split("/").pop() || "index.html").toLowerCase();
   const act = (href) => (current === String(href).split("?")[0].toLowerCase() ? ' class="active"' : "");
 
@@ -113,30 +140,46 @@
   };
   const kwRows = splitRows(keywordLinks);
 
+  /* MENU 1 (3-dot): pages up to Stock Photos */
+  const pagesLinks = subLinks.slice(0, 5);
+  const pick = (hrefs) => hrefs.map((h) => subLinks.concat(appsLinks).filter((l) => l[0] === h)[0]).filter(Boolean);
+  /* MENU 2 (4-dot): the other pages */
+  const morePages = pick(["image-generator.html", "index.html", "shop.html", "account.html", "about.html", "privacy.html"]);
+  /* MENU 3 (4-dot): tools */
+  const toolLinks = imgTools.concat(textTools);
+
   /* ---------- HTML ---------- */
   const html = `
 <header class="top-nav">
   <div class="in">
 
-    <div class="sidebar-bottom-menu" id="sidebarMenu">
-      <button class="sidebar-trigger" id="appsBtn" type="button"
-              aria-label="Open apps menu" aria-haspopup="true" aria-expanded="false">
-        <i class="fa-solid fa-table-cells-large"></i>
-      </button>
-      <div class="sidebar-dropdown" id="appsDrop">${mk(appsLinks)}</div>
-    </div>
-
     <!-- ===== NEW: DOT MENU (left of logo) ===== -->
     <div class="dot-menu" id="dotMenu">
       <button class="dot-trigger" id="dotBtn" type="button"
-              aria-label="More options" aria-haspopup="true" aria-expanded="false">
+              aria-label="Pages" aria-haspopup="true" aria-expanded="false">
         <i class="fa-solid fa-ellipsis-vertical"></i>
       </button>
-      <div class="dot-dropdown" id="dotDrop">${mk(subLinks)}</div>
+      <div class="dot-dropdown" id="dotDrop">${mk(pagesLinks)}</div>
+    </div>
+
+    <div class="sidebar-bottom-menu" id="sidebarMenu">
+      <button class="sidebar-trigger" id="appsBtn" type="button"
+              aria-label="More pages" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-table-cells-large"></i>
+      </button>
+      <div class="sidebar-dropdown" id="appsDrop">${mk(morePages)}</div>
+    </div>
+
+    <div class="sidebar-bottom-menu" id="toolsMenu">
+      <button class="sidebar-trigger" id="toolsBtn" type="button"
+              aria-label="Tools" aria-haspopup="true" aria-expanded="false">
+        <i class="fa-solid fa-table-cells-large"></i>
+      </button>
+      <div class="sidebar-dropdown" id="toolsDrop">${mk(toolLinks)}</div>
     </div>
 
     <a class="logo-container" href="index.html">
-      <img class="site-logo" src="${esc(LOGO)}" alt="MINAMI STOCK">
+      <img class="site-logo" src="${esc(LOGO)}" alt="MINAMI STOCK" onerror="this.onerror=null;this.src='logo.png'">
       <span class="logo-text">MINAMI STOCK</span>
     </a>
 
@@ -170,17 +213,7 @@
       </div>
     </div>
   </div>
-</header>
-
-<nav class="sub-bar" id="subBar">
-  <div class="sub-bar-in">${mk(subLinks)}</div>
-</nav>
-<nav class="sub-bar sub-bar-tools" id="keywordBar1">
-  <div class="sub-bar-in" id="keywordList1">${mk(kwRows[0], false)}</div>
-</nav>
-<nav class="sub-bar sub-bar-tools" id="keywordBar2">
-  <div class="sub-bar-in" id="keywordList2">${mk(kwRows[1], false)}</div>
-</nav>`;
+</header>`;
 
   /* ---------- STYLES ---------- */
   function injectStyles() {
@@ -235,6 +268,16 @@
 }
 .sidebar-dropdown{width:240px}
 .dot-dropdown{width:220px}
+.sidebar-dropdown.mega,
+.dot-dropdown.mega{width:min(340px,calc(100vw - 24px));max-height:78vh;overflow-y:auto}
+.mega-title{padding:10px 12px 6px;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#fbbf24}
+.mega-kw{display:flex;flex-wrap:wrap;gap:6px;padding:2px 8px 10px}
+.sidebar-dropdown .mega-kw a,
+.dot-dropdown .mega-kw a{padding:6px 11px;gap:6px;border-radius:16px;font-size:12.5px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1)}
+.sidebar-dropdown .mega-kw a i,
+.dot-dropdown .mega-kw a i{width:auto;font-size:11px}
+.sidebar-dropdown .mega-kw a:hover,
+.dot-dropdown .mega-kw a:hover{border-color:rgba(251,191,36,0.4)}
 .sidebar-dropdown.show,
 .dot-dropdown.show{display:block}
 
@@ -442,6 +485,9 @@
     const appsBtn  = document.getElementById("appsBtn");
     const appsDrop = document.getElementById("appsDrop");
 
+    const toolsBtn  = document.getElementById("toolsBtn");
+    const toolsDrop = document.getElementById("toolsDrop");
+
     const dotBtn  = document.getElementById("dotBtn");
     const dotDrop = document.getElementById("dotDrop");
 
@@ -452,6 +498,10 @@
       if (appsDrop && appsDrop !== except) {
         appsDrop.classList.remove("show");
         if (appsBtn) appsBtn.setAttribute("aria-expanded", "false");
+      }
+      if (toolsDrop && toolsDrop !== except) {
+        toolsDrop.classList.remove("show");
+        if (toolsBtn) toolsBtn.setAttribute("aria-expanded", "false");
       }
       if (dotDrop && dotDrop !== except) {
         dotDrop.classList.remove("show");
@@ -470,11 +520,18 @@
         const willOpen = !drop.classList.contains("show");
         closeAll(drop);
         drop.classList.toggle("show", willOpen);
+        drop.style.left = "";
+        if (willOpen) {
+          const r = drop.getBoundingClientRect();
+          const over = r.right - (window.innerWidth - 8);
+          if (over > 0) drop.style.left = (-over) + "px";
+        }
         btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
       });
     }
 
     bind(appsBtn, appsDrop);
+    bind(toolsBtn, toolsDrop);
     bind(dotBtn, dotDrop);
     bind(avatarBtn, acctDrop);
 
@@ -535,11 +592,8 @@
           have[k.toLowerCase()] = 1;
           items.push(["stock-photo.html?q=" + encodeURIComponent(k), "fa-hashtag", k]);
         });
-        const rows = splitRows(items);
-        const b1 = document.getElementById("keywordList1");
-        const b2 = document.getElementById("keywordList2");
-        if (b1) b1.innerHTML = mk(rows[0], false);
-        if (b2) b2.innerHTML = mk(rows[1], false);
+        const box = document.getElementById("keywordList");
+        if (box) box.innerHTML = mk(items, false);
       }).catch(() => {});
     } catch (e) {}
   }
@@ -594,7 +648,6 @@
     wireEvents();
     ensureFirebase(function () {
       loadFirebaseAuth();
-      loadKeywords();
     });
   });
 })();

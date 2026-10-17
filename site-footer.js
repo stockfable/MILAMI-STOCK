@@ -58,8 +58,8 @@
       /* DARK theme */
       ".msf.msf-dark{background:#0a0f1a;color:#e5e7eb;border-top:1px solid #1f2937;--msf-mute:#94a3b8;--msf-line:#27303f;--msf-btn:#111827}",
 
-      /* Grid — 5 columns for bigger footer */
-      ".msf-cols{max-width:1400px;margin:0 auto;padding:36px 20px 18px;display:grid;grid-template-columns:1.5fr 1fr 1fr 1.2fr 1fr;gap:28px}",
+      /* Grid — 5 columns in 1 row on desktop */
+      ".msf-cols{max-width:1400px;margin:0 auto;padding:36px 20px 18px;display:grid;grid-template-columns:1.5fr repeat(4, 1fr);gap:20px}",
       ".msf h4{font-size:15px;font-weight:700;margin:0 0 12px;color:inherit}",
       ".msf-cols a{display:block;font-size:14px;color:var(--msf-mute);padding:5px 0;text-decoration:none;transition:.15s}",
       ".msf-cols a:hover{color:inherit;text-decoration:underline}",
@@ -92,12 +92,8 @@
       "#msf-toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#222;color:#fff;padding:11px 20px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100000}",
       "#msf-toast.show{opacity:1}",
 
-      /* Theme invert trick */
-      "html.msf-inv{filter:invert(1) hue-rotate(180deg);background:#fff}",
-      "html.msf-inv img,html.msf-inv video,html.msf-inv canvas,html.msf-inv iframe{filter:invert(1) hue-rotate(180deg)}",
-
-      /* Responsive */
-      "@media(max-width:1100px){.msf-cols{grid-template-columns:1fr 1fr 1fr}.msf-brand{grid-column:1/-1}}",
+      /* Responsive (মোবাইলে বা ছোট স্ক্রিনে সুন্দরভাবে ভাগ হবে) */
+      "@media(max-width:1100px){.msf-cols{grid-template-columns:1.5fr 1fr 1fr}.msf-brand{grid-column:1/-1}}",
       "@media(max-width:900px){.msf-cols{grid-template-columns:1fr 1fr}}",
       "@media(max-width:520px){.msf-cols{grid-template-columns:1fr}}"
     ].join("\n");
@@ -155,6 +151,7 @@
           '<a href="cookies.html">Cookie Policy</a>' +
           '<a href="refund.html">Refund Policy</a>' +
           '<a href="license.html">License Agreement</a>' +
+          '<a href="upload-condition.html">Upload Conditions</a>' +
           '<a href="contact.html">Contact Us</a>' +
           '<a href="faq.html">FAQ</a>' +
           '<a href="about.html">About Us</a>' +
@@ -176,7 +173,6 @@
       '<div class="msf-bottom">' +
         '<div class="msf-btns">' +
           '<button type="button" class="msf-btn" data-act="region">&#127760; Change region</button>' +
-          '<button type="button" class="msf-btn" data-act="theme"></button>' +
           '<button type="button" class="msf-btn" data-act="license">&#9878;&#65039; License Terms</button>' +
         '</div>' +
         '<div>&copy; 2026 MINAMI STOCK &middot; All rights reserved</div>' +
@@ -225,26 +221,14 @@
       $("msf-license").classList.remove("open");
     }
 
-    /* ---------- Theme toggle ---------- */
+    /* ---------- Region ---------- */
     function store(k, v) {
       try {
         if (v === undefined) return localStorage.getItem(k);
         localStorage.setItem(k, v);
       } catch (e) {}
     }
-    function appearanceDark() {
-      var s = store("ms_theme");
-      return s ? s === "dark" : baseDark;
-    }
-    function applyTheme() {
-      var dark = appearanceDark();
-      document.documentElement.classList.toggle("msf-inv", dark !== baseDark);
-      var btn = foot.querySelector('[data-act="theme"]');
-      if (btn) btn.innerHTML = dark ? "&#9728;&#65039; Light Theme" : "&#127769; Dark Theme";
-    }
-    applyTheme();
-
-    /* ---------- Region ---------- */
+    
     var savedRegion = store("ms_region");
     if (savedRegion) $("msf-region-sel").value = savedRegion;
 
@@ -257,10 +241,6 @@
       var act = b.getAttribute("data-act");
       if (act === "region") $("msf-region").classList.add("open");
       else if (act === "license") $("msf-license").classList.add("open");
-      else if (act === "theme") {
-        store("ms_theme", appearanceDark() ? "light" : "dark");
-        applyTheme();
-      }
     });
 
     $("msf-region-save").onclick = function () {

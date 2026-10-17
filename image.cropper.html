@@ -13,16 +13,6 @@ a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;color:inherit}
 :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
-/* TOOLS BAR (secondary nav — keeps its own style) */
-.tools-bar{border-bottom:1px solid var(--line);background:var(--soft);overflow-x:auto;scrollbar-width:none;margin-bottom:0}
-.tools-bar::-webkit-scrollbar{display:none}
-.tools-bar .in{max-width:1400px;margin:auto;padding:0 20px;display:flex;gap:4px;height:48px;align-items:center;white-space:nowrap}
-.tool-item{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--mute);transition:.15s}
-.tool-item:hover{background:var(--bg);color:var(--ink)}
-.tool-item.active{background:var(--bg);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.tool-item i{font-size:14px}
-.tool-divider{width:1px;height:22px;background:var(--line);margin:0 8px;flex:none}
-
 /* MAIN */
 main{flex:1;padding:28px 20px}
 .wrap{max-width:1200px;margin:auto}
@@ -105,22 +95,6 @@ main{flex:1;padding:28px 20px}
 
 <!-- TOP BAR (JS inject করবে) -->
 <div id="site-topbar"></div>
-
-<!-- TOOLS BAR (এই page-specific) -->
-<nav class="tools-bar"><div class="in">
-  <a href="image-resizer.html" class="tool-item"><i class="fas fa-expand"></i> Image Resizer</a>
-  <a href="image-cropper.html" class="tool-item active"><i class="fas fa-crop"></i> Cropper</a>
-  <a href="image-compressor.html" class="tool-item"><i class="fas fa-compress"></i> Compressor</a>
-  <a href="image-converter.html" class="tool-item"><i class="fas fa-exchange-alt"></i> Converter</a>
-  <span class="tool-divider"></span>
-  <a href="bg-remover.html" class="tool-item"><i class="fas fa-magic"></i> BG Remover</a>
-  <a href="watermark.html" class="tool-item"><i class="fas fa-tint"></i> Watermark</a>
-  <a href="filters.html" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
-  <span class="tool-divider"></span>
-  <a href="color-palette.html" class="tool-item"><i class="fas fa-eye-dropper"></i> Color Palette</a>
-  <a href="image-to-pdf.html" class="tool-item"><i class="fas fa-file-pdf"></i> Image to PDF</a>
-  <a href="upscaler.html" class="tool-item"><i class="fas fa-arrow-up"></i> Upscaler</a>
-</div></nav>
 
 <!-- MAIN (Cropper tool) -->
 <main>
@@ -230,7 +204,7 @@ main{flex:1;padding:28px 20px}
 <script src="site-footer.js"></script>
 
 <!-- TOOL LOGIC -->
-<>
+<script>
 const $ = id => document.getElementById(id);
 let img = null, imgW = 0, imgH = 0;
 let rotation = 0, flipHState = false, flipVState = false;
@@ -517,6 +491,6 @@ $("newBtn").onclick = () => {
   drop.style.display = "";
   msg("");
 };
-
-<body>
+</script>
+</body>
 </html>
