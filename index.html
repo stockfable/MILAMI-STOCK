@@ -14,6 +14,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #000; font-family: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif; color: #e2e8f0; }
 
+        /* ★ ৩-ডট মেনুর পাশের ওই দুটি ৪-ডট মেনু হাইড করার কোড ★ */
+        #sidebarMenu, #toolsMenu {
+            display: none !important;
+        }
+
         .main-wrapper{max-width:1400px;margin:0 auto;padding:0 20px}
         main.center-content{padding:0 0 40px}
 
@@ -187,6 +192,18 @@
             .nav-row-sub{ padding-bottom: 14px !important; scroll-snap-type: x proximity; }
             .nav-row-sub .sub-link{ scroll-snap-align: start; }
         }
+
+        /* ===== BANNER VIDEO (above Stock Photos) ===== */
+        .mvb { position: relative; width: 100%; margin: 40px 0 0; border-radius: 16px; overflow: hidden; aspect-ratio: 16 / 6; min-height: 190px; background: linear-gradient(120deg, #1e1b4b, #7c2d12, #0c4a6e, #1e1b4b); background-size: 300% 300%; animation: mvbBg 14s ease infinite; border: 1px solid rgba(255,255,255,0.08); }
+        @keyframes mvbBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .mvb video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+        .mvb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.15) 70%); pointer-events: none; }
+        .mvb-text { position: absolute; z-index: 2; left: 5%; top: 50%; transform: translateY(-50%); max-width: 80%; color: #fff; }
+        .mvb-text h2 { font-size: clamp(18px, 3.6vw, 34px); font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
+        .mvb-text p { font-size: clamp(12px, 1.6vw, 15px); color: #e2e8f0; margin-bottom: 14px; }
+        .mvb-btn { display: inline-flex; align-items: center; gap: 8px; background: #fbbf24; color: #0a1628; font-weight: 800; font-size: 13px; padding: 9px 18px; border-radius: 22px; text-decoration: none; }
+        .mvb-btn:hover { background: #f59e0b; }
+        @media (max-width: 640px) { .mvb { aspect-ratio: 16 / 9; margin-top: 30px; } }
     </style>
 </head>
 <body>
@@ -235,6 +252,16 @@
                 <button type="button" class="home-more-btn" onclick="location.href='tools.html'">All Tools</button>
             </div>
 
+            <!-- Banner Video -->
+            <section class="mvb" id="mvb">
+                <video id="mvbVideo" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+                <div class="mvb-text">
+                    <h2>Millions of stock assets.<br>Create. Edit. Inspire.</h2>
+                    <p>Free photos, mockups and creative tools in one place.</p>
+                    <a class="mvb-btn" href="stock-photo.html"><i class="fas fa-images"></i> Explore Stock Photos</a>
+                </div>
+            </section>
+
             <!-- Stock Photos -->
             <section class="home-shop-section">
                 <div class="home-shop-header">
@@ -244,7 +271,6 @@
                 <div class="home-photo-grid" id="homePhotoGrid">
                     <p class="home-shop-empty">Loading photos...</p>
                 </div>
-                <!-- Show more বাটনটি হাইড করা হলো, কারণ আমরা ৪টি ফিক্সড দেখাবো -->
                 <button type="button" class="home-more-btn" id="homePhotoMore" hidden>Show more</button>
             </section>
 
@@ -465,7 +491,7 @@
         // STOCK PHOTOS (FIXED: Strictly 4 Photos)
         // =========================================
         let homePhotoList = [], homePhotoShown = 0;
-        const HOME_PHOTO_STEP = 4; // We want exactly 4
+        const HOME_PHOTO_STEP = 4; 
 
         function photoCardHtml(p) {
             return '<a class="home-photo-card" href="stock-photo.html#photo=' + encodeURIComponent(p.id) + '">' +
@@ -478,7 +504,6 @@
             const grid = document.getElementById('homePhotoGrid');
             const next = homePhotoList.slice(homePhotoShown, homePhotoShown + HOME_PHOTO_STEP);
             
-            // Resolve missing images
             await Promise.all(next.map(async function(p) {
                 if (p.url && (p.url.startsWith('http') || p.url.startsWith('data:') || p.url.startsWith('blob:'))) return;
                 try {
@@ -500,7 +525,6 @@
             const grid = document.getElementById('homePhotoGrid');
             if (!grid) return;
             try {
-                // Fetch 50 to ensure we get at least 4 valid images
                 const snap = await getDocs(query(collection(db, "stockphoto"), limit(50))); 
                 let list = [];
                 snap.forEach(function(d) {
@@ -517,7 +541,6 @@
                 const ms = function(p) { return p.createdAt && p.createdAt.toMillis ? p.createdAt.toMillis() : 0; };
                 list.sort(function(a, b) { return ms(b) - ms(a); });
                 
-                // Take ONLY the first 4 valid photos
                 homePhotoList = list.slice(0, 4);
                 homePhotoShown = 0;
                 grid.innerHTML = '';
@@ -618,8 +641,26 @@
         });
     </script>
 
+    <!-- ★★ এখানে আপনার JS ফাইলগুলো ঠিকমতো যুক্ত করা হয়েছে ★★ -->
+    <script>
+    /* Banner video: file ba full link ekhane likhun (example: "banner.mp4"). Na paile rongin background dekhabe. */
+    (function () {
+        var BANNER_VIDEO = "banner.mp4";
+        var BANNER_POSTER = "";
+        var v = document.getElementById("mvbVideo");
+        if (!v) return;
+        if (BANNER_POSTER) v.poster = BANNER_POSTER;
+        v.addEventListener("error", function () { v.style.display = "none"; }, true);
+        v.src = BANNER_VIDEO;
+        v.addEventListener("loadeddata", function () { v.style.display = "block"; });
+        var play = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
+        if ("IntersectionObserver" in window) {
+            new IntersectionObserver(function (e) { e[0].isIntersecting ? play() : v.pause(); }, { threshold: 0.25 }).observe(v);
+        } else { play(); }
+    })();
+    </script>
     <script src="top-bar.js"></script>
-    <script src="sites-layout.js"></script>
-
+    <script src="site-footer.js"></script>
+    
 </body>
 </html>
